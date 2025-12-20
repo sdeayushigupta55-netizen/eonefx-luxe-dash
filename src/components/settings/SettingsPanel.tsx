@@ -18,6 +18,7 @@ import {
   Plug,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import PaymentSettings from "./payment/PaymentSetting";
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -174,6 +175,18 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
       return <UsermanagementSettings defaultTab="kyccompliance" />;
     case "userrankings":
       return <UsermanagementSettings defaultTab="userrankings" />; 
+
+      // Payment 
+      case "depositmethods":
+      return <PaymentSettings defaultTab="depositmethods" />;
+      case "withdrawmethods":
+      return <PaymentSettings defaultTab="withdrawmethods" />;  
+      case "currency":
+      return <PaymentSettings defaultTab="currency" />;  
+      case "transfers":
+      return <PaymentSettings defaultTab="transfers" />;  
+      case "bonuses":
+      return <PaymentSettings defaultTab="bonuses" />;  
     default:
       return null;
   }

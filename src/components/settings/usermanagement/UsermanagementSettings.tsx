@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Customer from "./Customer";
-import RoleAndPermission from "./RoleandPermission";
+import RoleAndPermission from "./RoleAndPermission";
 // import KYCandCompliance from "./KYCandCompliance";
 import LeadSettings from "./LeadSetting";
 // import UserRankings from "./UserRankings";
