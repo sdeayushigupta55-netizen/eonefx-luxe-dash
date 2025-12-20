@@ -4,6 +4,7 @@ import { X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SettingsCard } from "./SettingsCard";
 import OrganizationSettings from "./organization/OrganizationSettings";
+import UsermanagementSettings from "./usermanagement/UsermanagementSettings";
 import {
   Building2,
   Users,
@@ -155,12 +156,24 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
       return <OrganizationSettings defaultTab="company" />;
     case "branches":
       return <OrganizationSettings defaultTab="branches" />;
-    case "country":
+    case "country": 
       return <OrganizationSettings defaultTab="country" />;
     case "doclinks":
       return <OrganizationSettings defaultTab="doclinks" />;
     case "sociallogins":
       return <OrganizationSettings defaultTab="sociallogins" />;
+
+    /* USER MANAGEMENT */
+    case "customer":
+      return <UsermanagementSettings defaultTab="customer" />;
+    case "rolespermissions":
+      return <UsermanagementSettings defaultTab="rolespermissions" />;
+    case "leadsettings":
+      return <UsermanagementSettings defaultTab="leadsettings" />;
+    case "kyccompliance":
+      return <UsermanagementSettings defaultTab="kyccompliance" />;
+    case "userrankings":
+      return <UsermanagementSettings defaultTab="userrankings" />; 
     default:
       return null;
   }

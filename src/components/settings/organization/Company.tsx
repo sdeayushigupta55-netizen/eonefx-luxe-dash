@@ -53,13 +53,6 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
     { key: "permission", label: "Permission" },
   ];
 
-  // ADD BUTTON CLICK
-  const handleAddNew = () => {
-    if (activeTab === "branches") {
-      setOpenAddBranchModal(true);
-    }
-  };
-
   // TAB CONTENT
   const renderContent = () => {
     switch (activeTab) {
