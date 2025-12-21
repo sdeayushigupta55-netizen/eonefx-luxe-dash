@@ -74,7 +74,7 @@ export default function UserManagementSettings({
       </div>
 
       {/* RIGHT CONTENT */}
-      <div className="flex-1 px-6">
+      <div className="flex-1 pl-6">
         <div className="border border-border rounded-md p-2 bg-card">
           {renderContent()}
         </div>

@@ -206,7 +206,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
       {/* Panel */}
       <div
         className={cn(
-          "fixed inset-y-0 right-0 z-50 w-full max-w-6xl bg-background border-l border-border shadow-2xl transition-transform duration-300 ease-out",
+          "fixed inset-y-0 right-0 z-50 w-full max-w-[76rem] bg-background border-l border-border shadow-2xl transition-transform duration-300 ease-out",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >

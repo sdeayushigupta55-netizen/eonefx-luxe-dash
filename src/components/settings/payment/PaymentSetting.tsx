@@ -22,9 +22,10 @@ export default function PaymentSettings({
     const sidetabs = [
         { key: "depositmethods", label: "Deposit Methods" },
         { key: "withdrawmethods", label: "Withdraw Methods" },
+        { key: "bonuses", label: "Bonuses" },
         { key: "currency", label: "Currency" },
         { key: "transfers", label: "Transfers" },
-        { key: "bonuses", label: "Bonuses" },
+        
     ];
 
     /* ✅ CONTENT RENDER */
@@ -37,12 +38,13 @@ export default function PaymentSettings({
             case "withdrawmethods":
 
                 return <WithdrawMethods />;
+                case "bonuses":
+                return <Bonuses />;
             case "currency":
                 return <Currency />;
             case "transfers":
                 return <Transfers />;
-            case "bonuses":
-                return <Bonuses />;
+            
             default:
                 return null;
         }
@@ -74,7 +76,7 @@ export default function PaymentSettings({
             </div>
 
             {/* RIGHT CONTENT */}
-            <div className="flex-1 px-6">
+            <div className="flex-1 pl-6">
                 <div className="border border-border rounded-md p-2 bg-card">
                     {renderContent()}
                 </div>
