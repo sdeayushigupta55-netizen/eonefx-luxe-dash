@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 
 import Branches from "./Branches";
 import Departments from "./Departments";
@@ -15,8 +22,10 @@ interface CompanyProps {
 export default function Company({ defaultTab = "company" }: CompanyProps) {
   const [activeTab, setActiveTab] = useState(defaultTab);
 
-  // 🔹 Branch modal state (controlled here)
+  // Modals
   const [openAddBranchModal, setOpenAddBranchModal] = useState(false);
+  const [openAddDepartmentModal, setOpenAddDepartmentModal] = useState(false);
+  const [openAddDesignationModal, setOpenAddDesignationModal] = useState(false);
 
   const [form, setForm] = useState({
     siteTitle: "Brokeret Demo",
@@ -26,7 +35,7 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
     supportEmail: "support@yourbroker.com",
     companyWebsite: "https://brokeret.com",
     companyPhone: "+1-234-567-890",
-    registeredAddress: "123 Broker Street, NY",
+    registeredAddress: "123 Broker Street, New York, NY",
     registeredNumber: "9876543210",
     copyrightText: "© Your Broker 2025",
   });
@@ -43,7 +52,6 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
     alert("Settings saved successfully!");
   };
 
-  // INTERNAL TABS
   const tabs = [
     { key: "company", label: "Company" },
     { key: "branches", label: "Branches" },
@@ -53,30 +61,101 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
     { key: "permission", label: "Permission" },
   ];
 
-  // TAB CONTENT
   const renderContent = () => {
     switch (activeTab) {
       case "company":
         return (
           <div className="grid grid-cols-2 gap-6">
+            {/* LEFT COLUMN */}
             <div className="flex flex-col gap-4">
-              <InputField label="Site Title" name="siteTitle" value={form.siteTitle} onChange={handleChange} />
-              <InputField label="New User Notification" name="newUserNotification" value={form.newUserNotification} onChange={handleChange} />
-              <InputField label="Support Email" name="supportEmail" value={form.supportEmail} onChange={handleChange} />
-              <InputField label="Company Phone" name="companyPhone" value={form.companyPhone} onChange={handleChange} />
-              <InputField label="Registered Number" name="registeredNumber" value={form.registeredNumber} onChange={handleChange} />
+              <InputField
+                label="Site Title"
+                name="siteTitle"
+                value={form.siteTitle}
+                onChange={handleChange}
+                tooltip="Displayed name of your site or portal"
+              />
+
+              <InputField
+                label="New User Notification"
+                name="newUserNotification"
+                value={form.newUserNotification}
+                onChange={handleChange}
+                tooltip="Comma-separated email addresses to notify on new user registration. e.g. abc@gmail.com, xyz@gmail.com"
+              />
+
+              <InputField
+                label="Support Email"
+                name="supportEmail"
+                value={form.supportEmail}
+                onChange={handleChange}
+                tooltip="Email address for customer support inquiries"
+                type="email"
+              />
+
+              <InputField
+                label="Company Phone"
+                name="companyPhone"
+                value={form.companyPhone}
+                onChange={handleChange}
+                tooltip="Official contact number for the company"
+              />
+
+              <InputField
+                label="Registered Number"
+                name="registeredNumber"
+                value={form.registeredNumber}
+                onChange={handleChange}
+                tooltip="Company's legal registration number"
+              />
             </div>
 
+            {/* RIGHT COLUMN */}
             <div className="flex flex-col gap-4">
-              <InputField label="Site Email" name="siteEmail" value={form.siteEmail} onChange={handleChange} />
-              <InputField label="New Staff Notification" name="newStaffNotification" value={form.newStaffNotification} onChange={handleChange} />
-              <InputField label="Company Website" name="companyWebsite" value={form.companyWebsite} onChange={handleChange} />
-              <InputField label="Registered Address" name="registeredAddress" value={form.registeredAddress} onChange={handleChange} />
-              <InputField label="Copyright Text" name="copyrightText" value={form.copyrightText} onChange={handleChange} />
+              <InputField
+                label="Site Email"
+                name="siteEmail"
+                value={form.siteEmail}
+                onChange={handleChange}
+                tooltip="Comma-separated email addresses used for system notifications. e.g. admin@example.com, support@example.com"
+              />
+
+              <InputField
+                label="New Staff Notification"
+                name="newStaffNotification"
+                value={form.newStaffNotification}
+                onChange={handleChange}
+                tooltip="Comma-separated email addresses to notify on new staff registration. e.g. abc@gmail.com, xyz@gmail.com"
+              />
+
+              <InputField
+                label="Company Website"
+                name="companyWebsite"
+                value={form.companyWebsite}
+                onChange={handleChange}
+                tooltip="Public URL of the company website"
+                type="url"
+              />
+
+              <InputField
+                label="Registered Address"
+                name="registeredAddress"
+                value={form.registeredAddress}
+                onChange={handleChange}
+                tooltip="Official address used for registration"
+              />
+
+              <InputField
+                label="Copyright Text"
+                name="copyrightText"
+                value={form.copyrightText}
+                onChange={handleChange}
+                tooltip="Footer text for copyright or legal notice"
+              />
             </div>
 
-            <div className="mt-4 col-span-2">
-              <Button onClick={handleSave} className="bg-primary hover:bg-blue-600">
+            <div className="col-span-2 mt-4">
+              <Button onClick={handleSave} className="bg-primary">
                 Save Changes
               </Button>
             </div>
@@ -85,14 +164,27 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
 
       case "branches":
         return (
-          <Branches />
+          <Branches
+            openAddModal={openAddBranchModal}
+            setOpenAddModal={setOpenAddBranchModal}
+          />
         );
 
       case "departments":
-        return <Departments />;
+        return (
+          <Departments
+            openAddModal={openAddDepartmentModal}
+            setOpenAddModal={setOpenAddDepartmentModal}
+          />
+        );
 
       case "designations":
-        return <Designations />;
+        return (
+          <Designations
+            openAddModal={openAddDesignationModal}
+            setOpenAddModal={setOpenAddDesignationModal}
+          />
+        );
 
       case "misc":
         return <Misc />;
@@ -107,14 +199,27 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
 
   return (
     <div className="space-y-6">
-      {/* HEADER */}
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold capitalize">{activeTab}</h1>
+        <h1 className="text-xl font-semibold">
+          {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+        </h1>
 
-      
+        {["branches", "departments", "designations"].includes(activeTab) && (
+          <Button
+            className="bg-primary"
+            onClick={() => {
+              if (activeTab === "branches") setOpenAddBranchModal(true);
+              if (activeTab === "departments") setOpenAddDepartmentModal(true);
+              if (activeTab === "designations") setOpenAddDesignationModal(true);
+            }}
+          >
+            + Add New
+          </Button>
+        )}
       </div>
 
-      {/* INTERNAL TABS */}
+      {/* Tabs */}
       <div className="flex gap-3">
         {tabs.map((tab) => (
           <button
@@ -122,7 +227,7 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 rounded-md border transition ${
               activeTab === tab.key
-                ? "bg-primary text-white border-primary"
+                ? "bg-primary text-primary-foreground"
                 : "bg-muted border-border hover:bg-muted/70"
             }`}
           >
@@ -136,10 +241,39 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
   );
 }
 
-// 🔹 REUSABLE INPUT FIELD
-const InputField = ({ label, name, value, onChange }: any) => (
-  <div>
-    <label className="text-sm mb-1 block">{label}</label>
-    <Input name={name} value={value} onChange={onChange} />
+/* ================= Reusable Input with Tooltip ================= */
+
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  tooltip,
+  type = "text",
+}: any) => (
+  <div className="space-y-1">
+    <label className="flex items-center gap-2 text-sm">
+      {label}
+
+      {tooltip && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info size={14} className="cursor-pointer" />
+            </TooltipTrigger>
+            <TooltipContent side="right" className="max-w-xs break-words">
+              {tooltip}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+    </label>
+
+    <Input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+    />
   </div>
 );

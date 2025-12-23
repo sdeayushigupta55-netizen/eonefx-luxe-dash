@@ -65,7 +65,7 @@ export default function OrganizationSettings({
             onClick={() => setActiveTab(tab.key)}
             className={`w-full text-left px-3 py-2 rounded-md mb-2 ${
               activeTab === tab.key
-                ? "bg-primary text-white"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-muted"
             }`}
           >

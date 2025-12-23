@@ -30,8 +30,7 @@ export default function DepositMethods() {
   const [openAddBonusesModal, setOpenAddBonusesModal] = useState(false);
 
   const [status, setStatus] = useState(true);
-  const [globalAccess, setGlobalAccess] = useState(false);
-  const [fields, setFields] = useState([]);
+  
 
 
 
@@ -151,7 +150,7 @@ export default function DepositMethods() {
 
 
 
-  const renderMisc = () => (
+  const renderSetting = () => (
     <Card className="bg-card border border-border">
       <CardContent className="p-6 space-y-6">
         {/* Pending Deposit Limit */}
@@ -215,7 +214,7 @@ export default function DepositMethods() {
         return renderBonuses();
 
       case "Setting":
-        return renderMisc();
+        return renderSetting();
       default:
         return null;
     }

@@ -156,7 +156,7 @@ export default function Customer() {
             className={`px-4 py-2 rounded-md border transition
               ${
                 activeTab === tab.key
-                  ? "bg-primary text-white border-primary"
+                  ? "bg-primary text-primary-foreground"
                   : "bg-muted border-border hover:bg-muted/70"
               }`}
           >

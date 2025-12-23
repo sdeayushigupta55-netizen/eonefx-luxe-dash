@@ -343,3 +343,7 @@
     background: var(--gradient-sidebar);
   }
 }
+
+.ql-toolbar.ql-snow {
+  background-color: white;
+ }

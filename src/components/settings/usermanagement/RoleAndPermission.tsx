@@ -31,7 +31,7 @@ export default function RoleAndPermission() {
         <h1 className="text-xl font-semibold">Roles & Permissions</h1>
 
         <Button
-          className="flex gap-2 text-white"
+          className="flex gap-2 "
           onClick={() => setOpenAddRole(true)}
         >
           <Plus size={16} />
@@ -81,7 +81,7 @@ export default function RoleAndPermission() {
                     <div className="flex gap-2">
                       <Button
                         size="sm"
-                        className="flex gap-2 text-white"
+                        className="flex gap-2 "
                       >
                         <Pencil size={14} />
                         Edit Permission
@@ -163,7 +163,7 @@ export default function RoleAndPermission() {
               {/* MODAL ACTIONS */}
               <div className="flex justify-end gap-3 pt-4">
                 
-                <Button className="text-white">Add New Role</Button>
+                <Button >Add New Role</Button>
               </div>
             </CardContent>
           </Card>

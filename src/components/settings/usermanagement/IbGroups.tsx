@@ -97,7 +97,7 @@ export default function IBGroups() {
       <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-xl border border-border">
         <Input placeholder="Search Branch Name, Code..." className="w-80" />
         <div className="flex ml-auto gap-3">
-          <Button className="bg-primary flex gap-2 text-white" onClick={openAddModal}>
+          <Button className="bg-primary flex gap-2 " onClick={openAddModal}>
             + Add New
           </Button>
           <Button variant="outline" className="flex gap-2">
@@ -113,7 +113,7 @@ export default function IBGroups() {
       <Card>
         <CardContent className="p-0">
           <table className="w-full text-left">
-            <thead className="bg-gray-800 text-gray-400">
+            <thead>
               <tr>
                 <th className="p-3">BRANCH NAME</th>
                 <th className="p-3">CODE</th>

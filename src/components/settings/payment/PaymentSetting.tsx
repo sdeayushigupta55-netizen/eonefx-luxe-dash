@@ -66,7 +66,7 @@ export default function PaymentSettings({
                         key={tab.key}
                         onClick={() => setActiveTab(tab.key)}
                         className={`w-full text-left px-3 py-2 rounded-md mb-2 transition ${activeTab === tab.key
-                                ? "bg-primary"
+                                ? "bg-primary text-primary-foreground"
                                 : "text-muted-foreground hover:bg-muted"
                             }`}
                     >
@@ -77,7 +77,7 @@ export default function PaymentSettings({
 
             {/* RIGHT CONTENT */}
             <div className="flex-1 pl-6">
-                <div className="border border-border rounded-md p-2 bg-card">
+                <div className="border border-border rounded-md p-4 bg-card">
                     {renderContent()}
                 </div>
             </div>

@@ -23,13 +23,18 @@ type Pipeline = {
   name: string;
   stages: Stage[];
 };
+ /* ✅ INTERNAL TABS */
+  const tabs = [
+    { key: "lead-source", label: "Lead Source" },
+    { key: "pipeline", label: "Pipeline" },
+   
+  ];
 
 /* ================= COMPONENT ================= */
 
 export default function LeadSettings() {
-  const [activeTab, setActiveTab] = useState<"lead-source" | "pipeline">(
-    "lead-source"
-  );
+  const [activeTab, setActiveTab] = useState("lead-source");
+  
 
   /* ================= STATE ================= */
 
@@ -123,33 +128,31 @@ export default function LeadSettings() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">
           {activeTab === "lead-source" ? "Lead Source" : "Lead Pipeline"}
         </h1>
 
-        <Button onClick={handleAdd}>
-          + Add New {activeTab === "lead-source" ? "Source" : "Pipeline"}
-        </Button>
       </div>
 
-      {/* TABS */}
-      <div className="flex gap-3">
-        <Button
-          variant={activeTab === "lead-source" ? "default" : "secondary"}
-          onClick={() => setActiveTab("lead-source")}
-        >
-          Lead Source
-        </Button>
-
-        <Button
-          variant={activeTab === "pipeline" ? "default" : "secondary"}
-          onClick={() => setActiveTab("pipeline")}
-        >
-          Pipeline
-        </Button>
+       {/* INTERNAL TABS */}
+      <div className="flex gap-1 flex-wrap">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`px-4 py-2 rounded-md border transition
+              ${
+                activeTab === tab.key
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted border-border hover:bg-muted/70"
+              }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* ================= LEAD SOURCE TAB ================= */}
@@ -250,7 +253,7 @@ export default function LeadSettings() {
       {activeTab === "pipeline" && (
         <div className="space-y-6">
           <div className="flex justify-end gap-3">
-            <Button variant="outline">+ Add New Pipeline</Button>
+            <Button >+ Add New Pipeline</Button>
             <Button>+ Add New Deal Stage</Button>
           </div>
 

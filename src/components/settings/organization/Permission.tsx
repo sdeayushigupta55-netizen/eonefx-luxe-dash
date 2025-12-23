@@ -3,6 +3,12 @@ import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Permission() {
   const [settings, setSettings] = useState({
@@ -19,119 +25,157 @@ export default function Permission() {
     forexAccountLimit: 10,
   });
 
-  const toggle = (key) => {
+  const toggle = (key: keyof typeof settings) => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   return (
     <div className="bg-card rounded-xl border border-border shadow-card p-6">
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        {/* LEFT COLUMN */}
-        <div className="space-y-4">
-          <PermissionItem
-            label="New Trading Accounts"
-            checked={settings.newTradingAccounts}
-            onChange={() => toggle("newTradingAccounts")}
-          />
+      <TooltipProvider>
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {/* LEFT COLUMN */}
+          <div className="space-y-4">
+            <PermissionItem
+              label="New Trading Accounts"
+              tooltip="Allow creation of new trading accounts for users."
+              checked={settings.newTradingAccounts}
+              onChange={() => toggle("newTradingAccounts")}
+            />
 
-          <PermissionItem
-            label="Delete Archived Accounts"
-            checked={settings.deleteArchivedAccounts}
-            onChange={() => toggle("deleteArchivedAccounts")}
-          />
+            <PermissionItem
+              label="Delete Archived Accounts"
+              tooltip="Enable deletion of archived or inactive user accounts."
+              checked={settings.deleteArchivedAccounts}
+              onChange={() => toggle("deleteArchivedAccounts")}
+            />
 
-          <PermissionItem
-            label="Automatic Deposits"
-            checked={settings.automaticDeposits}
-            onChange={() => toggle("automaticDeposits")}
-          />
+            <PermissionItem
+              label="Automatic Deposits"
+              tooltip="Enable auto-processing of deposits without manual approval."
+              checked={settings.automaticDeposits}
+              onChange={() => toggle("automaticDeposits")}
+            />
 
-          <PermissionItem
-            label="User Ranking (Show/Hide)"
-            checked={settings.userRanking}
-            onChange={() => toggle("userRanking")}
-          />
+            <PermissionItem
+              label="User Ranking (Show/Hide)"
+              tooltip="Show or hide user performance rankings on the platform."
+              checked={settings.userRanking}
+              onChange={() => toggle("userRanking")}
+            />
 
-          <PermissionItem
-            label="Auto Exchange Rates Update"
-            checked={settings.autoExchangeRates}
-            onChange={() => toggle("autoExchangeRates")}
+            <PermissionItem
+              label="Auto Exchange Rates Update"
+              tooltip="Enable automatic exchange rate updates from external APIs."
+              checked={settings.autoExchangeRates}
+              onChange={() => toggle("autoExchangeRates")}
+            />
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="space-y-4">
+            <PermissionItem
+              label="90 Days In-Activity Trade Disable"
+              tooltip="Disable trading automatically after 90 days of no activity."
+              checked={settings.inactivityTradeDisable}
+              onChange={() => toggle("inactivityTradeDisable")}
+            />
+
+            <PermissionItem
+              label="Automatic Withdrawals"
+              tooltip="Enable automatic withdrawal handling without manual checks."
+              checked={settings.automaticWithdrawals}
+              onChange={() => toggle("automaticWithdrawals")}
+            />
+
+            <PermissionItem
+              label="Disable Trading (No Balance)"
+              tooltip="Block trading actions when the account balance is zero."
+              checked={settings.disableTradingNoBalance}
+              onChange={() => toggle("disableTradingNoBalance")}
+            />
+
+            <PermissionItem
+              label="Forex Group Range"
+              tooltip="Enable control over which trading groups are allowed."
+              checked={settings.forexGroupRange}
+              onChange={() => toggle("forexGroupRange")}
+            />
+
+            <PermissionItem
+              label="Duplicate Phone Number Restriction"
+              tooltip="Restrict one phone number to only one user account."
+              checked={settings.duplicatePhoneRestriction}
+              onChange={() => toggle("duplicatePhoneRestriction")}
+            />
+          </div>
+        </div>
+
+        {/* INPUT */}
+        <div className="mt-6">
+          <label className="text-sm mb-2 block flex items-center gap-2">
+            Forex Account Limit
+            <Tooltip>
+              <TooltipTrigger>
+                <Info className="w-4 h-4 cursor-pointer" />
+              </TooltipTrigger>
+              <TooltipContent>
+                Set the maximum number of trading accounts per user.
+              </TooltipContent>
+            </Tooltip>
+          </label>
+
+          <Input
+            type="number"
+            value={settings.forexAccountLimit}
+            onChange={(e) =>
+              setSettings({
+                ...settings,
+                forexAccountLimit: Number(e.target.value),
+              })
+            }
+            className="max-w-sm"
           />
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div className="space-y-4">
-          <PermissionItem
-            label="90 Days In-Activity Trade Disable"
-            checked={settings.inactivityTradeDisable}
-            onChange={() => toggle("inactivityTradeDisable")}
-          />
-
-          <PermissionItem
-            label="Automatic Withdrawals"
-            checked={settings.automaticWithdrawals}
-            onChange={() => toggle("automaticWithdrawals")}
-          />
-
-          <PermissionItem
-            label="Disable Trading (No Balance)"
-            checked={settings.disableTradingNoBalance}
-            onChange={() => toggle("disableTradingNoBalance")}
-          />
-
-          <PermissionItem
-            label="Forex Group Range"
-            checked={settings.forexGroupRange}
-            onChange={() => toggle("forexGroupRange")}
-          />
-
-          <PermissionItem
-            label="Duplicate Phone Number Restriction"
-            checked={settings.duplicatePhoneRestriction}
-            onChange={() => toggle("duplicatePhoneRestriction")}
-          />
+        {/* SAVE */}
+        <div className="mt-8">
+          <Button className="bg-primary text-primary-foreground hover:opacity-90">
+            Save Changes
+          </Button>
         </div>
-      </div>
-
-      {/* INPUT */}
-      <div className="mt-6">
-        <label className="text-sm mb-2 block text-muted-foreground">
-          Forex Account Limit
-        </label>
-        <Input
-          type="number"
-          value={settings.forexAccountLimit}
-          onChange={(e) =>
-  setSettings({
-    ...settings,
-    forexAccountLimit: Number(e.target.value),
-  })
-}
-          className="max-w-sm"
-        />
-      </div>
-
-      {/* SAVE */}
-      <div className="mt-8">
-        <Button className="bg-primary text-primary-foreground hover:opacity-90">
-          Save Changes
-        </Button>
-      </div>
+      </TooltipProvider>
     </div>
   );
 }
 
 /* ---------- Reusable Item ---------- */
 
-function PermissionItem({ label, checked, onChange }) {
+function PermissionItem({
+  label,
+  tooltip,
+  checked,
+  onChange,
+}: {
+  label: string;
+  tooltip: string;
+  checked: boolean;
+  onChange: () => void;
+}) {
   return (
     <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
       <div className="flex items-center gap-2 text-sm">
         <span>{label}</span>
-        <Info className="w-4 h-4 text-muted-foreground" />
+
+        <Tooltip>
+          <TooltipTrigger>
+            <Info className="w-4 h-4 cursor-pointer" />
+          </TooltipTrigger>
+          <TooltipContent>{tooltip}</TooltipContent>
+        </Tooltip>
       </div>
+
       <Switch checked={checked} onCheckedChange={onChange} />
     </div>
   );

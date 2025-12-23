@@ -97,7 +97,7 @@ export default function CustomerGroups() {
       <Card>
         <CardContent className="p-0">
           <table className="w-full text-left">
-            <thead className="bg-gray-800 text-gray-400">
+            <thead >
               <tr>
                 <th className="p-3">NAME</th>
                 <th className="p-3">PARENT</th>
