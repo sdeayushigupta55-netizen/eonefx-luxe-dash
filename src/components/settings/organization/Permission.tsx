@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { InputField } from "@/components/form/InputField";
 import { Switch } from "@/components/ui/switch";
 import {
   Tooltip,
@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 
 export default function Permission() {
   const [settings, setSettings] = useState({
@@ -113,31 +114,33 @@ export default function Permission() {
         </div>
 
         {/* INPUT */}
-        <div className="mt-6">
-          <label className="text-sm mb-2 block flex items-center gap-2">
-            Forex Account Limit
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="w-4 h-4 cursor-pointer" />
-              </TooltipTrigger>
-              <TooltipContent>
-                Set the maximum number of trading accounts per user.
-              </TooltipContent>
-            </Tooltip>
-          </label>
+       <div className="mt-6">
+  <div className="flex items-center gap-2 mb-2">
+    <label className="text-sm">Forex Account Limit</label>
 
-          <Input
-            type="number"
-            value={settings.forexAccountLimit}
-            onChange={(e) =>
-              setSettings({
-                ...settings,
-                forexAccountLimit: Number(e.target.value),
-              })
-            }
-            className="max-w-sm"
-          />
-        </div>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Info className="w-4 h-4 cursor-pointer text-muted-foreground" />
+      </TooltipTrigger>
+      <TooltipContent>
+        Set the maximum number of trading accounts per user.
+      </TooltipContent>
+    </Tooltip>
+  </div>
+
+  <InputField
+    type="number"
+    value={settings.forexAccountLimit}
+    onChange={(e: any) =>
+      setSettings({
+        ...settings,
+        forexAccountLimit: Number(e.target.value),
+      })
+    }
+    className="max-w-sm"
+  />
+</div>
+
 
         {/* SAVE */}
         <div className="mt-8">

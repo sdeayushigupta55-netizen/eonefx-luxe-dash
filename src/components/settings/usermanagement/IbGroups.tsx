@@ -11,11 +11,16 @@ interface IBGroupstype {
   staff: number;
   isActive: boolean;
 }
+
+interface IBProps {
+  openUserAddModal: boolean;
+  setOpenUserAddModal: (v: boolean) => void;
+}
 const statusClasses = {
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
     Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
   };
-export default function IBGroups() {
+export default function IBGroups({ openUserAddModal, setOpenUserAddModal }: IBProps) {
   const [ibGroups, setIBGroups] = useState<IBGroupstype[]>([
     { name: "UAE Branch", code: "UAE", users: 2, staff: 0, isActive: true },
     { name: "USA Branch", code: "USA", users: 0, staff: 1, isActive: true },
@@ -142,7 +147,7 @@ export default function IBGroups() {
                     <Button size="icon" variant="outline">
                       <List size={14} />
                     </Button>
-                    <Button size="icon" variant="outline">
+                    <Button size="icon" variant="destructive">
                       <Trash2 size={14} />
                     </Button>
                   </td>

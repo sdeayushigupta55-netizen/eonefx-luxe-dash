@@ -89,7 +89,7 @@ export default function RoleAndPermission() {
 
                       <Button
                         size="sm"
-                        variant="outline"
+                        variant="destructive"
                       >
                         <Trash2 size={14} />
                         Delete Role

@@ -1,7 +1,17 @@
-import { useState } from "react";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Pencil, Trash2 } from "lucide-react";
+
+
 
 import SystemTags from "./SystemTags";
 import CustomerGroups from "./CustomerGroups";
@@ -16,9 +26,17 @@ interface Customer {
   group: string;
   status: "Active" | "Inactive";
 }
+interface CustomerProps {
+  defaultTab?: string;
+}
 
-export default function Customer() {
-  const [activeTab, setActiveTab] = useState("risk-profile");
+
+export default function Customer({ defaultTab = "risk-profile" }: CustomerProps) {
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  const [openAddIBModal, setOpenAddIBModal] = useState(false);
+  const [openAddSystemModal, setOpenAddSystemModal] = useState(false);
+  const [openAddCustomerModal, setOpenAddCustomerModal] = useState(false);
 
   /* ✅ INTERNAL TABS */
   const tabs = [
@@ -29,6 +47,16 @@ export default function Customer() {
     { key: "permission", label: "Permission" },
     { key: "misc", label: "Misc" },
   ];
+
+   useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
+
+ 
+
+  const handleSave = () => {
+    alert("Settings saved successfully!");
+  };
 
   const [customers] = useState<Customer[]>([
     {
@@ -55,13 +83,13 @@ export default function Customer() {
   const renderContent = () => {
     switch (activeTab) {
       case "system-tags":
-        return <SystemTags />;
+        return <SystemTags openUserAddModal={openAddSystemModal} setOpenUserAddModal={setOpenAddSystemModal} />;
 
       case "customer-groups":
         return <CustomerGroups />;
 
       case "ib-groups":
-        return <IBGroups />;
+        return <IBGroups openUserAddModal={openAddIBModal} setOpenUserAddModal={setOpenAddIBModal} />;
 
       case "permission":
         return <UserPermission />;
@@ -121,7 +149,7 @@ export default function Customer() {
                           <Button size="icon" variant="outline">
                             <Pencil size={14} />
                           </Button>
-                          <Button size="icon" variant="outline">
+                          <Button size="icon" variant="destructive">
                             <Trash2 size={14} />
                           </Button>
                         </div>
@@ -137,28 +165,36 @@ export default function Customer() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* HEADER */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold capitalize">
-          {tabs.find(t => t.key === activeTab)?.label}
-        </h1>
+     <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-wrap gap-3 items-center justify-between">
+        <h1 className="text-xl font-semibold capitalize">{activeTab}</h1>
 
-        
+        {["system-tags", "customer-groups", "ib-groups"].includes(activeTab) && (
+          <Button
+            className="bg-primary"
+            onClick={() => {
+              if (activeTab === "system-tags") setOpenAddSystemModal(true);
+              if (activeTab === "customer-groups") setOpenAddCustomerModal(true);
+              if (activeTab === "ib-groups") setOpenAddIBModal(true);
+            }}
+          >
+            + Add New
+          </Button>
+        )}
       </div>
 
-      {/* INTERNAL TABS */}
-      <div className="flex gap-1 flex-wrap">
+      {/* Tabs */}
+      <div className="flex flex-wrap gap-2">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 rounded-md border transition
-              ${
-                activeTab === tab.key
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted border-border hover:bg-muted/70"
-              }`}
+            className={`px-4 py-2 rounded-md border transition whitespace-nowrap ${
+              activeTab === tab.key
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted border-border hover:bg-muted/70"
+            }`}
           >
             {tab.label}
           </button>

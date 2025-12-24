@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, X, Info } from "lucide-react";
+import { Pencil, Trash2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import {TooltipProvider} from "@/components/ui/tooltip";
+import { InputField } from "@/components/form/InputField";
+import { SelectField } from "@/components/form/SelectField";
+import { StatusToggle } from "@/components/form/Status";
 
 interface DepartmentType {
+  email: string;
   name: string;
   parent: string;
   status: "Active" | "Inactive";
@@ -21,32 +19,28 @@ interface DepartmentsProps {
   openAddModal: boolean;
   setOpenAddModal: (v: boolean) => void;
 }
-
-export default function Departments({
-  openAddModal,
-  setOpenAddModal,
-}: DepartmentsProps) {
+const statusClasses: Record<string, string> = {
+  Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
+  Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+};
+export default function Departments({ openAddModal, setOpenAddModal }: DepartmentsProps) {
   const [rows, setRows] = useState<DepartmentType[]>([
-    { name: "Sales Dept", parent: "-", status: "Active" },
+    { name: "Sales Dept", parent: "-", status: "Active", email: "" },
   ]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const [name, setName] = useState("");
   const [parent, setParent] = useState("");
+  const [email, setEmail] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState("");
 
-  const statusClasses: Record<string, string> = {
-    Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-    Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
-  };
 
-  /* OPEN ADD MODAL */
+
   useEffect(() => {
     if (openAddModal) {
       resetForm();
@@ -54,17 +48,16 @@ export default function Departments({
     }
   }, [openAddModal]);
 
-  /* EDIT */
   const openEditModal = (index: number) => {
     const d = rows[index];
     setEditIndex(index);
     setName(d.name);
     setParent(d.parent === "-" ? "" : d.parent);
+    setEmail(d.email || "");
     setIsActive(d.status === "Active");
     setModalOpen(true);
   };
 
-  /* SAVE */
   const handleSave = () => {
     if (!name.trim()) {
       setError("Department name is required");
@@ -74,6 +67,7 @@ export default function Departments({
     const payload: DepartmentType = {
       name,
       parent: parent || "-",
+      email,
       status: isActive ? "Active" : "Inactive",
     };
 
@@ -88,7 +82,6 @@ export default function Departments({
     closeModal();
   };
 
-  /* DELETE */
   const confirmDelete = () => {
     if (deleteIndex !== null) {
       setRows(rows.filter((_, i) => i !== deleteIndex));
@@ -97,21 +90,22 @@ export default function Departments({
     setDeleteModalOpen(false);
   };
 
-  /* RESET */
   const resetForm = () => {
     setEditIndex(null);
     setName("");
     setParent("");
+    setEmail("");
     setIsActive(true);
     setError("");
   };
 
-  /* CLOSE MODAL */
   const closeModal = () => {
     setModalOpen(false);
     setOpenAddModal(false);
     resetForm();
   };
+
+  const parentOptions = [{ label: "Sales Dept", value: "sales-dept" }];
 
   return (
     <TooltipProvider>
@@ -141,18 +135,13 @@ export default function Departments({
                         {row.status}
                       </Badge>
                     </td>
-                    <td className="p-3 flex flex-wrap gap-2">
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        onClick={() => openEditModal(index)}
-                      >
+                    <td className="p-3 flex gap-2">
+                      <Button size="icon" variant="outline" onClick={() => openEditModal(index)}>
                         <Pencil size={14} />
                       </Button>
-
                       <Button
                         size="icon"
-                        variant="outline"
+                        variant="destructive"
                         onClick={() => {
                           setDeleteIndex(index);
                           setDeleteModalOpen(true);
@@ -182,83 +171,57 @@ export default function Departments({
               </div>
 
               <div className="space-y-4">
-                {/* NAME */}
-                <div>
-                  <label className="text-sm block mb-1 flex items-center gap-2">
-                    Department Name <span className="text-red-500">*</span>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="w-4 h-4 cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Enter the department name.
-                      </TooltipContent>
-                    </Tooltip>
-                  </label>
+                <InputField
+                  label="Name"
+                  placeholder="Department Name"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setError("");
+                  }}
+                  tooltip="Enter the department name"
+                  required
+                  error={error}
 
-                  <Input
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      setError("");
-                    }}
-                  />
-                </div>
+                />
+                <SelectField
+                  label="Parent"
+                  value={parent}
+                  onChange={setParent}
+                  placeholder="Select Parent"
+                  tooltip="Select a parent department, if applicable"
+                  options={parentOptions}
+                />
+                <InputField
+                  label="Email"
+                  placeholder="Department Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  tooltip="Email used for department communication"
+                />
 
-                {/* PARENT */}
-                <div>
-                  <label className="text-sm block mb-1 flex items-center gap-2">
-                    Parent Department
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="w-4 h-4 cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Select a parent department, if applicable.
-                      </TooltipContent>
-                    </Tooltip>
-                  </label>
+                <StatusToggle
+                  label="Hide From Client"
+                  status={isActive ? "Active" : "Inactive"}
+                  onChange={(s) => setIsActive(s === "Active")}
+                  tooltip="Toggle to make this department invisible to clients"
+                />
 
-                  <Input
-                    value={parent}
-                    onChange={(e) => setParent(e.target.value)}
-                    placeholder="Optional"
-                  />
-                </div>
-
-                {/* STATUS */}
-                <div className="flex items-center gap-3">
-                  <span>Status</span>
-                  <button
-                    onClick={() => setIsActive(!isActive)}
-                    className={`w-11 h-6 rounded-full relative transition ${
-                      isActive ? "bg-primary" : "bg-gray-400"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${
-                        isActive ? "translate-x-5" : ""
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {error && <p className="text-red-500 text-xs">{error}</p>}
               </div>
 
               <div className="flex justify-end gap-3 mt-6">
-                <Button variant="outline" onClick={closeModal}>
+                
+                 <Button variant="destructive" className="px-4" onClick={closeModal}>
                   Cancel
                 </Button>
-                <Button onClick={handleSave}>
-                  {editIndex !== null ? "Update" : "Add"}
-                </Button>
+                <Button onClick={handleSave}>{editIndex !== null ? "Update" : "Add"}</Button>
               </div>
             </div>
           </div>
         )}
 
-        {/* DELETE CONFIRM MODAL */}
+        {/* DELETE MODAL */}
         {deleteModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
             <div className="w-full max-w-md rounded-xl bg-card border border-border p-8 text-center">
@@ -271,14 +234,10 @@ export default function Departments({
 
               <div className="flex justify-center gap-4">
                 <Button variant="outline" onClick={confirmDelete}>
-                  ✓ Confirm
+                  Confirm
                 </Button>
-                <Button
-                  variant="destructive"
-                  className="px-6"
-                  onClick={() => setDeleteModalOpen(false)}
-                >
-                  ✕ Cancel
+                <Button variant="destructive" className="px-4" onClick={() => setDeleteModalOpen(false)}>
+                  Cancel
                 </Button>
               </div>
             </div>

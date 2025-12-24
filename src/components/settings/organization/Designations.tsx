@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, X, Info } from "lucide-react";
+import { Pencil, Trash2, X } from "lucide-react";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { InputField } from "@/components/form/InputField";
+import { SelectField } from "@/components/form/SelectField";
+
+
 
 interface DesignationType {
   name: string;
@@ -21,6 +19,10 @@ interface DesignationsProps {
   openAddModal: boolean;
   setOpenAddModal: (v: boolean) => void;
 }
+const statusClasses: Record<string, string> = {
+  Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
+  Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+};
 
 export default function Designations({
   openAddModal,
@@ -32,7 +34,6 @@ export default function Designations({
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -40,11 +41,6 @@ export default function Designations({
   const [parent, setParent] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState("");
-
-  const statusClasses: Record<string, string> = {
-    Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-    Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
-  };
 
   /* OPEN MODAL FROM PARENT */
   useEffect(() => {
@@ -113,6 +109,10 @@ export default function Designations({
     resetForm();
   };
 
+  const parentOptions = [
+    { label: "Sales Dept", value: "sales-dept" },
+  ];
+
   return (
     <TooltipProvider>
       <div className="space-y-4">
@@ -123,7 +123,7 @@ export default function Designations({
               <thead>
                 <tr>
                   <th className="p-3">NAME</th>
-                  <th className="p-3">PARENT CATEGORY</th>
+                  <th className="p-3">PARENT</th>
                   <th className="p-3">STATUS</th>
                   <th className="p-3">ACTION</th>
                 </tr>
@@ -134,14 +134,14 @@ export default function Designations({
                     <td className="p-3">{row.name}</td>
                     <td className="p-3">{row.parent}</td>
                     <td className="p-3">
-                      <Badge
+                     <Badge
                         variant="outline"
                         className={`${statusClasses[row.status]} rounded-md px-2 py-0.5`}
                       >
                         {row.status}
                       </Badge>
                     </td>
-                    <td className="p-3 flex flex-wrap gap-2">
+                    <td className="p-3 flex gap-2">
                       <Button
                         size="icon"
                         variant="outline"
@@ -151,7 +151,7 @@ export default function Designations({
                       </Button>
                       <Button
                         size="icon"
-                        variant="outline"
+                        variant="destructive"
                         onClick={() => {
                           setDeleteIndex(index);
                           setDeleteModalOpen(true);
@@ -181,73 +181,32 @@ export default function Designations({
               </div>
 
               <div className="space-y-4">
-                {/* NAME */}
-                <div>
-                  <label className="text-sm block mb-1 flex items-center gap-2">
-                    Designation Name <span className="text-red-500">*</span>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="w-4 h-4 cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Enter the designation name.
-                      </TooltipContent>
-                    </Tooltip>
-                  </label>
+                <InputField
+                  label="Name"
+                  placeholder="Designation name"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setError("");
+                  }}
+                  tooltip="Enter the designation name"
+                  required
+                  error={error}
+                />
 
-                  <Input
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      setError("");
-                    }}
-                  />
-                </div>
+                <SelectField
+                  label="Parent"
+                  value={parent}
+                  onChange={setParent}
+                  placeholder="Select Parent Department"
+                  tooltip="Select a parent department, if applicable"
+                  options={parentOptions}
+                />
 
-                {/* PARENT */}
-                <div>
-                  <label className="text-sm block mb-1 flex items-center gap-2">
-                    Parent Category
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="w-4 h-4 cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Select a parent designation, if applicable.
-                      </TooltipContent>
-                    </Tooltip>
-                  </label>
-
-                  <Input
-                    value={parent}
-                    onChange={(e) => setParent(e.target.value)}
-                    placeholder="Optional"
-                  />
-                </div>
-
-                {/* STATUS */}
-                <div className="flex items-center gap-3">
-                  <span>Status</span>
-                  <button
-                    onClick={() => setIsActive(!isActive)}
-                    className={`w-11 h-6 rounded-full relative transition ${
-                      isActive ? "bg-primary" : "bg-gray-400"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${
-                        isActive ? "translate-x-5" : ""
-                      }`}
-                    />
-                  </button>
-                  <span>{isActive ? "Active" : "Inactive"}</span>
-                </div>
-
-                {error && <p className="text-red-500 text-xs">{error}</p>}
               </div>
 
               <div className="flex justify-end gap-3 mt-6">
-                <Button variant="outline" onClick={closeModal}>
+                <Button variant="destructive" className="px-4" onClick={closeModal}>
                   Cancel
                 </Button>
                 <Button onClick={handleSave}>
@@ -263,20 +222,18 @@ export default function Designations({
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
             <div className="w-full max-w-md rounded-xl bg-card border border-border p-8 text-center">
               <Trash2 className="mx-auto mb-4 text-red-500" size={40} />
-              <h2 className="text-xl font-semibold mb-2">Are you sure?</h2>
-              <p className="text-muted-foreground mb-6">
-                You want to delete this designation?
-              </p>
+              <h2 className="text-xl font-semibold mb-2">Are You Sure?</h2>
+              <p className="mb-6">You want to delete this designation?</p>
 
               <div className="flex justify-center gap-4">
                 <Button variant="outline" onClick={confirmDelete}>
-                  ✓ Confirm
+                  Confirm
                 </Button>
                 <Button
                   variant="destructive"
                   onClick={() => setDeleteModalOpen(false)}
                 >
-                  ✕ Cancel
+                  Cancel
                 </Button>
               </div>
             </div>

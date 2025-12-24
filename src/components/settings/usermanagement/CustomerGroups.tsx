@@ -122,7 +122,7 @@ export default function CustomerGroups() {
                     <Button size="icon" variant="outline" onClick={() => openEditModal(index)}>
                       <Pencil size={14} />
                     </Button>
-                    <Button size="icon" variant="outline" onClick={() => handleDelete(index)}>
+                    <Button size="icon" variant="destructive" onClick={() => handleDelete(index)}>
                       <Trash2 size={14} />
                     </Button>
                   </td>

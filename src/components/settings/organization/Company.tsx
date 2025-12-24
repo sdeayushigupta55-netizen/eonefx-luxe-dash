@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { InputField } from "@/components/form/InputField";
 
 import Branches from "./Branches";
 import Departments from "./Departments";
@@ -153,39 +147,4 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
   );
 }
 
-/* ================= Reusable Input ================= */
 
-const InputField = ({
-  label,
-  name,
-  value,
-  onChange,
-  tooltip,
-  type = "text",
-}: any) => (
-  <div className="space-y-1">
-    <label className="flex items-center gap-2 text-sm">
-      {label}
-      {tooltip && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info size={14} className="cursor-pointer" />
-            </TooltipTrigger>
-            <TooltipContent side="right" className="max-w-xs break-words">
-              {tooltip}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
-    </label>
-
-    <Input
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      className="break-all"
-    />
-  </div>
-);

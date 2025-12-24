@@ -3,7 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Settings2, X } from "lucide-react"; // Using Settings2 icon
-import { Input } from "@/components/ui/input";
+
+import { InputField } from "@/components/form/InputField";
+import { StatusToggle } from "@/components/form/Status";
 
 export default function SocialLogins() {
   const [loginProviders, setLoginProviders] = useState([
@@ -132,64 +134,86 @@ export default function SocialLogins() {
         ))}
       </div>
 
-      {/* Modal */}
-      {activeProvider && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-md rounded-xl bg-card border border-border p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Configure {activeProvider.name} Login</h2>
-              <Button size="icon" variant="ghost" onClick={() => setActiveProvider(null)}>
-                <X size={18} />
-              </Button>
-            </div>
+     {/* Modal */}
+{activeProvider && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+    <div className="w-full max-w-md rounded-xl bg-card border border-border p-6">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">
+          Configure {activeProvider.name} Login
+        </h2>
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => setActiveProvider(null)}
+        >
+          <X size={18} />
+        </Button>
+      </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm block mb-1">Client Id</label>
-                <Input
-                  name="clientId"
-                  value={activeProvider.clientId}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="text-sm block mb-1">Client Secret</label>
-                <Input
-                  name="clientSecret"
-                  value={activeProvider.clientSecret}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="flex items-center gap-3 mt-2">
-                <span>Status</span>
-                <button
-                  onClick={() =>
-                    setActiveProvider({
-                      ...activeProvider,
-                      status: activeProvider.status === "Activated" ? "Deactivated" : "Activated",
-                    })
-                  }
-                  className={`w-11 h-6 rounded-full relative transition ${activeProvider.status === "Activated" ? "bg-primary" : "bg-gray-400"
-                    }`}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${activeProvider.status === "Activated" ? "translate-x-5" : ""
-                      }`}
-                  />
-                </button>
-             
-              </div>
-            </div>
+      {/* Body */}
+      <div className="space-y-4">
+        
+        <InputField
+          label="Client ID"
+          placeholder="Enter client ID"
+          value={activeProvider.clientId}
+          onChange={(e) =>
+            setActiveProvider({
+              ...activeProvider,
+              clientId: e.target.value,
+            })
+          }
+          tooltip="Client ID provided by the authentication provider"
+          
+        />
 
-            <div className="flex justify-end gap-3 mt-6">
-              <Button variant="outline" onClick={() => setActiveProvider(null)}>
-                Close
-              </Button>
-              <Button onClick={handleSave}>Save</Button>
-            </div>
-          </div>
-        </div>
-      )}
+        <InputField
+          label="Client Secret"
+          placeholder="Enter client secret"
+          type="password"
+          value={activeProvider.clientSecret}
+          onChange={(e) =>
+            setActiveProvider({
+              ...activeProvider,
+              clientSecret: e.target.value,
+            })
+          }
+          tooltip="Keep this secret safe and confidential"
+          
+        />
+
+        <StatusToggle
+          label="Status"
+          status={activeProvider.status}
+          tooltip="Enable or disable this login provider"
+          onChange={(s) =>
+            setActiveProvider({
+              ...activeProvider,
+              status: s,
+            })
+          }
+        />
+      </div>
+
+      {/* Footer */}
+      <div className="flex justify-end gap-3 mt-6">
+        <Button
+          variant="destructive" 
+          onClick={() => setActiveProvider(null)}
+        >
+          Close
+        </Button>
+        <Button onClick={handleSave}>
+          Save
+        </Button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

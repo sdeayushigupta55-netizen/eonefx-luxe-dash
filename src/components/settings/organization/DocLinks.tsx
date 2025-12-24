@@ -17,10 +17,15 @@ import {
   ChevronRight,
   Info,
   X,
+  Pencil,
+  List,
+  Trash2,
 } from "lucide-react";
+import { InputField } from "@/components/form/InputField";
+import { StatusToggle } from "@/components/form/Status";
 
-/* ================================================= */
 
+/* ==================== Main Component ==================== */
 export default function DocPlatformSocialLinks() {
   const [activeTab, setActiveTab] = useState("Document Links");
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,10 +90,12 @@ export default function DocPlatformSocialLinks() {
     setError("");
     setFormOpen(true);
   };
-const statusClasses: Record<string, string> = {
+
+  const statusClasses: Record<string, string> = {
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
     Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
   };
+
   /* ---------------- SAVE ---------------- */
   const handleSave = () => {
     if (!title.trim() || !url.trim()) {
@@ -181,16 +188,24 @@ const statusClasses: Record<string, string> = {
                   <td className="p-3">
                     <Badge
                         variant="outline"
-                        className={`${statusClasses[row.status]} rounded-md px-2 py-0.5`}
+                        className={`${statusClasses[row.status ? "Active" : "Inactive"]} rounded-md px-2 py-0.5`}
                       >
                       {row.status ? "Active" : "Inactive"}
                     </Badge>
-                     
                   </td>
                   {activeTab !== "Social Links" && (
                     <td className="p-3 flex flex-wrap gap-2">
-                      <Button size="icon" variant="ghost" onClick={() => openEditModal(row)}><Edit size={16} /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => { setDeleteItem(row); setDeleteOpen(true); }}><Trash size={16} /></Button>
+                      <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => openEditModal(row)}
+                    >
+                      <Pencil size={14} />
+                    </Button>
+
+                    <Button size="icon" variant="destructive" onClick={() => { setDeleteItem(row); setDeleteOpen(true); }}>
+                      <Trash2 size={14} />
+                    </Button>
                     </td>
                   )}
                   {activeTab === "Social Links" && (
@@ -215,49 +230,70 @@ const statusClasses: Record<string, string> = {
         </div>
 
         {/* ================= ADD / UPDATE MODAL ================= */}
-        {formOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2">
-            <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl rounded-xl bg-card border border-border p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">{editItem ? `Update ${activeTab.slice(0, -1)}` : `Add New ${activeTab.slice(0, -1)}`}</h2>
-                <Button size="icon" variant="ghost" onClick={() => setFormOpen(false)}><X size={18} /></Button>
-              </div>
+        {/* ================= ADD / UPDATE MODAL ================= */}
+{formOpen && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2">
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl rounded-xl bg-card border border-border p-4 sm:p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">
+          {editItem ? `Update ${activeTab.slice(0, -1)}` : `Add New ${activeTab.slice(0, -1)}`}
+        </h2>
+        <Button size="icon" variant="ghost" onClick={() => setFormOpen(false)}>
+          <X size={18} />
+        </Button>
+      </div>
 
-              <div className="space-y-4">
-                <LabelWithTooltip text="Title" tip="Enter title" />
-                <Input value={title} onChange={e => setTitle(e.target.value)} />
+      <div className="space-y-4">
+        <InputField
+          label="Title"
+          tooltip="Enter the document title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Document Title"
+        />
+        {error && <p className="text-red-500 text-xs">{error}</p>}
 
-                <LabelWithTooltip text="URL" tip="Enter URL" />
-                <Input value={url} onChange={e => setUrl(e.target.value)} />
+        <InputField
+          label="URL"
+          tooltip="Enter the full document URL"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Document Link"
+        />
 
-                {activeTab === "Platform Links" && (
-                  <>
-                    <LabelWithTooltip text="Operation" tip="Enter operation type (Windows/Mac)" />
-                    <Input value={operation} onChange={e => setOperation(e.target.value)} />
-
-                    <LabelWithTooltip text="Platform" tip="Enter platform (MT4/MT5)" />
-                    <Input value={platform} onChange={e => setPlatform(e.target.value)} />
-                  </>
-                )}
-
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                  <span>Status</span>
-                  <button onClick={() => setStatus(!status)} className={`w-11 h-6 rounded-full relative transition ${status ? "bg-primary" : "bg-gray-400"}`}>
-                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${status ? "translate-x-5" : ""}`} />
-                  </button>
-                  <span>{status ? "Active" : "Inactive"}</span>
-                </div>
-
-                {error && <p className="text-red-500 text-xs">{error}</p>}
-              </div>
-
-              <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-                <Button variant="outline" onClick={() => setFormOpen(false)}>Cancel</Button>
-                <Button onClick={handleSave}>{editItem ? "Update" : "Add"}</Button>
-              </div>
-            </div>
-          </div>
+        {activeTab === "Platform Links" && (
+          <>
+            <InputField
+              label="Operation"
+              tooltip="Enter operation type (Windows/Mac)"
+              value={operation}
+              onChange={(e) => setOperation(e.target.value)}
+            />
+            <InputField
+              label="Platform"
+              tooltip="Enter platform (MT4/MT5)"
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+            />
+          </>
         )}
+
+        <StatusToggle
+          label="Status"
+          status={status ? "Active" : "Inactive"}
+          onChange={(s) => setStatus(s === "Active")}
+          tooltip="Enable or disable this document link"
+        />
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+        <Button variant="destructive" onClick={() => setFormOpen(false)}>Cancel</Button>
+        <Button onClick={handleSave}>{editItem ? "Update" : "Add"}</Button>
+      </div>
+    </div>
+  </div>
+)}
+
 
         {/* ================= DELETE MODAL ================= */}
         {deleteOpen && (
@@ -275,20 +311,5 @@ const statusClasses: Record<string, string> = {
         )}
       </div>
     </TooltipProvider>
-  );
-}
-
-/* ================= LABEL ================= */
-function LabelWithTooltip({ text, tip }: any) {
-  return (
-    <label className="flex items-center gap-2 text-sm mb-1">
-      {text}
-      <Tooltip>
-        <TooltipTrigger>
-          <Info size={14} className="cursor-pointer" />
-        </TooltipTrigger>
-        <TooltipContent className="max-w-xs text-xs">{tip}</TooltipContent>
-      </Tooltip>
-    </label>
   );
 }

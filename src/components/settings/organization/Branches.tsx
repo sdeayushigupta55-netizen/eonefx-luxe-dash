@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, ListFilter, FileDown, List ,X,Info} from "lucide-react";
-
+import { Pencil, Trash2, ListFilter, FileDown, List, X, Info } from "lucide-react";
+import { InputField } from "@/components/form/InputField";
+import { StatusToggle } from "@/components/form/Status";
+import { SelectField } from "@/components/form/SelectField";
 
 import {
   Dialog,
@@ -60,10 +62,10 @@ export default function Branches({
   const [branchCode, setBranchCode] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState("");
-   const [openViewModal, setOpenViewModal] = useState(false)
+  const [openViewModal, setOpenViewModal] = useState(false)
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const [countries, setCountries] = useState<string[]>([]);
-const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
+  const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
 
 
   /* ------------------ Add Branch ------------------ */
@@ -121,7 +123,7 @@ const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
     setError("");
     setEditIndex(null);
   };
-  
+
   const [fields, setFields] = useState<
     { label: string; type: string; required: boolean }[]
   >([]);
@@ -139,29 +141,29 @@ const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
     setFields(copy);
   };
   useEffect(() => {
-  const handleClickOutside = (e: MouseEvent) => {
-    if (!(e.target as HTMLElement).closest(".relative")) {
-      setOpenCountryDropdown(false);
-    }
-  };
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest(".relative")) {
+        setOpenCountryDropdown(false);
+      }
+    };
 
-  document.addEventListener("click", handleClickOutside);
-  return () => document.removeEventListener("click", handleClickOutside);
-}, []);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   /* ------------------ UI ------------------ */
   return (
     <div className="space-y-6">
       {/* Top Bar */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
-        <Input className="w-full md:w-auto" placeholder="Search Branch Name, Code..."/>
+        <Input className="w-full md:w-auto" placeholder="Search Branch Name, Code..." />
         <select className="bg-background border border-border rounded-md px-3 py-2 w-full md:w-80">
 
-                  <option>All Status</option>
-                  <option>Active</option>
-                  <option>Diasable</option>
-                </select>
-             
+          <option>All Status</option>
+          <option>Active</option>
+          <option>Diasable</option>
+        </select>
+
         <div className="flex flex-col sm:flex-row gap-3 md:ml-auto w-full md:w-auto">
 
           <Button variant="outline">
@@ -175,8 +177,8 @@ const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
 
       {/* Table */}
       <Card>
-  <CardContent className="p-0 overflow-x-auto">
-<table className="w-full text-left">
+        <CardContent className="p-0 overflow-x-auto">
+          <table className="w-full text-left">
 
             <thead>
               <tr>
@@ -197,14 +199,13 @@ const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
                   <td className="p-3">{branch.staff}</td>
                   <td className="p-3">
                     <span
-                      className={`px-3 py-1 rounded text-sm text-white ${
-                        branch.isActive ? "bg-green-600" : "bg-gray-500"
-                      }`}
+                      className={`px-3 py-1 rounded  text-white ${branch.isActive ? "bg-green-600" : "bg-gray-500"
+                        }`}
                     >
                       {branch.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
-                 <td className="p-3 flex flex-wrap gap-2">
+                  <td className="p-3 flex flex-wrap gap-2">
 
                     <Button
                       size="icon"
@@ -216,7 +217,7 @@ const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
                     <Button size="icon" variant="outline" onClick={() => setOpenViewModal(true)}>
                       <List size={14} />
                     </Button>
-                    <Button size="icon" variant="outline" onClick={() => setOpenDeleteModal(true)}>
+                    <Button size="icon" variant="destructive" onClick={() => setOpenDeleteModal(true)}>
                       <Trash2 size={14} />
                     </Button>
                   </td>
@@ -256,192 +257,192 @@ const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
           isActive={isActive}
           setIsActive={setIsActive}
           error={error}
-          
+
         />
       )}
-     
-     <Dialog open={openViewModal} onOpenChange={setOpenViewModal}>
-      <DialogContent className="w-[95%] max-w-5xl p-0 overflow-hidden">
+      {/* ================= VIEW MODAL ================= */}
+      <Dialog open={openViewModal} onOpenChange={setOpenViewModal}>
+        <DialogContent className="w-[95%] max-w-5xl p-0 overflow-hidden">
 
-        {/* Header (NO BACK BUTTON) */}
-        <div className="px-6 py-4 ">
-          <h2 className="text-xl font-semibold text-white">
-            Branch Form — UAE Branch
-          </h2>
-        </div>
+          {/* Header (NO BACK BUTTON) */}
+          <div className="px-6 py-4 ">
+            <h2 className="text-xl font-semibold text-white">
+              Branch Form — UAE Branch
+            </h2>
+          </div>
 
-        {/* Body */}
-        <div className="p-4 sm:p-6">
+          {/* Body */}
+          <div className="p-4 sm:p-6">
 
-          <div className="rounded-xl bg-white/5 p-6 space-y-6">
+            <div className="rounded-xl bg-white/5 p-8 space-y-6">
 
-            {/* Countries */}
-            <div>
-             
-<div className="relative">
-  {/* Label */}
-  <label className="flex items-center gap-2 text-sm text-white mb-2">
-  Countries <span className="text-red-500">*</span>
+              {/* Countries */}
+              <div>
 
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Info size={14} className="cursor-pointer" />
-      </TooltipTrigger>
-      <TooltipContent side="right">
-        Select one or more country for this table
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-</label>
+                <div className="relative">
+                  {/* Label */}
+                  <label className="flex items-center gap-2 text-white mb-2">
+                    Countries
 
-  {/* Dropdown Trigger */}
-  <div
-    onClick={() => setOpenCountryDropdown(!openCountryDropdown)}
-    className="w-full cursor-pointer rounded-lg bg-black/40 border border-white/10 px-4 py-3 text-white flex flex-wrap gap-2 min-h-[48px]"
-  >
-    {countries.length === 0 ? (
-      <span className="text-gray-400">Select Countries</span>
-    ) : (
-      countries.map((c) => (
-        <span
-          key={c}
-          className="bg-blue-600/20 border  border-blue-500/40 px-2 py-1 rounded text-xs"
-        >
-          {c}
-        </span>
-      ))
-    )}
-  </div>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info size={14} className="cursor-pointer" />
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                          Select one or more country for this table
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </label>
 
-  {/* Dropdown Menu */}
-  {openCountryDropdown && (
-    <div className="z-50 mt-2 mb-3 w-full rounded-lg border border-white/10 bg-black shadow-xl max-h-56 overflow-auto">
-      {ALL_COUNTRIES.map((country) => (
-        <label
-          key={country}
-          className="flex items-center gap-3 px-4 py-2 text-white hover:bg-white/10 cursor-pointer"
-        >
-          <input
-            type="checkbox"
-            checked={countries.includes(country)}
-            onChange={() => {
-              if (countries.includes(country)) {
-                setCountries(countries.filter((c) => c !== country));
-              } else {
-                setCountries([...countries, country]);
-              }
-            }}
-           className="accent-blue-600"
-          />
-          {country}
-        </label>
-      ))}
-    </div>
-  )}
-</div>
+                  {/* Dropdown Trigger */}
+                  <div
+                    onClick={() => setOpenCountryDropdown(!openCountryDropdown)}
+                    className="w-full cursor-pointer rounded-lg bg-black/40 border border-white/10 px-4 py-3 text-white flex flex-wrap gap-2 min-h-[48px]"
+                  >
+                    {countries.length === 0 ? (
+                      <span className="text-gray-400">Select Countries</span>
+                    ) : (
+                      countries.map((c) => (
+                        <span
+                          key={c}
+                          className="bg-blue-600/20 border  border-blue-500/40 px-2 py-1 rounded text-xs"
+                        >
+                          {c}
+                        </span>
+                      ))
+                    )}
+                  </div>
 
-            </div>
+                  {/* Dropdown Menu */}
+                  {openCountryDropdown && (
+                    <div className="z-50 mt-2 mb-3 w-full rounded-lg border border-white/10 bg-black shadow-xl max-h-56 overflow-auto">
+                      {ALL_COUNTRIES.map((country) => (
+                        <label
+                          key={country}
+                          className="flex items-center gap-3 px-4 py-2 text-white hover:bg-white/10 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={countries.includes(country)}
+                            onChange={() => {
+                              if (countries.includes(country)) {
+                                setCountries(countries.filter((c) => c !== country));
+                              } else {
+                                setCountries([...countries, country]);
+                              }
+                            }}
+                            className="accent-blue-600"
+                          />
+                          {country}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-            {/* Add Field Option */}
-            <Button
-              onClick={addField}
-              
-            >
-              Add Field Option
-            </Button>
+              </div>
 
-            {/* Dynamic Fields */}
-            {fields.map((field, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center"
-              >
-                
-                {/* Label */}
-                <Input
-                  placeholder="Field label"
-                  value={field.label}
-                  onChange={(e) => {
-                    const copy = [...fields];
-                    copy[index].label = e.target.value;
-                    setFields(copy);
-                  }}
-                  className="md:col-span-4 bg-black/40 text-white"
+              {/* Add Field Option */}
+              <Button
+                onClick={addField} >
+                Add Field Option
+              </Button>
+
+              {fields.map((field, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center"
+                >
+                  {/* Field Label */}
+                  <div className="md:col-span-4">
+                    <InputField
+                      label="Field Label"
+                      placeholder="Enter field label"
+                      value={field.label}
+                      onChange={(e) => {
+                        const copy = [...fields];
+                        copy[index].label = e.target.value;
+                        setFields(copy);
+                      }}
+                      className="bg-black/40 text-white"
+                    />
+                  </div>
+
+                  {/* Field Type */}
+                  <div className="md:col-span-4">
+                    <SelectField
+                      label="Field Type"
+                      value={field.type}
+                      onChange={(value) => {
+                        const copy = [...fields];
+                        copy[index].type = value;
+                        setFields(copy);
+                      }}
+                      options={[
+                        { label: "Input Text", value: "text" },
+                        { label: "Checkbox", value: "checkbox" },
+                        { label: "Radio", value: "radio" },
+                        { label: "Date", value: "date" },
+                        { label: "Dropdown", value: "dropdown" },
+                      ]}
+                    />
+                  </div>
+
+                  {/* Required */}
+                  <div className="md:col-span-3">
+                    <SelectField
+                      label="Required"
+                      value={field.required ? "yes" : "no"}
+                      onChange={(value) => {
+                        const copy = [...fields];
+                        copy[index].required = value === "yes";
+                        setFields(copy);
+                      }}
+                      options={[
+                        { label: "Required", value: "yes" },
+                        { label: "Optional", value: "no" },
+                      ]}
+                    />
+                  </div>
+
+                  {/* Delete */}
+                  <Button
+                    size="icon"
+                    variant="destructive"
+                    className="mt-6"
+                    onClick={() => removeField(index)}
+                  >
+                    <Trash2 size={14} />
+                  </Button>
+                </div>
+              ))}
+
+              {/* Status */}
+              <div>
+                <StatusToggle
+                  label="Status"
+                  status={isActive ? "Active" : "Inactive"}
+                  onChange={(s) => setIsActive(s === "Active")}
+                  tooltip="Enable or disable this branch form"
                 />
+              </div>
 
-                {/* Field Type */}
-                <select
-                  value={field.type}
-                  onChange={(e) => {
-                    const copy = [...fields];
-                    copy[index].type = e.target.value;
-                    setFields(copy);
-                  }}
-                  className="md:col-span-4 rounded-lg bg-black/40border border-white/10 px-4 py-3 text-white"
-                >
-                  <option value="text">Input Text</option>
-                  <option value="checkbox">Checkbox</option>
-                  <option value="radio">Radio</option>
-                  <option value="date">Date</option>
-                  <option value="dropdown">Dropdown</option>
-                </select>
-
-                {/* Required */}
-                <select
-                  value={field.required ? "yes" : "no"}
-                  onChange={(e) => {
-                    const copy = [...fields];
-                    copy[index].required = e.target.value === "yes";
-                    setFields(copy);
-                  }}
-                  className="md:col-span-3 rounded-lg bg-black/40 border border-white/10 px-4 py-3 text-white"
-                >
-                  <option value="yes">Required</option>
-                  <option value="no">Optional</option>
-                </select>
-
-                {/* Delete */}
-                <Button
-                  size="icon"
-                  variant="destructive"
-                  onClick={() => removeField(index)}
-                >
-                  <Trash2 size={14} />
+              {/* Save */}
+              <div className="flex justify-end">
+                <Button className=" px-8 py-3">
+                  Save Form
                 </Button>
               </div>
-            ))}
-            {/* Status */}
-        <div className="flex items-center gap-4">
-          <span className="text-white text-sm">Status</span>
-          <button
-                  onClick={() => setIsActive(!isActive)}
-                  className={`w-11 h-6 rounded-full relative transition ${
-                    isActive ? "bg-primary" : "bg-gray-400"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${
-                      isActive ? "translate-x-5" : ""
-                    }`}
-                  />
-                </button>
-        </div>
 
-            {/* Save */}
-            <div className="flex justify-end">
-              <Button className=" px-8 py-3">
-                Save Form
-              </Button>
             </div>
-
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
 
 
-        {/* ================= DELETE MODAL ================= */}
+      {/* ================= DELETE MODAL ================= */}
       <Dialog open={openDeleteModal} onOpenChange={setOpenDeleteModal}>
         <DialogContent className="w-[90%] max-w-md text-center">
           <DialogHeader>
@@ -504,57 +505,50 @@ function Modal({
 }: any) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-2xl bg-card rounded-xl border">
-        <div className="flex justify-between px-6 py-4 border-b">
-          <h2 className="font-semibold">{title}</h2>
-           <Button
-                  size="icon"
-                  variant="ghost"
-                  
-                  onClick={onClose}
-                >
-                  <X size={18} />
-                </Button>
+      <div className="w-full max-w-md rounded-xl bg-card border border-border p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">{title}</h2>
+          <Button
+            size="icon"
+            variant="ghost"
+
+            onClick={onClose}
+          >
+            <X size={18} />
+          </Button>
+        </div>
+        <div className="space-y-4">
+          <InputField
+            label="Branch Name"
+            placeholder="Enter branch name"
+            value={branchName}
+            onChange={(e) => setBranchName(e.target.value)}
+            tooltip="Enter the department name"
+            
+            error={error}
+
+          />
+
+          <InputField
+            label="Branch Code"
+            placeholder="Enter Branch Code"
+            type="email"
+            value={branchCode}
+            onChange={(e) => setBranchCode(e.target.value)}
+            tooltip="Enter the Branch name"
+          />
+
+          <StatusToggle
+            label="Status"
+            status={isActive ? "Active" : "Inactive"}
+            onChange={(s) => setIsActive(s === "Active")}
+            tooltip=""
+          />
+
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-6 py-5">
-          <div>
-            <label className="text-sm">Branch Name *</label>
-            <Input
-              value={branchName}
-              onChange={(e) => setBranchName(e.target.value)}
-            />
-            {error && <p className="text-red-500 text-xs">{error}</p>}
-          </div>
-
-          <div>
-            <label className="text-sm">Branch Code *</label>
-            <Input
-              value={branchCode}
-              onChange={(e) => setBranchCode(e.target.value)}
-            />
-            {error && <p className="text-red-500 text-xs">{error}</p>}
-          </div>
-
-          <div className="col-span-2 flex items-center gap-3">
-            <label>Status</label>
-             <button
-                  onClick={() => setIsActive(!isActive)}
-                  className={`w-11 h-6 rounded-full relative transition ${
-                    isActive ? "bg-primary" : "bg-gray-400"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${
-                      isActive ? "translate-x-5" : ""
-                    }`}
-                  />
-                </button>
-          </div>
-        </div>
-
-        <div className="flex justify-end gap-3 px-6 py-4 border-t">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex justify-end gap-3 py-4 ">
+          <Button variant="destructive" onClick={onClose}>
             Cancel
           </Button>
           <Button onClick={onSubmit}>
