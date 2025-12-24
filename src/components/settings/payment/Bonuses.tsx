@@ -59,7 +59,7 @@ export default function DepositMethods() {
   const renderBonuses = () => (
     <div >
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left">
             <thead className=" text-gray-400">
               <tr>

@@ -158,7 +158,7 @@ export default function LeadSettings() {
       {/* ================= LEAD SOURCE TAB ================= */}
       {activeTab === "lead-source" && (
         <Card>
-          <CardContent className="p-0">
+          <CardContent className="p-0 overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-muted/40">
                 <tr>

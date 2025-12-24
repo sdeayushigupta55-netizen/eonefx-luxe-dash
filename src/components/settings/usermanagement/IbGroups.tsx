@@ -111,7 +111,7 @@ export default function IBGroups() {
 
       {/* Branches Table */}
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr>
@@ -135,7 +135,7 @@ export default function IBGroups() {
                       {branch.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="p-3 flex gap-2">
+                  <td className="p-3 flex flex-wrap gap-2">
                     <Button size="icon" variant="outline" onClick={() => handleOpenUpdateModal(index)}>
                       <Pencil size={14} />
                     </Button>
@@ -162,7 +162,7 @@ export default function IBGroups() {
               <button onClick={() => setAddModalOpen(false)} className="text-xl">✕</button>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 px-6 py-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-6 py-5">
               <div>
                 <label className="text-sm mb-1 block">Branch Name <span className="text-red-500">*</span></label>
                 <Input value={branchName} onChange={(e) => { setBranchName(e.target.value); setError(""); }} />
@@ -203,7 +203,7 @@ export default function IBGroups() {
               <button onClick={() => setUpdateModalOpen(false)} className="text-xl">✕</button>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 px-6 py-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-6 py-5">
               <div>
                 <label className="text-sm mb-1 block">Branch Name <span className="text-red-500">*</span></label>
                 <Input value={branchName} onChange={(e) => { setBranchName(e.target.value); setError(""); }} />

@@ -41,7 +41,7 @@ export default function RoleAndPermission() {
 
       {/* TABLE */}
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-muted/60">
               <tr>

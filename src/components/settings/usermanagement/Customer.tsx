@@ -74,7 +74,7 @@ export default function Customer() {
         return (
             
           <Card>
-            <CardContent className="p-0">
+            <CardContent className="p-0 overflow-x-auto">
                 
               <table className="w-full text-left">
                 <thead className="bg-muted/60 text-muted-foreground text-sm">

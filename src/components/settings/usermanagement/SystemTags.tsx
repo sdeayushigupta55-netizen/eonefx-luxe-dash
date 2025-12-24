@@ -95,7 +95,7 @@ export default function SystemTags() {
 
       {/* Table */}
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr>
@@ -118,7 +118,7 @@ export default function SystemTags() {
                       {row.status}
                     </Badge>
                   </td>
-                  <td className="p-3 flex gap-2">
+                  <td className="p-3 flex flex-wrap gap-2">
                     <Button size="icon" variant="outline" onClick={() => openEditModal(index)}>
                       <Pencil size={14} />
                     </Button>

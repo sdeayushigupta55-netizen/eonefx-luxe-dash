@@ -19,11 +19,7 @@ export default function Country() {
     { id: 246, country: "Algeria", code: 12, iso2: "DZ", iso3: "DZA", currency: "DZD" },
     { id: 245, country: "Andorra", code: 20, iso2: "AD", iso3: "AND", currency: "EUR" },
     { id: 244, country: "Angola", code: 24, iso2: "AO", iso3: "AGO", currency: "AOA" },
-    { id: 243, country: "Argentina", code: 32, iso2: "AR", iso3: "ARG", currency: "ARS" },
-    { id: 242, country: "Armenia", code: 51, iso2: "AM", iso3: "ARM", currency: "AMD" },
-    { id: 241, country: "Aruba", code: 533, iso2: "AW", iso3: "ABW", currency: "AWG" },
-    { id: 240, country: "Australia", code: 36, iso2: "AU", iso3: "AUS", currency: "AUD" },
-    { id: 239, country: "Austria", code: 40, iso2: "AT", iso3: "AUT", currency: "EUR" },
+  
     // Add more items...
   ];
 
@@ -84,7 +80,7 @@ export default function Country() {
 
       {/* TABLE CONTAINER */}
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-x-auto">
 
           {/* ---------------- ALL COUNTRIES TABLE ---------------- */}
           {activeTab === "All Countries" && (
