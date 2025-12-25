@@ -3,21 +3,26 @@ import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Label } from "@/components/ui/label";
 
 export default function UserPermission() {
   const [settings, setSettings] = useState({
-    newTradingAccounts: true,
-    deleteArchivedAccounts: false,
-    automaticDeposits: true,
-    userRanking: false,
-    autoExchangeRates: true,
-    inactivityTradeDisable: false,
-    automaticWithdrawals: true,
-    disableTradingNoBalance: false,
-    forexGroupRange: false,
-    duplicatePhoneRestriction: true,
-    forexAccountLimit: 10,
+    editName: true,
+    editPhone: true,
+    editUsername: true,
+    editEmail: true,
+    editCountry: true,
+    editDob: true,
+    accountCreation: true,
+    emailVerification: true,
+    kycVerification: true,
+    faVerification: true,
+    userDeposit: true,
+    userWithdraw: true,
+    ticketsFeature: true,
   });
+
 
   const toggle = (key) => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -27,91 +32,113 @@ export default function UserPermission() {
     <div className="bg-card rounded-xl border border-border shadow-card p-6">
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
+
         {/* LEFT COLUMN */}
         <div className="space-y-4">
           <PermissionItem
-            label="New Trading Accounts"
-            checked={settings.newTradingAccounts}
-            onChange={() => toggle("newTradingAccounts")}
+            label="Edit Name"
+            tooltip="Allow customers to edit their name"
+            checked={settings.editName}
+            onChange={() => toggle("editName")}
           />
 
-          <PermissionItem
-            label="Delete Archived Accounts"
-            checked={settings.deleteArchivedAccounts}
-            onChange={() => toggle("deleteArchivedAccounts")}
-          />
 
           <PermissionItem
-            label="Automatic Deposits"
-            checked={settings.automaticDeposits}
-            onChange={() => toggle("automaticDeposits")}
+            label="Edit Username"
+            tooltip="Allow changing the username"
+            checked={settings.editUsername}
+            onChange={() => toggle("editUsername")}
           />
 
-          <PermissionItem
-            label="User Ranking (Show/Hide)"
-            checked={settings.userRanking}
-            onChange={() => toggle("userRanking")}
-          />
+
 
           <PermissionItem
-            label="Auto Exchange Rates Update"
-            checked={settings.autoExchangeRates}
-            onChange={() => toggle("autoExchangeRates")}
+            label="Edit Country"
+            tooltip="Enable country field editing"
+            checked={settings.editCountry}
+            onChange={() => toggle("editCountry")}
           />
+
+
+
+          <PermissionItem
+            label="Account Creation"
+            tooltip="Permit creation of new accounts"
+            checked={settings.accountCreation}
+            onChange={() => toggle("accountCreation")}
+          />
+
+
+
+          <PermissionItem
+            label="KYC Verification"
+            tooltip="Require KYC verification"
+            checked={settings.kycVerification}
+            onChange={() => toggle("kycVerification")}
+          />
+
+
+          <PermissionItem
+            label="Deposit"
+            tooltip="Allow customer to deposit funds"
+            checked={settings.userDeposit}
+            onChange={() => toggle("userDeposit")}
+          />
+
+
+
+          <PermissionItem
+            label="Tickets Feature"
+            tooltip="Enable support ticket functionality"
+            checked={settings.ticketsFeature}
+            onChange={() => toggle("ticketsFeature")}
+          />
+
         </div>
 
         {/* RIGHT COLUMN */}
         <div className="space-y-4">
+
           <PermissionItem
-            label="90 Days In-Activity Trade Disable"
-            checked={settings.inactivityTradeDisable}
-            onChange={() => toggle("inactivityTradeDisable")}
+            label="Edit Phone"
+            tooltip="Allow customers to edit their phone number"
+            checked={settings.editPhone}
+            onChange={() => toggle("editPhone")}
+          />
+          <PermissionItem
+            label="Edit Email"
+            tooltip="Allow email address changes"
+            checked={settings.editEmail}
+            onChange={() => toggle("editEmail")}
           />
 
           <PermissionItem
-            label="Automatic Withdrawals"
-            checked={settings.automaticWithdrawals}
-            onChange={() => toggle("automaticWithdrawals")}
+            label="Edit Date Of Birth"
+            tooltip="Allow updating birth date info"
+            checked={settings.editDob}
+            onChange={() => toggle("editDob")}
           />
-
           <PermissionItem
-            label="Disable Trading (No Balance)"
-            checked={settings.disableTradingNoBalance}
-            onChange={() => toggle("disableTradingNoBalance")}
+            label="Email Verification"
+            tooltip="Require email verification"
+            checked={settings.emailVerification}
+            onChange={() => toggle("emailVerification")}
           />
-
           <PermissionItem
-            label="Forex Group Range"
-            checked={settings.forexGroupRange}
-            onChange={() => toggle("forexGroupRange")}
+            label="2FA Verification"
+            tooltip="Enable two-factor authentication"
+            checked={settings.faVerification}
+            onChange={() => toggle("faVerification")}
           />
-
           <PermissionItem
-            label="Duplicate Phone Number Restriction"
-            checked={settings.duplicatePhoneRestriction}
-            onChange={() => toggle("duplicatePhoneRestriction")}
+            label="Withdraw"
+            tooltip="Allow customer to withdraw funds"
+            checked={settings.userWithdraw}
+            onChange={() => toggle("userWithdraw")}
           />
         </div>
       </div>
 
-      {/* INPUT */}
-      <div className="mt-6">
-        <label className="text-sm mb-2 block text-muted-foreground">
-          Forex Account Limit
-        </label>
-        <Input
-          type="number"
-          value={settings.forexAccountLimit}
-          onChange={(e) =>
-  setSettings({
-    ...settings,
-    forexAccountLimit: Number(e.target.value),
-  })
-}
-          className="max-w-sm"
-        />
-      </div>
 
       {/* SAVE */}
       <div className="mt-8">
@@ -125,14 +152,27 @@ export default function UserPermission() {
 
 /* ---------- Reusable Item ---------- */
 
-function PermissionItem({ label, checked, onChange }) {
+function PermissionItem({ label, checked, onChange, tooltip }) {
   return (
     <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
       <div className="flex items-center gap-2 text-sm">
-        <span>{label}</span>
-        <Info className="w-4 h-4 text-muted-foreground" />
-      </div>
-      <Switch checked={checked} onCheckedChange={onChange} />
-    </div>
-  );
+         {label && (
+        <Label className="flex items-center gap-2 ">
+          {label}
+          
+
+          {tooltip && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 cursor-pointer" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs break-all whitespace-normal">
+                {tooltip}
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </Label>
+      )}
+      </div> <Switch checked={checked} onCheckedChange={onChange} />
+    </div>);
 }

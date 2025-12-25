@@ -6,6 +6,7 @@ import { Pencil, Trash2, ListFilter, FileDown, List, X, Info } from "lucide-reac
 import { InputField } from "@/components/form/InputField";
 import { StatusToggle } from "@/components/form/Status";
 import { SelectField } from "@/components/form/SelectField";
+import { Badge } from "@/components/ui/badge"
 
 import {
   Dialog,
@@ -28,7 +29,7 @@ interface Branch {
   code: string;
   users: number;
   staff: number;
-  isActive: boolean;
+  status: "Active" | "Inactive";
 }
 
 interface BranchesProps {
@@ -50,9 +51,9 @@ export default function Branches({
   setOpenAddModal,
 }: BranchesProps) {
   const [branches, setBranches] = useState<Branch[]>([
-    { name: "UAE Branch", code: "UAE", users: 2, staff: 0, isActive: true },
-    { name: "USA Branch", code: "USA", users: 0, staff: 1, isActive: true },
-    { name: "Test Branch", code: "UK", users: 2, staff: 1, isActive: true },
+    { name: "UAE Branch", code: "UAE", users: 2, staff: 0, status: "Active" },
+    { name: "USA Branch", code: "USA", users: 0, staff: 1, status: "Active" },
+    { name: "Test Branch", code: "UK", users: 2, staff: 1, status: "Active" },
   ]);
 
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -67,7 +68,10 @@ export default function Branches({
   const [countries, setCountries] = useState<string[]>([]);
   const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
 
-
+  const statusClasses: Record<string, string> = {
+    Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
+    Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+  };
   /* ------------------ Add Branch ------------------ */
   const handleAddBranch = () => {
     if (!branchName.trim() || !branchCode.trim()) {
@@ -77,7 +81,7 @@ export default function Branches({
 
     setBranches([
       ...branches,
-      { name: branchName, code: branchCode, users: 0, staff: 0, isActive },
+      { name: branchName, code: branchCode, users: 0, staff: 0, status: isActive ? "Active" : "Inactive" },
     ]);
 
     setOpenAddModal(false);
@@ -89,7 +93,7 @@ export default function Branches({
     const branch = branches[index];
     setBranchName(branch.name);
     setBranchCode(branch.code);
-    setIsActive(branch.isActive);
+    setIsActive(branch.status === "Active");
     setEditIndex(index);
     setUpdateModalOpen(true);
   };
@@ -106,7 +110,7 @@ export default function Branches({
         ...updated[editIndex],
         name: branchName,
         code: branchCode,
-        isActive,
+        status: isActive ? "Active" : "Inactive",
       };
       setBranches(updated);
     }
@@ -180,30 +184,30 @@ export default function Branches({
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left">
 
-            <thead>
+            <thead className="bg-muted/60 text-sm">
               <tr>
-                <th className="p-3">BRANCH NAME</th>
-                <th className="p-3">CODE</th>
-                <th className="p-3">USERS</th>
-                <th className="p-3">STAFF</th>
-                <th className="p-3">STATUS</th>
-                <th className="p-3">ACTION</th>
+                <th className="px-3 py-4">BRANCH NAME</th>
+                <th className="px-3 py-4">CODE</th>
+                <th className="px-3 py-4">USERS</th>
+                <th className="px-3 py-4">STAFF</th>
+                <th className="px-3 py-4">STATUS</th>
+                <th className="px-3 py-4 ">ACTION</th>
               </tr>
             </thead>
             <tbody>
               {branches.map((branch, index) => (
-                <tr key={index} className="border-t">
+                <tr key={index} className="border-t border-border hover:bg-muted/30 text-muted-foreground">
                   <td className="p-3">{branch.name}</td>
                   <td className="p-3">{branch.code}</td>
                   <td className="p-3">{branch.users}</td>
                   <td className="p-3">{branch.staff}</td>
                   <td className="p-3">
-                    <span
-                      className={`px-3 py-1 rounded  text-white ${branch.isActive ? "bg-green-600" : "bg-gray-500"
-                        }`}
+                    <Badge
+                      variant="outline"
+                      className={`${statusClasses[branch.status]} rounded-md px-2 py-0.5`}
                     >
-                      {branch.isActive ? "Active" : "Inactive"}
-                    </span>
+                      {branch.status}
+                    </Badge>
                   </td>
                   <td className="p-3 flex flex-wrap gap-2">
 
@@ -423,7 +427,7 @@ export default function Branches({
               <div>
                 <StatusToggle
                   label="Status"
-                  status={isActive ? "Active" : "Inactive"}
+                  status={isActive ? "Active" : "Disabled"}
                   onChange={(s) => setIsActive(s === "Active")}
                   tooltip="Enable or disable this branch form"
                 />
@@ -524,7 +528,7 @@ function Modal({
             value={branchName}
             onChange={(e) => setBranchName(e.target.value)}
             tooltip="Enter the department name"
-            
+
             error={error}
 
           />
@@ -540,7 +544,7 @@ function Modal({
 
           <StatusToggle
             label="Status"
-            status={isActive ? "Active" : "Inactive"}
+            status={isActive ? "Active" : "Disabled"}
             onChange={(s) => setIsActive(s === "Active")}
             tooltip=""
           />

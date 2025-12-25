@@ -1,44 +1,37 @@
-import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Pencil, Trash2, X, AlertTriangle } from "lucide-react";
+import { InputField } from "@/components/form/InputField";
+import { StatusToggle } from "@/components/form/Status";
 import { Card, CardContent } from "@/components/ui/card";
-import { Pencil, Trash2 } from "lucide-react";
-
-
-
-import SystemTags from "./SystemTags";
 import CustomerGroups from "./CustomerGroups";
 import IBGroups from "./IbGroups";
-import UserPermission from "./UserPermission";
+import SystemTags from "./SystemTags";
 import UserMisc from "./UserMisc";
+import UserPermission from "./UserPermission";
 
-/* ✅ CUSTOMER TYPE */
-interface Customer {
+/* ---------------- TYPES ---------------- */
+type RiskTag = {
   name: string;
-  email: string;
-  group: string;
+  details: string;
   status: "Active" | "Inactive";
-}
-interface CustomerProps {
-  defaultTab?: string;
-}
+};
 
+/* ---------------- STATUS STYLES ---------------- */
+const statusClasses: Record<string, string> = {
+  Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
+  Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+};
 
-export default function Customer({ defaultTab = "risk-profile" }: CustomerProps) {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+export default function CustomerSettings() {
+  const [activeTab, setActiveTab] = useState("risk-profile");
 
-  const [openAddIBModal, setOpenAddIBModal] = useState(false);
+  /* -------- MODALS -------- */
   const [openAddSystemModal, setOpenAddSystemModal] = useState(false);
+  const [openAddIBModal, setOpenAddIBModal] = useState(false);
   const [openAddCustomerModal, setOpenAddCustomerModal] = useState(false);
 
-  /* ✅ INTERNAL TABS */
   const tabs = [
     { key: "risk-profile", label: "Risk Profile Tags" },
     { key: "system-tags", label: "System Tags" },
@@ -47,136 +40,211 @@ export default function Customer({ defaultTab = "risk-profile" }: CustomerProps)
     { key: "permission", label: "Permission" },
     { key: "misc", label: "Misc" },
   ];
-
-   useEffect(() => {
-    setActiveTab(defaultTab);
-  }, [defaultTab]);
-
- 
-
-  const handleSave = () => {
-    alert("Settings saved successfully!");
-  };
-
-  const [customers] = useState<Customer[]>([
+ /* ---------------- TAB LABELS ---------------- */
+const tabLabels: Record<string, string> = {
+  "risk-profile": "Risk Profile Tag",
+  "system-tags": "System Tags",
+  "customer-groups": "Customer Groups",
+  "ib-groups": "IB Groups",
+  "permission": "Customer Permissions",
+  "misc": "Customer Misc Settings",
+};
+  /* -------- CONTENT STATE -------- */
+  const [rows, setRows] = useState<RiskTag[]>([
     {
-      name: "Rahul Sharma",
-      email: "rahul@gmail.com",
-      group: "Retail",
+      name: "Suspicious",
+      details:
+        "Unusual trading patterns or activities that could indicate potential market manipulation.",
       status: "Active",
-    },
-    {
-      name: "Ankit Verma",
-      email: "ankit@gmail.com",
-      group: "VIP",
-      status: "Active",
-    },
-    {
-      name: "Priya Singh",
-      email: "priya@gmail.com",
-      group: "Standard",
-      status: "Inactive",
     },
   ]);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [name, setName] = useState("");
+  const [details, setDetails] = useState("");
+  const [isActive, setIsActive] = useState(true);
 
-  /* ✅ TAB CONTENT (SAME PATTERN AS COMPANY) */
+  /* -------- FUNCTIONS -------- */
+  const openEdit = (index: number) => {
+    const row = rows[index];
+    setActiveIndex(index);
+    setName(row.name);
+    setDetails(row.details);
+    setIsActive(row.status === "Active");
+    setEditOpen(true);
+  };
+
+  const saveEdit = () => {
+    if (activeIndex === null) return;
+    const updated = [...rows];
+    updated[activeIndex] = {
+      name,
+      details,
+      status: isActive ? "Active" : "Inactive",
+    };
+    setRows(updated);
+    setEditOpen(false);
+  };
+
+  const confirmDelete = () => {
+    if (activeIndex === null) return;
+    setRows(rows.filter((_, i) => i !== activeIndex));
+    setDeleteOpen(false);
+  };
+
+  /* -------- RENDER CONTENT -------- */
   const renderContent = () => {
     switch (activeTab) {
       case "system-tags":
-        return <SystemTags openUserAddModal={openAddSystemModal} setOpenUserAddModal={setOpenAddSystemModal} />;
-
+        return <SystemTags openAddModal={openAddSystemModal} setOpenAddModal={setOpenAddSystemModal}/>;
       case "customer-groups":
-        return <CustomerGroups />;
-
+        return <CustomerGroups openAddModal={openAddCustomerModal} setOpenAddModal={setOpenAddCustomerModal} />;
       case "ib-groups":
-        return <IBGroups openUserAddModal={openAddIBModal} setOpenUserAddModal={setOpenAddIBModal} />;
-
+        return <IBGroups openAddModal={openAddIBModal} setOpenAddModal={setOpenAddIBModal} />;
       case "permission":
         return <UserPermission />;
-
       case "misc":
         return <UserMisc />;
+
 
       case "risk-profile":
       default:
         return (
-            
-          <Card>
-            <CardContent className="p-0 overflow-x-auto">
-                
-              <table className="w-full text-left">
-                <thead className="bg-muted/60 text-muted-foreground text-sm">
-                  <tr>
-                    <th className="px-6 py-4">NAME</th>
-                    <th className="px-6 py-4">EMAIL</th>
-                    <th className="px-6 py-4">GROUP</th>
-                    <th className="px-6 py-4">STATUS</th>
-                    <th className="px-6 py-4 text-right">ACTION</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {customers.map((customer, index) => (
-                    <tr
-                      key={index}
-                      className="border-t border-border hover:bg-muted/30"
-                    >
-                      <td className="px-6 py-4 font-medium">
-                        {customer.name}
-                      </td>
-
-                      <td className="px-6 py-4 text-muted-foreground">
-                        {customer.email}
-                      </td>
-
-                      <td className="px-6 py-4">{customer.group}</td>
-
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex rounded-full px-4 py-1 text-sm font-semibold
-                            ${
-                              customer.status === "Active"
-                                ? "bg-green-500/20 text-green-500"
-                                : "bg-red-600/20 text-red-500"
-                            }`}
-                        >
-                          {customer.status}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div className="flex justify-end gap-2">
-                          <Button size="icon" variant="outline">
+          <>
+            <Card>
+              <CardContent className="p-0">
+                <table className="w-full text-left">
+                  <thead className="bg-muted/60 text-sm">
+                    <tr>
+                      <th className="px-3 py-4">TAG NAME</th>
+                      <th className="px-3 py-4">STATUS</th>
+                      <th className="px-3 py-4">ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((row, index) => (
+                      <tr key={index} className="border-t">
+                        <td className="p-3">{row.name}</td>
+                        <td className="p-3">
+                          <Badge
+                            variant="outline"
+                            className={`${statusClasses[row.status]} rounded-md`}
+                          >
+                            {row.status}
+                          </Badge>
+                        </td>
+                        <td className="p-3 flex gap-2">
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={() => openEdit(index)}
+                          >
                             <Pencil size={14} />
                           </Button>
-                          <Button size="icon" variant="destructive">
+                          <Button
+                            size="icon"
+                            variant="destructive"
+                            onClick={() => {
+                              setActiveIndex(index);
+                              setDeleteOpen(true);
+                            }}
+                          >
                             <Trash2 size={14} />
                           </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </CardContent>
-          </Card>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </CardContent>
+            </Card>
+
+            {/* EDIT MODAL */}
+            {editOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+                <div className="w-full max-w-xl rounded-xl bg-card p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">Edit Risk Profile Tag</h2>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => setEditOpen(false)}
+                    >
+                      <X />
+                    </Button>
+                  </div>
+                  <div className="space-y-4">
+                    <InputField
+                      label="Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      tooltip="Enable the tag name"
+                    />
+                    <InputField
+                      label="Details (optional)"
+                      type="textarea"
+                      value={details}
+                      onChange={(e) => setDetails(e.target.value)}
+                      tooltip="Optional description of the tag"
+                    />
+                    <StatusToggle
+                      label="Status"
+                      status={isActive ? "Active" : "Disabled"}
+                      onChange={(s) => setIsActive(s === "Active")}
+                      tooltip="Enable or disable this tag"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3 mt-6">
+                    <Button variant="destructive" onClick={() => setEditOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={saveEdit}>Save Changes</Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* DELETE MODAL */}
+            {deleteOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+                <div className="w-full max-w-md rounded-xl bg-card p-8 text-center">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-900/30">
+                    <AlertTriangle className="text-red-500" size={28} />
+                  </div>
+                  <h2 className="text-2xl font-semibold mb-2">Are You Sure?</h2>
+                  <p className="mb-8">
+                    You want to delete <strong>{rows[activeIndex!]?.name}</strong> Risk Profile Tag?
+                  </p>
+                  <div className="flex justify-center gap-4">
+                    <Button variant="outline" onClick={confirmDelete}>
+                      Confirm
+                    </Button>
+                    <Button variant="destructive" onClick={() => setDeleteOpen(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         );
     }
   };
 
   return (
-     <div className="space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-wrap gap-3 items-center justify-between">
-        <h1 className="text-xl font-semibold capitalize">{activeTab}</h1>
+        <h1 className="text-xl font-semibold capitalize">{tabLabels[activeTab]}</h1>
 
-        {["system-tags", "customer-groups", "ib-groups"].includes(activeTab) && (
+        {["system-tags", "ib-groups", "customer-groups"].includes(activeTab) && (
           <Button
             className="bg-primary"
             onClick={() => {
               if (activeTab === "system-tags") setOpenAddSystemModal(true);
-              if (activeTab === "customer-groups") setOpenAddCustomerModal(true);
               if (activeTab === "ib-groups") setOpenAddIBModal(true);
+              if (activeTab === "customer-groups") setOpenAddCustomerModal(true);
             }}
           >
             + Add New
@@ -190,11 +258,10 @@ export default function Customer({ defaultTab = "risk-profile" }: CustomerProps)
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 rounded-md border transition whitespace-nowrap ${
-              activeTab === tab.key
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted border-border hover:bg-muted/70"
-            }`}
+            className={`px-4 py-2 rounded-md border transition whitespace-nowrap ${activeTab === tab.key
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted border-border hover:bg-muted/70"
+              }`}
           >
             {tab.label}
           </button>
@@ -203,6 +270,5 @@ export default function Customer({ defaultTab = "risk-profile" }: CustomerProps)
 
       {renderContent()}
     </div>
-    
   );
 }

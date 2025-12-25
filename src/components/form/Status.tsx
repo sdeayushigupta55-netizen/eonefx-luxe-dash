@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-type Status = "Active" | "Inactive";
+type Status = "Active" | "Disabled";
 
 interface StatusToggleProps {
   label?: string;
@@ -26,21 +26,23 @@ export function StatusToggle({
 
   return (
     <div className="flex items-center gap-3">
-      <span className="font-medium">{label}</span>
+      <span className="font-sm">{label}</span>
 
       {tooltip && (
         <Tooltip>
           <TooltipTrigger asChild>
             <Info className="w-4 h-4 cursor-pointer " />
           </TooltipTrigger>
-          <TooltipContent>{tooltip}</TooltipContent>
+          <TooltipContent className="whitespace-pre-line break-words max-w-xs">
+  {tooltip}
+</TooltipContent>
         </Tooltip>
       )}
 
       {/* TOGGLE */}
       <button
         type="button"
-        onClick={() => onChange(isActive ? "Inactive" : "Active")}
+        onClick={() => onChange(isActive ? "Disabled" : "Active")}
         className={cn(
           "w-11 h-6 rounded-full relative transition",
           isActive ? "bg-primary" : "bg-gray-400"

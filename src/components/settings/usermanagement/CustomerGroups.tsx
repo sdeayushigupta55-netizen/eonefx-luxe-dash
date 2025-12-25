@@ -1,195 +1,233 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, X, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  
+  TooltipProvider,
+ 
+} from "@/components/ui/tooltip";
+import { InputField } from "@/components/form/InputField";
 
+import { StatusToggle } from "@/components/form/Status";
 
-interface Customergrouptype {
-  name: string;
-  parent: string;
-  status: string;
+interface CustomerGroupstype {
+  groupname: string;
+  
+  status: "Active" | "Inactive";
 }
 
-export default function CustomerGroups() {
-  const [rows, setRows] = useState<Customergrouptype[]>([
-    { name: "Sales Dept", parent: "-", status: "Active" },
+interface CustomerGroupsProps {
+  openAddModal: boolean;
+  setOpenAddModal: (v: boolean) => void;
+}
+
+export default function CustomerGroups({ openAddModal, setOpenAddModal }: CustomerGroupsProps) {
+  const [rows, setRows] = useState<CustomerGroupstype[]>([
+    {
+      groupname: "VIP TRADERS",
+      status: "Active",
+    },
   ]);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [editIndex, setEditIndex] = useState<number | null>(null); // null means add new
-  const [newName, setNewName] = useState("");
-  const [newParent, setNewParent] = useState("");
-  const [newStatus, setNewStatus] = useState(true);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [groupname, setGroupname] = useState("");
+  const [details, setDetails] = useState("");
+  const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState("");
 
-  const statusClasses = {
+  const statusClasses: Record<string, string> = {
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
     Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
   };
 
-  // Open modal for adding new department
-  const openAddModal = () => {
-    setEditIndex(null);
-    setNewName("");
-    setNewParent("");
-    setNewStatus(true);
-    setError("");
-    setModalOpen(true);
-  };
-
-  // Open modal for editing department
+  /* OPEN ADD MODAL */
+  useEffect(() => {
+    if (openAddModal) {
+      resetForm();
+      setModalOpen(true);
+    }
+  }, [openAddModal]);
+  /* EDIT */
   const openEditModal = (index: number) => {
-    const dept = rows[index];
+    const d = rows[index];
     setEditIndex(index);
-    setNewName(dept.name);
-    setNewParent(dept.parent === "-" ? "" : dept.parent);
-    setNewStatus(dept.status === "Active");
-    setError("");
+    setGroupname(d.groupname);
+  
+    setIsActive(d.status === "Active");
     setModalOpen(true);
+
   };
 
-  const handleSaveDepartment = () => {
-    if (!newName.trim()) {
-      setError("Please fill out the department name");
+  /* SAVE */
+  const handleSave = () => {
+    if (!groupname.trim()) {
+      setError("Customer group name is required");
       return;
     }
 
-    const updatedDepartment: Customergrouptype = {
-      name: newName,
-      parent: newParent || "-",
-      status: newStatus ? "Active" : "Inactive",
+    const payload: CustomerGroupstype = {
+      groupname,
+      
+      status: isActive ? "Active" : "Inactive",
     };
 
     if (editIndex !== null) {
-      // Update existing department
-      const updatedRows = [...rows];
-      updatedRows[editIndex] = updatedDepartment;
-      setRows(updatedRows);
+      const updated = [...rows];
+      updated[editIndex] = payload;
+      setRows(updated);
     } else {
-      // Add new department
-      setRows([...rows, updatedDepartment]);
+      setRows([...rows, payload]);
     }
 
-    setModalOpen(false);
+    closeModal();
+  };
+
+  /* DELETE */
+  const confirmDelete = () => {
+    if (activeIndex !== null) {
+      setRows(rows.filter((_, i) => i !== activeIndex));
+    }
+    setActiveIndex(null);
+    setDeleteModalOpen(false);
+  };
+
+  /* RESET FORM */
+  const resetForm = () => {
     setEditIndex(null);
-    setNewName("");
-    setNewParent("");
-    setNewStatus(true);
+    setGroupname("");
+    setDetails("");
+    setIsActive(true);
     setError("");
   };
 
-  const handleDelete = (index: number) => {
-    const updatedRows = [...rows];
-    updatedRows.splice(index, 1);
-    setRows(updatedRows);
+  /* CLOSE MODAL */
+  const closeModal = () => {
+    setModalOpen(false);
+    setOpenAddModal(false);
+    resetForm();
   };
 
   return (
-    <div className="rounded-lg shadow-sm space-y-4">
-      {/* Add Department Button */}
-      <div className="flex justify-end">
-        <Button onClick={openAddModal} className="bg-primary flex gap-2 text-white" >+ Add New</Button>
-      </div>
+    <TooltipProvider>
+      <div className="space-y-4">
+        {/* TABLE */}
+        <Card>
+          <CardContent className="p-0 overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-muted/60 text-sm">
+                <tr>
+                  <th className="px-3 py-4">GROUP NAME</th>
 
-      {/* Table */}
-      <Card>
-        <CardContent className="p-0 overflow-x-auto">
-          <table className="w-full text-left">
-            <thead >
-              <tr>
-                <th className="p-3">NAME</th>
-                <th className="p-3">PARENT</th>
-                <th className="p-3">STATUS</th>
-                <th className="p-3">ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, index) => (
-                <tr key={index} className="border-t border-gray-700">
-                  <td className="p-3">{row.name}</td>
-                  <td className="p-3">{row.parent}</td>
-                  <td className="p-3">
-                    <Badge
-                      variant="outline"
-                      className={`${statusClasses[row.status]} rounded-md px-2 py-0.5`}
-                    >
-                      {row.status}
-                    </Badge>
-                  </td>
-                  <td className="p-3 flex flex-wrap gap-2">
-                    <Button size="icon" variant="outline" onClick={() => openEditModal(index)}>
-                      <Pencil size={14} />
-                    </Button>
-                    <Button size="icon" variant="destructive" onClick={() => handleDelete(index)}>
-                      <Trash2 size={14} />
-                    </Button>
-                  </td>
+                  <th className="px-3 py-4">STATUS</th>
+                  <th className="px-3 py-4">ACTION</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </CardContent>
-      </Card>
+              </thead>
+              <tbody>
+                {rows.map((row, index) => (
+                  <tr key={index} className="border-t border-border">
+                    <td className="p-3">{row.groupname}</td>
 
-      {/* Add/Edit Modal */}
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-md rounded-xl bg-card border border-border p-6">
-            <h2 className="text-lg font-semibold mb-4">
-              {editIndex !== null ? "Update Department" : "Add Department"}
-            </h2>
+                    <td className="p-3">
+                      <Badge
+                        variant="outline"
+                        className={`${statusClasses[row.status]} rounded-md px-2 py-0.5`}
+                      >
+                        {row.status}
+                      </Badge>
+                    </td>
+                    <td className="p-3 flex flex-wrap gap-2">
+                      <Button size="icon" variant="outline" onClick={() => openEditModal(index)}>
+                        <Pencil size={14} />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="destructive"
+                        onClick={() => {
+                          setActiveIndex(index);
+                          setDeleteModalOpen(true);
+                        }}
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm block mb-1">
-                  Department Name <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  value={newName}
-                  onChange={(e) => { setNewName(e.target.value); setError(""); }}
-                />
-              </div>
-
-              <div>
-                <label className="text-sm block mb-1">Parent Department</label>
-                <Input
-                  value={newParent}
-                  onChange={(e) => setNewParent(e.target.value)}
-                  placeholder="Optional"
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span>Status</span>
-                <Button
-                  className={`${newStatus ? "bg-green-600" : "bg-gray-400"} w-12 h-6 rounded-full relative`}
-                  onClick={() => setNewStatus(!newStatus)}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${
-                      newStatus ? "translate-x-6" : ""
-                    }`}
-                  />
+        {/* ADD / EDIT MODAL */}
+        {modalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="w-full max-w-md rounded-xl bg-card border border-border p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold">
+                  {editIndex !== null ? "Update Customer Group" : "Add New Customer Group"}
+                </h2>
+                <Button size="icon" variant="ghost" onClick={closeModal}>
+                  <X size={18} />
                 </Button>
-                <span>{newStatus ? "Active" : "Inactive"}</span>
               </div>
 
-              {error && <p className="text-red-500 text-xs">{error}</p>}
-            </div>
+              <div className="space-y-4">
+                <InputField
+                  label="Group Name"
+                  value={groupname}
+                  onChange={(e) => setGroupname(e.target.value)}
+                  tooltip="Enter the Customer Group name"
+                  placeholder="Customer Group Name"
+                  error={error}
+                />
+                
+                <StatusToggle
+                  label="Status"
+                  status={isActive ? "Active" : "Disabled"}
+                  onChange={(s) => setIsActive(s === "Active")}
+                  tooltip="Enable or disable this tag"
+                />
+              </div>
 
-            <div className="flex justify-end gap-3 mt-6">
-              <Button variant="outline" onClick={() => setModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleSaveDepartment}>
-                {editIndex !== null ? "Update" : "Add"}
-              </Button>
+              <div className="flex justify-end gap-3 mt-6">
+                <Button variant="destructive" onClick={closeModal}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSave}>{editIndex !== null ? "Update" : "Add"}</Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+
+        {/* DELETE CONFIRM MODAL */}
+        {deleteModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+            <div className="w-full max-w-md rounded-xl bg-card border border-border p-8 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-900/30">
+                <Trash2 className="text-red-500" size={28} />
+              </div>
+
+              <h2 className="text-2xl font-semibold mb-2">Are You Sure?</h2>
+              <p className="mb-8">
+                You want to delete <strong>{rows[activeIndex!]?.groupname}</strong> Customer Group?</p>
+
+              <div className="flex justify-center gap-4">
+                <Button variant="outline" onClick={confirmDelete}>
+                  Confirm
+                </Button>
+                <Button variant="destructive" className="px-6" onClick={() => setDeleteModalOpen(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </TooltipProvider>
   );
 }

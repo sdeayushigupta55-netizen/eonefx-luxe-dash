@@ -1,153 +1,298 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, ListFilter, FileDown, List } from "lucide-react";
+import { Pencil, Trash2, ListFilter, FileDown, List, X, Info, AlertTriangle } from "lucide-react";
+import { InputField } from "@/components/form/InputField";
+import { StatusToggle } from "@/components/form/Status";
+import RichTextEditor from "@/components/form/RichTextEditor"
 
-interface IBGroupstype {
-  name: string;
-  code: string;
-  users: number;
-  staff: number;
-  isActive: boolean;
+import { Badge } from "@/components/ui/badge"
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { SelectField } from "@/components/form/SelectField";
+
+type Option = {
+  label: string;
+  value: string;
+};
+
+
+interface IbGroups {
+  groupname: string;
+  rebaterules: string[];
+  accounttypes: string[];
+  globalaccounttype: "Active" | "Disabled";
+  status: "Active" | "Disabled";
+
+
+}
+interface DeleteGroupModalProps {
+  open: boolean;
+  setOpen: (val: boolean) => void;
+  groupName: string;
+  attachedUsers: { name: string; username: string; email: string }[];
+  onConfirm: () => void;
 }
 
-interface IBProps {
-  openUserAddModal: boolean;
-  setOpenUserAddModal: (v: boolean) => void;
+interface IbGroupsProps {
+  openAddModal: boolean;
+  setOpenAddModal: (v: boolean) => void;
 }
-const statusClasses = {
-    Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-    Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
-  };
-export default function IBGroups({ openUserAddModal, setOpenUserAddModal }: IBProps) {
-  const [ibGroups, setIBGroups] = useState<IBGroupstype[]>([
-    { name: "UAE Branch", code: "UAE", users: 2, staff: 0, isActive: true },
-    { name: "USA Branch", code: "USA", users: 0, staff: 1, isActive: true },
-    { name: "Test", code: "UK", users: 2, staff: 1, isActive: false },
+
+
+
+
+export default function IbGroups({
+  openAddModal,
+  setOpenAddModal,
+}: IbGroupsProps) {
+
+  const [ibGroups, setIbGroups] = useState<IbGroups[]>([
+    {
+      groupname: "UAE Branch",
+      rebaterules: ["Standard", "Promo-Rebate"],
+      accounttypes: ["Standard", "Promo Account"],
+      globalaccounttype: "Active",
+      status: "Active",
+    },
+    {
+      groupname: "USA Branch",
+      rebaterules: ["Standard", "Promo-Rebate"],
+      accounttypes: ["Standard", "Promo Account"],
+      globalaccounttype: "Active",
+      status: "Active",
+    },
+    {
+      groupname: "Test Branch",
+      rebaterules: ["Standard", "Promo-Rebate"],
+      accounttypes: ["Standard", "Promo Account"],
+      globalaccounttype: "Active",
+      status: "Active",
+    },
   ]);
 
-  // Modal states
-  const [addModalOpen, setAddModalOpen] = useState(false);
+
+  const attachedUsers = [
+    { name: "user brokeret", username: "user13526", email: "user@brokeret.com" },
+    { name: "sufyan aslam", username: "sufyanaslam8725", email: "sufyanhashmi3021@gmail.com" },
+    { name: "test new", username: "testnew3856", email: "richirj43743@gmail.com" },
+  ];
+
+
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  const [branchName, setBranchName] = useState("");
-  const [branchCode, setBranchCode] = useState("");
+  const [ibgroupName, setIBgroupName] = useState("");
+  const [rebaterules, setRebaterules] = useState("");
+  const [accounttypes, setAccounttypes] = useState("");
+  const [globalaccounttype, setGlobalaccounttype] = useState(true);
   const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState("");
+  const [openViewModal, setOpenViewModal] = useState(false)
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  // Open Add Branch modal
-  const openAddModal = () => {
-    setBranchName("");
-    setBranchCode("");
-    setIsActive(true);
-    setError("");
-    setEditIndex(null);
-    setAddModalOpen(true);
+  const [rebateRules, setRebateRules] = useState<Option[]>([]);
+
+  const [disclaimer, setDisclaimer] = useState(
+    "This CRM demo is provided for informational purposes only."
+  );
+
+
+  useEffect(() => {
+    if (openAddModal) {
+      setIBgroupName("");
+      setRebateRules([]);
+
+      setGlobalaccounttype(true);
+      setIsActive(true);
+      setError("");
+    }
+  }, [openAddModal]);
+
+  const statusClasses: Record<string, string> = {
+    Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
+    Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
   };
-
-  // Open Update Branch modal
-  const handleOpenUpdateModal = (index: number) => {
-    const branch = ibGroups[index];
-    setBranchName(branch.name);
-    setBranchCode(branch.code);
-    setIsActive(branch.isActive);
-    setEditIndex(index);
-    setError("");
-    setUpdateModalOpen(true);
-  };
-
-  // Add new branch
+  /* ------------------ Add Branch ------------------ */
   const handleAddBranch = () => {
-    if (!branchName.trim() || !branchCode.trim()) {
+    if (!ibgroupName.trim()) {
       setError("Please fill out this field");
       return;
     }
 
-    const newBranch: IBGroupstype = { name: branchName, code: branchCode, users: 0, staff: 0, isActive };
-    setIBGroups([...ibGroups, newBranch]);
+    setIbGroups([
+      ...ibGroups,
+      { groupname: ibgroupName, rebaterules: [rebaterules], accounttypes: [accounttypes], globalaccounttype: globalaccounttype ? "Active" : "Disabled", status: isActive ? "Active" : "Disabled" },
+    ]);
 
-    setAddModalOpen(false);
-    setBranchName("");
-    setBranchCode("");
-    setIsActive(true);
-    setError("");
+    setOpenAddModal(false);
+    resetForm();
   };
 
-  // Update branch
+  /* ------------------ Update Branch ------------------ */
+  const handleOpenUpdateModal = (index: number) => {
+    const branch = ibGroups[index];
+    setIBgroupName(branch.groupname);
+    setRebaterules(branch.rebaterules.join(", "));
+    setAccounttypes(branch.accounttypes.join(", "));
+    setGlobalaccounttype(branch.globalaccounttype === "Active");
+    setIsActive(branch.status === "Active");
+    setEditIndex(index);
+    setUpdateModalOpen(true);
+  };
+
   const handleUpdateBranch = () => {
-    if (!branchName.trim() || !branchCode.trim()) {
+    if (!ibgroupName.trim()) {
       setError("Please fill out this field");
       return;
     }
 
     if (editIndex !== null) {
-      const updatedIBGroups = [...ibGroups];
-      updatedIBGroups[editIndex] = { ...updatedIBGroups[editIndex], name: branchName, code: branchCode, isActive };
-      setIBGroups(updatedIBGroups);
+      const updated = [...ibGroups];
+      updated[editIndex] = {
+        ...updated[editIndex],
+        groupname: ibgroupName,
+        rebaterules: [rebaterules],
+        accounttypes: [accounttypes],
+        globalaccounttype: globalaccounttype ? "Active" : "Disabled",
+        status: isActive ? "Active" : "Disabled",
+      };
+      setIbGroups(updated);
     }
 
     setUpdateModalOpen(false);
-    setEditIndex(null);
-    setBranchName("");
-    setBranchCode("");
-    setIsActive(true);
-    setError("");
+    resetForm();
   };
 
+  /* ------------------ Helpers ------------------ */
+  const resetForm = () => {
+    setIBgroupName("");
+    setRebaterules("");
+    setAccounttypes("");
+    setGlobalaccounttype(true);
+    setIsActive(true);
+    setError("");
+    setEditIndex(null);
+  };
+
+  const [fields, setFields] = useState<
+    { label: string; type: string; required: boolean }[]
+  >([]);
+
+  const addField = () => {
+    setFields([
+      ...fields,
+      { label: "", type: "text", required: true },
+    ]);
+  };
+
+  const removeField = (index: number) => {
+    const copy = [...fields];
+    copy.splice(index, 1);
+    setFields(copy);
+  };
+
+
+  /* ------------------ UI ------------------ */
   return (
     <div className="space-y-6">
       {/* Top Bar */}
-      <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-xl border border-border">
-        <Input placeholder="Search Branch Name, Code..." className="w-80" />
-        <div className="flex ml-auto gap-3">
-          <Button className="bg-primary flex gap-2 " onClick={openAddModal}>
-            + Add New
-          </Button>
-          <Button variant="outline" className="flex gap-2">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
+        <Input className="w-full md:w-auto" placeholder="Search Group Name, Rebate..." />
+        <select className="bg-background border border-border rounded-md px-3 py-2 w-full ">
+
+          <option>All Status</option>
+          <option>Active</option>
+          <option>Diasable</option>
+        </select>
+        <select className="bg-background border border-border rounded-md px-3 py-2 w-full ">
+
+          <option>All Global Account Type</option>
+          <option>Active</option>
+          <option>Diasable</option>
+        </select>
+
+        <div className="flex flex-col sm:flex-row gap-3 md:ml-auto w-full md:w-auto">
+
+          <Button variant="outline">
             <ListFilter size={16} /> Filter
           </Button>
-          <Button variant="outline" className="flex gap-2">
+          <Button variant="outline">
             <FileDown size={16} /> Export
           </Button>
         </div>
       </div>
 
-      {/* Branches Table */}
+      {/* Table */}
       <Card>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left">
-            <thead>
+
+            <thead className="bg-muted/60 text-sm">
               <tr>
-                <th className="p-3">BRANCH NAME</th>
-                <th className="p-3">CODE</th>
-                <th className="p-3">USERS</th>
-                <th className="p-3">STAFF</th>
-                <th className="p-3">STATUS</th>
-                <th className="p-3">ACTION</th>
+                <th className="px-3 py-4">GROUP NAME</th>
+                <th className="px-3 py-4">REBATE RULES</th>
+                <th className="px-3 py-4">ACCOUNT TYPES</th>
+                <th className="px-3 py-4">GLOBAL ACCOUNT TYPES</th>
+                <th className="px-3 py-4">STATUS</th>
+                <th className="px-3 py-4 ">ACTION</th>
               </tr>
             </thead>
             <tbody>
-              {ibGroups.map((branch, index) => (
-                <tr key={index} className="border-t border-gray-700">
-                  <td className="p-3">{branch.name}</td>
-                  <td className="p-3">{branch.code}</td>
-                  <td className="p-3">{branch.users}</td>
-                  <td className="p-3">{branch.staff}</td>
+              {ibGroups.map((ibgroup, index) => (
+                <tr key={index} className="border-t border-border">
+                  <td className="p-3">{ibgroup.groupname}</td>
                   <td className="p-3">
-                    <span className={`px-3 py-1 rounded text-white text-sm ${branch.isActive ? "bg-green-600" : "bg-gray-500"}`}>
-                      {branch.isActive ? "Active" : "Inactive"}
-                    </span>
+                    <div className="inline-flex flex-wrap gap-2">
+                      {ibgroup.rebaterules.map((rule, i) => (
+                        <span key={i} className="inline-block border border-white rounded px-2 py-0.5">
+                          {rule}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+
+                  <td className="p-3">
+                    <div className="inline-flex flex-wrap gap-2">
+                      {ibgroup.accounttypes.map((type, i) => (
+                        <span key={i} className="inline-block border border-white rounded px-2 py-0.5">
+                          {type}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="p-3"> <Badge
+                    variant="outline"
+                    className={`${statusClasses[ibgroup.globalaccounttype]} rounded-md px-2 py-0.5`}
+                  >
+                    {ibgroup.globalaccounttype}
+                  </Badge></td>
+                  <td className="p-3">
+                    <Badge
+                      variant="outline"
+                      className={`${statusClasses[ibgroup.status]} rounded-md px-2 py-0.5`}
+                    >
+                      {ibgroup.status}
+                    </Badge>
                   </td>
                   <td className="p-3 flex flex-wrap gap-2">
-                    <Button size="icon" variant="outline" onClick={() => handleOpenUpdateModal(index)}>
+
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleOpenUpdateModal(index)}
+                    >
                       <Pencil size={14} />
                     </Button>
-                    <Button size="icon" variant="outline">
-                      <List size={14} />
-                    </Button>
-                    <Button size="icon" variant="destructive">
+
+                    <Button size="icon" variant="destructive" onClick={() => setOpenDeleteModal(true)}>
                       <Trash2 size={14} />
                     </Button>
                   </td>
@@ -159,86 +304,225 @@ export default function IBGroups({ openUserAddModal, setOpenUserAddModal }: IBPr
       </Card>
 
       {/* Add Branch Modal */}
-      {addModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-2xl rounded-xl bg-card border border-border">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 className="text-lg font-semibold">Create Branch</h2>
-              <button onClick={() => setAddModalOpen(false)} className="text-xl">✕</button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-6 py-5">
-              <div>
-                <label className="text-sm mb-1 block">Branch Name <span className="text-red-500">*</span></label>
-                <Input value={branchName} onChange={(e) => { setBranchName(e.target.value); setError(""); }} />
-                {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-              </div>
-
-              <div>
-                <label className="text-sm mb-1 block">Branch Code <span className="text-red-500">*</span></label>
-                <Input value={branchCode} onChange={(e) => { setBranchCode(e.target.value); setError(""); }} />
-                {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-              </div>
-
-              <div className="col-span-2 flex items-center gap-3">
-                <label className="text-sm">Status</label>
-                <button
-                  onClick={() => setIsActive(!isActive)}
-                  className={`w-11 h-6 rounded-full relative transition ${isActive ? "bg-primary" : "bg-gray-400"}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${isActive ? "translate-x-5" : ""}`} />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 px-6 py-4 border-t">
-              <Button variant="outline" onClick={() => setAddModalOpen(false)}>Cancel</Button>
-              <Button onClick={handleAddBranch}>+ Create Branch</Button>
-            </div>
-          </div>
-        </div>
+      {openAddModal && (
+        <Modal
+          title="Add New IB Group"
+          onClose={() => setOpenAddModal(false)}
+          onSubmit={handleAddBranch}
+          ibgroupName={ibgroupName}
+          setIBgroupName={setIBgroupName}
+          rebateRules={rebateRules}
+          setRebateRules={setRebateRules}
+          isActive={isActive}
+          setIsActive={setIsActive}
+          error={error}
+          disclaimer={disclaimer}
+          setDisclaimer={setDisclaimer}
+        />
       )}
 
       {/* Update Branch Modal */}
       {updateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-2xl rounded-xl bg-card border border-border">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 className="text-lg font-semibold">Update Branch</h2>
-              <button onClick={() => setUpdateModalOpen(false)} className="text-xl">✕</button>
-            </div>
+        <Modal
+          title="Update New IB Group"
+          onClose={() => setUpdateModalOpen(false)}
+          onSubmit={handleUpdateBranch}
+          ibgroupName={ibgroupName}
+          setIBgroupName={setIBgroupName}
+          rebaterules={rebaterules}
+          setRebaterules={setRebaterules}
+          accounttypes={accounttypes}
+          setAccounttypes={setAccounttypes}
+          isActive={isActive}
+          setIsActive={setIsActive}
+          error={error}
+          disclaimer={disclaimer}
+          setDisclaimer={setDisclaimer}
+        />
+      )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-6 py-5">
-              <div>
-                <label className="text-sm mb-1 block">Branch Name <span className="text-red-500">*</span></label>
-                <Input value={branchName} onChange={(e) => { setBranchName(e.target.value); setError(""); }} />
-                {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-              </div>
 
-              <div>
-                <label className="text-sm mb-1 block">Branch Code <span className="text-red-500">*</span></label>
-                <Input value={branchCode} onChange={(e) => { setBranchCode(e.target.value); setError(""); }} />
-                {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-              </div>
 
-              <div className="col-span-2 flex items-center gap-3">
-                <label className="text-sm">Status</label>
-                <button
-                  onClick={() => setIsActive(!isActive)}
-                  className={`w-11 h-6 rounded-full relative transition ${isActive ? "bg-primary" : "bg-gray-400"}`}
-                >
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition ${isActive ? "translate-x-5" : ""}`} />
-                </button>
-              </div>
-            </div>
+      <DeleteGroupModal
+        open={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        groupName="Silver IB Group"
+        attachedUsers={attachedUsers}
+        onConfirm={() => {
+          console.log("Delete confirmed");
+          setOpenDeleteModal(false);
+        }}
+      />
 
-            <div className="flex justify-end gap-3 px-6 py-4 border-t">
-              <Button variant="outline" onClick={() => setUpdateModalOpen(false)}>Cancel</Button>
-              <Button onClick={handleUpdateBranch}>Update Branch</Button>
+    </div>
+  );
+}
+
+/* ------------------ Reusable Modal ------------------ */
+function Modal({
+  title,
+  onClose,
+  onSubmit,
+  ibgroupName,
+  setIBgroupName,
+  rebateRules,
+  setRebateRules,
+  isActive,
+  setIsActive,
+  error,
+  disclaimer,
+  setDisclaimer,
+}: any) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="w-full max-w-md rounded-xl bg-card border border-border p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">{title}</h2>
+          <Button
+            size="icon"
+            variant="ghost"
+
+            onClick={onClose}
+          >
+            <X size={18} />
+          </Button>
+        </div>
+        <div className="space-y-4">
+          <InputField
+            label="Group Name"
+            placeholder="IB Group Name"
+            value={ibgroupName}
+            onChange={(e) => setIBgroupName(e.target.value)}
+            tooltip="Enter a name for the IB group"
+            error={error}
+
+          />
+          {/* DISCLAIMER (Rich Text) */}
+          <div>
+
+
+            <div className="border border-border rounded-md overflow-hidden">
+              {/* DISCLAIMER (Rich Text) */}
+              <RichTextEditor
+                label="Details(Optional)"
+                value={disclaimer}
+                onChange={setDisclaimer}
+                tooltip="Add Description for this group"
+              />
             </div>
           </div>
+          {/* Field Type */}
+
+          {/* ✅ MULTISELECT ONLY HERE */}
+          <SelectField
+            label="Attach Rebate Rule(s)(Optional)"
+            isMulti
+            values={rebateRules}
+            onValuesChange={setRebateRules}
+            options={[
+              { label: "Standard", value: "Standard" },
+              { label: "Promo-Rebate", value: "Promo-Rebate" },
+              { label: "Special-Rebate", value: "Special-Rebate" },
+            ]}
+            tooltip="Select rebate rules to link with this group"
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <StatusToggle
+              label="Status"
+              status={isActive ? "Active" : "Disabled"}
+              onChange={(s) => setIsActive(s === "Active")}
+              tooltip="Enable or disable this IB Group."
+            />
+
+
+
+          </div>
+
+          <div className="grid-cols-2 gap-3">
+            <StatusToggle
+              label="Global Account"
+              status={isActive ? "Active" : "Disabled"}
+              onChange={(s) => setIsActive(s === "Active")}
+              tooltip="When enabled, this IB Group can show Global 
+      category accounts from linked rebate rules only if 'Show Global Accounts with IB Rebate Rules' is enabled."
+            />
+          </div>
+
+
+
         </div>
-      )}
+
+        <div className="flex justify-end gap-3 py-4 ">
+          <Button variant="destructive" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button onClick={onSubmit}>
+            {title === "Add New IB Group" ? "Add Group" : "Update Group"}
+          </Button>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function DeleteGroupModal({
+  open,
+  setOpen,
+  groupName,
+  attachedUsers,
+  onConfirm,
+}: DeleteGroupModalProps) {
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="w-[90%] max-w-md text-center bg-card rounded-xl p-6 shadow-card">
+        {/* Icon */}
+        <div className="flex justify-center mb-4">
+          <div className="rounded-full bg-red-50 p-4">
+            <AlertTriangle className="text-red-500" size={36} />
+          </div>
+        </div>
+
+        {/* Header */}
+        <DialogHeader>
+          <DialogTitle className="text-lg font-semibold text-center">
+            You want to delete <strong>{groupName}</strong>?
+          </DialogTitle>
+        </DialogHeader>
+
+        {/* Body */}
+        <div className="text-left mt-4 space-y-3">
+          <p className="text-text-muted font-semibold">Attached Users:</p>
+          <div className="space-y-2">
+            {attachedUsers.map((user, idx) => (
+              <div key={idx} className="flex justify-between border-b border-muted pb-1">
+                <span>{user.name} ({user.username})</span>
+                <span className="text-text-muted">{user.email}</span>
+              </div>
+            ))}
+          </div>
+
+          {attachedUsers.length > 0 && (
+            <p className="text-red-500 text-sm mt-2">
+              Please remove these users first before deleting the group.
+            </p>
+          )}
+
+        </div>
+
+        {/* Footer */}
+        <DialogFooter className="flex justify-center gap-3 mt-6">
+          <Button
+            variant="destructive"
+
+            onClick={onConfirm}
+          >
+            Confirm
+          </Button>
+          <Button onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
