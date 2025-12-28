@@ -15,7 +15,7 @@ import { StatusToggle } from "@/components/form/Status";
 interface SystemTagstype {
   name: string;
   details: string;
-  status: "Active" | "Inactive";
+  status: "Active" | "Disabled";
 }
 
 interface SystemTagsProps {
@@ -45,7 +45,7 @@ export default function SystemTags({ openAddModal, setOpenAddModal }: SystemTags
 
   const statusClasses: Record<string, string> = {
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-    Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+    Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
   };
 
   /* OPEN ADD MODAL */
@@ -77,7 +77,7 @@ export default function SystemTags({ openAddModal, setOpenAddModal }: SystemTags
     const payload: SystemTagstype = {
       name,
       details,
-      status: isActive ? "Active" : "Inactive",
+      status: isActive ? "Active" : "Disabled",
     };
 
     if (editIndex !== null) {

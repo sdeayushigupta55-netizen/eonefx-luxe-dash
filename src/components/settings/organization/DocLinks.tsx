@@ -93,7 +93,7 @@ export default function DocPlatformSocialLinks() {
 
   const statusClasses: Record<string, string> = {
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-    Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+    Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
   };
 
   /* ---------------- SAVE ---------------- */
@@ -139,7 +139,7 @@ export default function DocPlatformSocialLinks() {
   /* ================= UI ================= */
   return (
     <TooltipProvider>
-      <div className="text-white">
+      <div className="space-y-6">
 
         {/* HEADER */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
@@ -152,7 +152,7 @@ export default function DocPlatformSocialLinks() {
         </div>
 
         {/* TABS */}
-        <div className="flex flex-wrap gap-3 mb-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
           {["Document Links", "Platform Links", "Social Links"].map((tab) => (
             <button
               key={tab}
@@ -167,14 +167,14 @@ export default function DocPlatformSocialLinks() {
         {/* TABLE */}
         <div className="overflow-x-auto rounded-md border">
           <table className="w-full min-w-[600px] text-left">
-            <thead>
+            <thead className="bg-muted/60 text-sm">
               <tr>
                 <th className="p-3">TITLE</th>
                 <th className="p-3">URL</th>
-                {(activeTab === "Platform Links") && <th className="p-3 hidden sm:table-cell">Operation</th>}
-                {(activeTab === "Platform Links") && <th className="p-3 hidden sm:table-cell">Platform</th>}
+                {(activeTab === "Platform Links") && <th >Operation</th>}
+                {(activeTab === "Platform Links") && <th >Platform</th>}
                 <th className="p-3">STATUS</th>
-                {activeTab !== "Social Links" && <th className="p-3">ACTION</th>}
+                <th className="p-3">ACTION</th>
               </tr>
             </thead>
 
@@ -183,14 +183,14 @@ export default function DocPlatformSocialLinks() {
                 <tr key={row.id} className="border-t border-[#1a2b40]">
                   <td className="p-3">{row.title}</td>
                   <td className="p-3 break-all text-sm text-muted-foreground">{row.url}</td>
-                  {activeTab === "Platform Links" && <td className="p-3 hidden sm:table-cell">{row.operation}</td>}
-                  {activeTab === "Platform Links" && <td className="p-3 hidden sm:table-cell">{row.platform}</td>}
+                  {activeTab === "Platform Links" && <td >{row.operation}</td>}
+                  {activeTab === "Platform Links" && <td >{row.platform}</td>}
                   <td className="p-3">
                     <Badge
                         variant="outline"
-                        className={`${statusClasses[row.status ? "Active" : "Inactive"]} rounded-md px-2 py-0.5`}
+                        className={`${statusClasses[row.status ? "Active" : "Disabled"]} rounded-md px-2 py-0.5`}
                       >
-                      {row.status ? "Active" : "Inactive"}
+                      {row.status ? "Active" : "Disabled"}
                     </Badge>
                   </td>
                   {activeTab !== "Social Links" && (
@@ -210,7 +210,7 @@ export default function DocPlatformSocialLinks() {
                   )}
                   {activeTab === "Social Links" && (
                     <td className="p-3 flex flex-wrap gap-2">
-                      <Button size="icon" variant="ghost" onClick={() => openEditModal(row)}><Edit size={16} /></Button>
+                      <Button size="icon" variant="outline" onClick={() => openEditModal(row)}><Pencil size={14} /></Button>
                     </td>
                   )}
                 </tr>
@@ -280,7 +280,7 @@ export default function DocPlatformSocialLinks() {
 
         <StatusToggle
           label="Status"
-          status={status ? "Active" : "Inactive"}
+          status={status ? "Active" : "Disabled"}
           onChange={(s) => setStatus(s === "Active")}
           tooltip="Enable or disable this document link"
         />

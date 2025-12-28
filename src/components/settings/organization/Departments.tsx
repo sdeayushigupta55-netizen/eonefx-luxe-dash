@@ -12,7 +12,7 @@ interface DepartmentType {
   email: string;
   name: string;
   parent: string;
-  status: "Active" | "Inactive";
+  status: "Active" | "Disabled";
 }
 
 interface DepartmentsProps {
@@ -21,7 +21,7 @@ interface DepartmentsProps {
 }
 const statusClasses: Record<string, string> = {
   Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-  Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+  Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
 };
 export default function Departments({ openAddModal, setOpenAddModal }: DepartmentsProps) {
   const [rows, setRows] = useState<DepartmentType[]>([
@@ -68,7 +68,7 @@ export default function Departments({ openAddModal, setOpenAddModal }: Departmen
       name,
       parent: parent || "-",
       email,
-      status: isActive ? "Active" : "Inactive",
+      status: isActive ? "Active" : "Disabled",
     };
 
     if (editIndex !== null) {
@@ -203,7 +203,7 @@ export default function Departments({ openAddModal, setOpenAddModal }: Departmen
 
                 <StatusToggle
                   label="Hide From Client"
-                  status={isActive ? "Active" : "Inactive"}
+                  status={isActive ? "Active" : "Disabled"}
                   onChange={(s) => setIsActive(s === "Active")}
                   tooltip="Toggle to make this department invisible to clients"
                 />

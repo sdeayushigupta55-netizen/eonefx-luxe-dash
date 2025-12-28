@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, X, AlertTriangle } from "lucide-react";
@@ -15,13 +15,13 @@ import UserPermission from "./UserPermission";
 type RiskTag = {
   name: string;
   details: string;
-  status: "Active" | "Inactive";
+  status: "Active" | "Disabled";
 };
 
 /* ---------------- STATUS STYLES ---------------- */
 const statusClasses: Record<string, string> = {
   Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-  Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+  Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
 };
 
 export default function CustomerSettings() {
@@ -58,12 +58,15 @@ const tabLabels: Record<string, string> = {
       status: "Active",
     },
   ]);
+  const [modalOpen, setModalOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [isActive, setIsActive] = useState(true);
+
+ 
 
   /* -------- FUNCTIONS -------- */
   const openEdit = (index: number) => {
@@ -81,7 +84,7 @@ const tabLabels: Record<string, string> = {
     updated[activeIndex] = {
       name,
       details,
-      status: isActive ? "Active" : "Inactive",
+      status: isActive ? "Active" : "Disabled",
     };
     setRows(updated);
     setEditOpen(false);
@@ -160,6 +163,64 @@ const tabLabels: Record<string, string> = {
               </CardContent>
             </Card>
 
+{/* ADD MODAL */}
+{ modalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+                <div className="w-full max-w-xl rounded-xl bg-card p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">Add Risk Profile Tag</h2>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => setModalOpen(false)}
+                    >
+                      <X />
+                    </Button>
+                  </div>
+                  <div className="space-y-4">
+                    <InputField
+                      label="Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      tooltip="Enter the tag name"
+                      placeholder="Tag Name"
+
+                    />
+                    <InputField
+                      label="Details (optional)"
+                      type="textarea"
+                      value={details}
+                      onChange={(e) => setDetails(e.target.value)}
+                      tooltip="Optional description of the tag"
+                      placeholder="Details"
+                    />
+                    <StatusToggle
+                      label="Status"
+                      status={isActive ? "Active" : "Disabled"}
+                      onChange={(s) => setIsActive(s === "Active")}
+                      tooltip="Enable or disable this tag"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3 mt-6">
+                    <Button variant="destructive" onClick={() => setModalOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={() => {
+                      const updated = [...rows];
+                      updated.push({ name, details, status: isActive ? "Active" : "Disabled" });
+                      setRows(updated);
+                      setModalOpen(false);
+                      setName("");
+                      setDetails("");
+                      setIsActive(true);
+                    }}>
+                      Add Tag
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* EDIT MODAL */}
             {editOpen && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
@@ -227,6 +288,7 @@ const tabLabels: Record<string, string> = {
                 </div>
               </div>
             )}
+
           </>
         );
     }
@@ -238,13 +300,14 @@ const tabLabels: Record<string, string> = {
       <div className="flex flex-wrap gap-3 items-center justify-between">
         <h1 className="text-xl font-semibold capitalize">{tabLabels[activeTab]}</h1>
 
-        {["system-tags", "ib-groups", "customer-groups"].includes(activeTab) && (
+        {["system-tags", "ib-groups", "customer-groups","risk-profile"].includes(activeTab) && (
           <Button
             className="bg-primary"
             onClick={() => {
               if (activeTab === "system-tags") setOpenAddSystemModal(true);
               if (activeTab === "ib-groups") setOpenAddIBModal(true);
               if (activeTab === "customer-groups") setOpenAddCustomerModal(true);
+              if (activeTab === "risk-profile") setModalOpen(true);
             }}
           >
             + Add New
@@ -253,7 +316,7 @@ const tabLabels: Record<string, string> = {
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
         {tabs.map((tab) => (
           <button
             key={tab.key}

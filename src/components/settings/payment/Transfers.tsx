@@ -21,18 +21,18 @@ const tabs = [
   "Misc",
 ];
 const notificationTunesData = [
-  { name: "Bewitched", icon: "🎵", mode: "Play", status: "Inactive" },
-  { name: "Crunchy", icon: "🎷", mode: "Stop", status: "Inactive" },
+  { name: "Bewitched", icon: "🎵", mode: "Play", status: "Disabled" },
+  { name: "Crunchy", icon: "🎷", mode: "Stop", status: "Disabled" },
   { name: "Expert Notification", mode: "Play", icon: "🥁", status: "Active" },
   { name: "knock knock", icon: "🎼", mode: "Play", status: "Active" },
-  { name: "Silencer", icon: "📼", mode: "Play", status: "Inactive" },
-  { name: "Sticky", icon: "📻", mode: "Play", status: "Inactive" },
-  { name: "Vopvoopvvoop", icon: "💿", mode: "Play", status: "Inactive" },
+  { name: "Silencer", icon: "📼", mode: "Play", status: "Disabled" },
+  { name: "Sticky", icon: "📻", mode: "Play", status: "Disabled" },
+  { name: "Vopvoopvvoop", icon: "💿", mode: "Play", status: "Disabled" },
 ];
 
 const statusClasses: Record<string, string> = {
   Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-  Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+  Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
 };
 
 /* -------------------- COMPONENT -------------------- */
@@ -43,7 +43,7 @@ export default function TransferSettings() {
 
      const toggleStatus = (index: number) => {
     const updated = [...tunes];
-    updated[index].status = updated[index].status === "Active" ? "Inactive" : "Active";
+    updated[index].status = updated[index].status === "Active" ? "Disabled" : "Active";
     setTunes(updated);
   };
   const togglePlay = (index: number) => {
@@ -135,7 +135,7 @@ export default function TransferSettings() {
               className={`flex items-center gap-2 ${statusClasses[tune.status]}`}
               onClick={() => toggleStatus(index)}
             >
-              {tune.status === "Active" ? "✔ Active" : "✖ Inactive"}
+              {tune.status === "Active" ? "✔ Active" : "✖ Disabled"}
             </Button>
           </div>
         </div>

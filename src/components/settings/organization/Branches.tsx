@@ -29,7 +29,7 @@ interface Branch {
   code: string;
   users: number;
   staff: number;
-  status: "Active" | "Inactive";
+  status: "Active" | "Disabled";
 }
 
 interface BranchesProps {
@@ -70,7 +70,7 @@ export default function Branches({
 
   const statusClasses: Record<string, string> = {
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-    Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+    Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
   };
   /* ------------------ Add Branch ------------------ */
   const handleAddBranch = () => {
@@ -81,7 +81,7 @@ export default function Branches({
 
     setBranches([
       ...branches,
-      { name: branchName, code: branchCode, users: 0, staff: 0, status: isActive ? "Active" : "Inactive" },
+      { name: branchName, code: branchCode, users: 0, staff: 0, status: isActive ? "Active" : "Disabled" },
     ]);
 
     setOpenAddModal(false);
@@ -110,7 +110,7 @@ export default function Branches({
         ...updated[editIndex],
         name: branchName,
         code: branchCode,
-        status: isActive ? "Active" : "Inactive",
+        status: isActive ? "Active" : "Disabled",
       };
       setBranches(updated);
     }

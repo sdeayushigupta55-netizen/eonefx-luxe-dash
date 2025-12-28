@@ -126,7 +126,7 @@ export default function Company({ defaultTab = "company" }: CompanyProps) {
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
         {tabs.map((tab) => (
           <button
             key={tab.key}

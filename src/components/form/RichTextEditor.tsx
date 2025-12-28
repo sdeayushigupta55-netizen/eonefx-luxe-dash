@@ -1,4 +1,3 @@
-import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -49,8 +48,6 @@ export default function RichTextEditor({
     <div>
      <label className="flex items-center gap-2 ">
           {label}
-          
-
           {tooltip && (
             <Tooltip>
               <TooltipTrigger asChild>

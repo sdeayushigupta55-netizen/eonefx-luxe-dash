@@ -81,7 +81,7 @@ export default function OrganizationSettings({
 
       {/* RIGHT SIDE CONTENT */}
       <div className="flex-1 md:pl-6 w-full">
-        <div className="border border-border rounded-md p-4 bg-card w-full overflow-auto">
+        <div className="border border-border rounded-md p-4 bg-card w-full overflow-auto ">
           {renderContent()}
         </div>
       </div>

@@ -58,11 +58,11 @@ export default function Country() {
   };
 
   return (
-    <div className=" text-white">
-      <h1 className="text-2xl font-semibold mb-6">Countries</h1>
+    <div className="space-y-6">
+      <h1 className="text-xl font-semibold capitalize">Countries</h1>
 
       {/* Tabs */}
-      <div className="flex gap-3 mb-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
         {["All Countries", "Blacklist Countries"].map((tab) => (
           <button
             key={tab}
@@ -85,15 +85,15 @@ export default function Country() {
           {/* ---------------- ALL COUNTRIES TABLE ---------------- */}
           {activeTab === "All Countries" && (
             <table className="w-full text-left text-gray-300">
-              <thead>
+              <thead className="bg-muted/60 text-sm">
                 <tr>
-                  <th className="p-3">ID</th>
-                  <th className="p-3">COUNTRY</th>
-                  <th className="p-3">CODE</th>
-                  <th className="p-3">ISO2</th>
-                  <th className="p-3">ISO3</th>
-                  <th className="p-3">CURRENCY</th>
-                  <th className="p-3">STATUS</th>
+                  <th className="px-3 py-4">ID</th>
+                  <th className="px-3 py-4">COUNTRY</th>
+                  <th className="px-3 py-4">CODE</th>
+                  <th className="px-3 py-4">ISO2</th>
+                  <th className="px-3 py-4">ISO3</th>
+                  <th className="px-3 py-4">CURRENCY</th>
+                  <th className="px-3 py-4">STATUS</th>
                 </tr>
               </thead>
               <tbody>
@@ -117,11 +117,11 @@ export default function Country() {
           {/* ---------------- BLACKLIST TABLE ---------------- */}
           {activeTab === "Blacklist Countries" && (
             <table className="w-full text-left text-gray-300">
-              <thead>
+              <thead className="bg-muted/60 text-sm">
                 <tr>
-                  <th className="p-3">COUNTRY</th>
-                  <th className="p-3">STATUS</th>
-                  <th className="p-3">ACTION</th>
+                  <th className="px-3 py-4">COUNTRY</th>
+                  <th className="px-3 py-4">STATUS</th>
+                  <th className="px-3 py-4">ACTION</th>
                 </tr>
               </thead>
               <tbody>

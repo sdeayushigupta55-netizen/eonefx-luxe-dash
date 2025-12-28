@@ -252,9 +252,10 @@ export default function IbGroups({
                   <td className="p-3">
                     <div className="inline-flex flex-wrap gap-2">
                       {ibgroup.rebaterules.map((rule, i) => (
-                        <span key={i} className="inline-block border border-white rounded px-2 py-0.5">
+                        
+                        <Badge key={i} variant="outline" className="rounded-md px-2 py-0.5 border border-border">
                           {rule}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   </td>
@@ -262,9 +263,9 @@ export default function IbGroups({
                   <td className="p-3">
                     <div className="inline-flex flex-wrap gap-2">
                       {ibgroup.accounttypes.map((type, i) => (
-                        <span key={i} className="inline-block border border-white rounded px-2 py-0.5">
+                       <Badge key={i} variant="outline" className="rounded-md px-2 py-0.5">
                           {type}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   </td>

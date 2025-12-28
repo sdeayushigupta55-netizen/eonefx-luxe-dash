@@ -12,7 +12,7 @@ import { SelectField } from "@/components/form/SelectField";
 interface DesignationType {
   name: string;
   parent: string;
-  status: "Active" | "Inactive";
+  status: "Active" | "Disabled";
 }
 
 interface DesignationsProps {
@@ -21,7 +21,7 @@ interface DesignationsProps {
 }
 const statusClasses: Record<string, string> = {
   Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-  Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+  Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
 };
 
 export default function Designations({
@@ -70,7 +70,7 @@ export default function Designations({
     const payload: DesignationType = {
       name,
       parent: parent || "-",
-      status: isActive ? "Active" : "Inactive",
+      status: isActive ? "Active" : "Disabled",
     };
 
     if (editIndex !== null) {

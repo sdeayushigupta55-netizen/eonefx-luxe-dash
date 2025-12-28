@@ -20,7 +20,7 @@ const tabs = ["Bonuses", "Setting"];
 
 const statusClasses: Record<string, string> = {
   Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
-  Inactive: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+  Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
 };
 
 /* -------------------- COMPONENT -------------------- */
@@ -43,7 +43,7 @@ export default function DepositMethods() {
     startDate: "2024-01-01",
     endDate: "2024-12-31",
     accountTypes: "Standard, Pro",
-    status: i === 2 ? "Active" : "Inactive",
+    status: i === 2 ? "Active" : "Disabled",
   }));
   const ITEMS_PER_PAGE = 10;
   const [page, setPage] = useState(1);
