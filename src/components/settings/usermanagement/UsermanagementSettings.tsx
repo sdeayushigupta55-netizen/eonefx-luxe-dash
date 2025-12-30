@@ -3,6 +3,7 @@ import Customer from "./Customer";
 import RoleAndPermission from "./RoleAndPermission";
 import KYCandCompliance from "./KYCandCompliance";
 import LeadSettings from "./LeadSetting";
+import UserRankings from "./UserRankings";
 // import UserRankings from "./UserRankings";
 
 interface UserManagementSettingsProps {
@@ -40,8 +41,8 @@ export default function UserManagementSettings({
       return <KYCandCompliance />;
     case "leadsettings":
       return <LeadSettings />;
-    // case "userrankings":
-    //   return <UserRankings />;
+    case "userrankings":
+      return <UserRankings />;
 
     default:
       return null;

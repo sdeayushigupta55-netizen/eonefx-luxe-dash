@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, List, X, Info } from "lucide-react";
+import { Pencil, Trash2, List, X, AlertTriangle } from "lucide-react";
 import { InputField } from "@/components/form/InputField";
 import { SelectField } from "@/components/form/SelectField";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { SketchPicker } from "react-color";
 import { ColorInputWithPopover } from "@/components/form/ColorInputWithPopover";
-import { StatusToggle } from "@/components/form/Status";
 
-/* ================= TYPES ================= */
+import { Switch } from "@/components/ui/switch";
 
 type LeadSource = {
   id: number;
@@ -27,8 +24,8 @@ type Pipeline = {
   id: number;
   name: string;
   stages: Stage[];
-  pipelinecolor: { background: string}
-  
+  pipelinecolor: { background: string }
+  default?: boolean;
 };
 
 const tabs = [
@@ -36,6 +33,41 @@ const tabs = [
   { key: "pipeline", label: "Pipeline" },
 ];
 
+// --- Reusable Delete Modal ---
+function DeleteModal({
+  open,
+  setOpen,
+  title,
+  description,
+  onConfirm,
+}: {
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  title: string;
+  description?: string;
+  onConfirm: () => void;
+}) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+      <div className="w-full max-w-md rounded-xl bg-card p-8 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-900/30">
+          <AlertTriangle className="text-red-500" size={28} />
+        </div>
+        <h2 className="text-2xl font-semibold mb-2">{title || "Are You Sure?"}</h2>
+        {description && <p className="mb-8">{description}</p>}
+        <div className="flex justify-center gap-4">
+          <Button variant="outline" onClick={onConfirm}>
+            Confirm
+          </Button>
+          <Button variant="destructive" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
 export default function LeadSettings() {
   const [activeTab, setActiveTab] = useState("lead-source");
 
@@ -78,21 +110,27 @@ export default function LeadSettings() {
   ]);
 
   const [expandedPipeline, setExpandedPipeline] = useState<number | null>(null);
-  
 
   // Modal states
   const [openSourceModal, setOpenSourceModal] = useState(false);
   const [openPipelineModal, setOpenPipelineModal] = useState(false);
   const [openStageModal, setOpenStageModal] = useState(false);
 
-  const [sourceName, setSourceName] = useState("");
+  // For update modals
   const [editId, setEditId] = useState<number | null>(null);
+  const [editPipelineId, setEditPipelineId] = useState<number | null>(null);
+  const [editStage, setEditStage] = useState<{ pipelineId: number; stage: Stage } | null>(null);
 
-  // Pipeline modal state
+  // For delete modal
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteType, setDeleteType] = useState<"lead-source" | "pipeline" | "stage" | null>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleteStageInfo, setDeleteStageInfo] = useState<{ pipelineId: number; stageId: number } | null>(null);
+
+  // Form states
+  const [sourceName, setSourceName] = useState("");
   const [pipelineName, setPipelineName] = useState("");
   const [pipelineColor, setPipelineColor] = useState("#000000");
-const [color, setColor] = useState("#ff0000");
-  // Stage modal state
   const [stagePipelineId, setStagePipelineId] = useState<number | "">("");
   const [stageName, setStageName] = useState("");
   const [stageColor, setStageColor] = useState("#ff0000");
@@ -105,26 +143,84 @@ const [color, setColor] = useState("#ff0000");
   };
 
   const handleAddPipeline = () => {
+    setEditPipelineId(null);
     setPipelineName("");
     setPipelineColor("#000000");
     setOpenPipelineModal(true);
   };
 
   const handleAddStage = () => {
+    setEditStage(null);
     setStagePipelineId(pipelines.length > 0 ? pipelines[0].id : "");
     setStageName("");
     setStageColor("#000000");
     setOpenStageModal(true);
   };
 
+  // Lead Source Edit
   const handleEdit = (source: LeadSource) => {
     setEditId(source.id);
     setSourceName(source.name);
     setOpenSourceModal(true);
   };
 
-  const handleDelete = (id: number) => {
-    setLeadSources((prev) => prev.filter((s) => s.id !== id));
+  // Pipeline Edit
+  const handleEditPipeline = (pipeline: Pipeline) => {
+    setEditPipelineId(pipeline.id);
+    setPipelineName(pipeline.name);
+    setPipelineColor(pipeline.pipelinecolor.background);
+    setOpenPipelineModal(true);
+  };
+
+  // Stage Edit
+  const handleEditStage = (pipelineId: number, stage: Stage) => {
+    setEditStage({ pipelineId, stage });
+    setStagePipelineId(pipelineId);
+    setStageName(stage.name);
+    setStageColor(stage.color);
+    setOpenStageModal(true);
+  };
+
+  // Delete handlers
+  const handleDeleteLeadSourceClick = (id: number) => {
+    setDeleteType("lead-source");
+    setDeleteId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeletePipelineClick = (id: number) => {
+    setDeleteType("pipeline");
+    setDeleteId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteStageClick = (pipelineId: number, stageId: number) => {
+    setDeleteType("stage");
+    setDeleteStageInfo({ pipelineId, stageId });
+    setDeleteModalOpen(true);
+  };
+
+  // Confirm delete
+  const handleConfirmDelete = () => {
+    if (deleteType === "lead-source" && deleteId !== null) {
+      setLeadSources((prev) => prev.filter((s) => s.id !== deleteId));
+    }
+    if (deleteType === "pipeline" && deleteId !== null) {
+      setPipelines((prev) => prev.filter((p) => p.id !== deleteId));
+    }
+    if (deleteType === "stage" && deleteStageInfo) {
+      setPipelines((prev) =>
+        prev.map((p) =>
+          p.id === deleteStageInfo.pipelineId
+            ? { ...p, stages: p.stages.filter((s) => s.id !== deleteStageInfo.stageId) }
+            : p
+        )
+      );
+    }
+    setDeleteModalOpen(false);
+    setDeleteId(null);
+    setDeleteType(null);
+    setDeleteStageInfo(null);
   };
 
   // Save handlers
@@ -149,46 +245,73 @@ const [color, setColor] = useState("#ff0000");
 
   const handleSavePipeline = () => {
     if (!pipelineName.trim()) return;
-    setPipelines((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        name: pipelineName,
-        stages: [],
-        pipelinecolor: { background: pipelineColor}
-      },
-    ]); 
+    if (editPipelineId !== null) {
+      setPipelines((prev) =>
+        prev.map((p) =>
+          p.id === editPipelineId
+            ? { ...p, name: pipelineName, pipelinecolor: { background: pipelineColor } }
+            : p
+        )
+      );
+    } else {
+      setPipelines((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          name: pipelineName,
+          stages: [],
+          pipelinecolor: { background: pipelineColor }
+        },
+      ]);
+    }
     setOpenPipelineModal(false);
     setPipelineName("");
     setPipelineColor("#000000");
+    setEditPipelineId(null);
   };
 
   const handleSaveStage = () => {
     if (!stageName.trim() || !stagePipelineId) return;
-    setPipelines((prev) =>
-      prev.map((p) =>
-        p.id === stagePipelineId
-          ? {
-              ...p,
-              stages: [
-                ...p.stages,
-                {
-                  id: Date.now(),
-                  name: stageName,
-                  color: stageColor,
-                },
-              ],
-            }
-          : p
-      )
-    );
+    if (editStage) {
+      setPipelines((prev) =>
+        prev.map((p) =>
+          p.id === editStage.pipelineId
+            ? {
+                ...p,
+                stages: p.stages.map((s) =>
+                  s.id === editStage.stage.id
+                    ? { ...s, name: stageName, color: stageColor }
+                    : s
+                ),
+              }
+            : p
+        )
+      );
+    } else {
+      setPipelines((prev) =>
+        prev.map((p) =>
+          p.id === stagePipelineId
+            ? {
+                ...p,
+                stages: [
+                  ...p.stages,
+                  {
+                    id: Date.now(),
+                    name: stageName,
+                    color: stageColor,
+                  },
+                ],
+              }
+            : p
+        )
+      );
+    }
     setOpenStageModal(false);
     setStagePipelineId("");
     setStageName("");
     setStageColor("#000000");
+    setEditStage(null);
   };
-
- 
 
   return (
     <div className="space-y-6">
@@ -217,10 +340,9 @@ const [color, setColor] = useState("#ff0000");
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 rounded-md border transition
-              ${
-                activeTab === tab.key
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted border-border hover:bg-muted/70"
+              ${activeTab === tab.key
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted border-border hover:bg-muted/70"
               }`}
           >
             {tab.label}
@@ -261,8 +383,8 @@ const [color, setColor] = useState("#ff0000");
                         </Button>
                         <Button
                           size="icon"
-                          variant="outline"
-                          onClick={() => handleDelete(source.id)}
+                          variant="destructive"
+                          onClick={() => handleDeleteLeadSourceClick(source.id)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -319,7 +441,7 @@ const [color, setColor] = useState("#ff0000");
         </div>
       )}
 
-       {/* ================= PIPELINE TAB ================= */}
+      {/* ================= PIPELINE TAB ================= */}
       {activeTab === "pipeline" && (
         <div className="space-y-6">
           {pipelines.map((pipeline) => (
@@ -331,14 +453,27 @@ const [color, setColor] = useState("#ff0000");
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full" style={pipeline.pipelinecolor} />
                       <h2 className="font-semibold">{pipeline.name}</h2>
-                      <Pencil className="w-4 h-4 cursor-pointer text-muted-foreground" />
+                      <Pencil
+                        className="w-4 h-4 cursor-pointer text-muted-foreground"
+                        onClick={() => handleEditPipeline(pipeline)}
+                      />
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {pipeline.stages.length} Deal Stages
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
-                    
+                  <Switch
+  checked={!!pipeline.default}
+  onCheckedChange={() => {
+    setPipelines(pipelines.map(p =>
+      p.id === pipeline.id
+        ? { ...p, default: !p.default }
+        : { ...p, default: false }
+    ));
+  }}
+  
+/>
                     <div className="flex items-center gap-2 text-sm">
                       Default
                     </div>
@@ -354,6 +489,13 @@ const [color, setColor] = useState("#ff0000");
                       }
                     >
                       <List className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="destructive"
+                      onClick={() => handleDeletePipelineClick(pipeline.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -403,10 +545,18 @@ const [color, setColor] = useState("#ff0000");
                             </td>
                             <td className="px-4 py-3">
                               <div className="flex justify-end gap-2">
-                                <Button size="icon" variant="outline">
+                                <Button
+                                  size="icon"
+                                  variant="outline"
+                                  onClick={() => handleEditStage(pipeline.id, stage)}
+                                >
                                   <Pencil className="w-4 h-4" />
                                 </Button>
-                                <Button size="icon" variant="outline">
+                                <Button
+                                  size="icon"
+                                  variant="destructive"
+                                  onClick={() => handleDeleteStageClick(pipeline.id, stage.id)}
+                                >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
                               </div>
@@ -423,13 +573,15 @@ const [color, setColor] = useState("#ff0000");
         </div>
       )}
 
-      {/* ================= ADD PIPELINE MODAL ================= */}
+      {/* ================= ADD / EDIT PIPELINE MODAL ================= */}
       {openPipelineModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <Card className="w-full max-w-md">
             <CardContent className="p-6 space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Add New Pipeline</h2>
+                <h2 className="text-lg font-semibold">
+                  {editPipelineId ? "Update Pipeline" : "Add New Pipeline"}
+                </h2>
                 <Button
                   size="icon"
                   variant="ghost"
@@ -448,11 +600,11 @@ const [color, setColor] = useState("#ff0000");
                   tooltip="Enter a name for the pipeline (e.g., Sales, Onboarding)"
                 />
                 <ColorInputWithPopover
-                value={pipelineColor}
-                onChange={setPipelineColor}
-                label="Label Color"
-                tooltip="Choose a color to visually represent this pipeline"
-              />
+                  value={pipelineColor}
+                  onChange={setPipelineColor}
+                  label="Label Color"
+                  tooltip="Choose a color to visually represent this pipeline"
+                />
               </div>
               <div className="flex justify-end gap-3">
                 <Button
@@ -461,20 +613,24 @@ const [color, setColor] = useState("#ff0000");
                 >
                   Cancel
                 </Button>
-                <Button onClick={handleSavePipeline}>Save</Button>
+                <Button onClick={handleSavePipeline}>
+                  {editPipelineId ? "Update" : "Save"}
+                </Button>
               </div>
             </CardContent>
           </Card>
         </div>
       )}
 
-      {/* ================= ADD DEAL STAGE MODAL ================= */}
+      {/* ================= ADD / EDIT DEAL STAGE MODAL ================= */}
       {openStageModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <Card className="w-full max-w-md">
             <CardContent className="p-6 space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Add New Deal Stage</h2>
+                <h2 className="text-lg font-semibold">
+                  {editStage ? "Update Deal Stage" : "Add New Deal Stage"}
+                </h2>
                 <Button
                   size="icon"
                   variant="ghost"
@@ -494,6 +650,7 @@ const [color, setColor] = useState("#ff0000");
                   }))}
                   placeholder="Select pipeline"
                   tooltip="Select the pipeline to add this stage to"
+                  // disabled={!!editStage}
                 />
                 <InputField
                   label="Stage Name"
@@ -503,15 +660,14 @@ const [color, setColor] = useState("#ff0000");
                   className="w-full"
                   tooltip="Enter a name for the deal stage"
                 />
-              <div className="space-y-2">
-               
-                <ColorInputWithPopover
-                value={stageColor}
-                onChange={setStageColor}
-                label="Label Color"
-                tooltip="Choose a color to visually represent this stage"
-              />
-              </div>
+                <div className="space-y-2">
+                  <ColorInputWithPopover
+                    value={stageColor}
+                    onChange={setStageColor}
+                    label="Label Color"
+                    tooltip="Choose a color to visually represent this stage"
+                  />
+                </div>
               </div>
               <div className="flex justify-end gap-3">
                 <Button
@@ -520,14 +676,37 @@ const [color, setColor] = useState("#ff0000");
                 >
                   Cancel
                 </Button>
-                <Button onClick={handleSaveStage}>Save</Button>
+                <Button onClick={handleSaveStage}>
+                  {editStage ? "Update" : "Save"}
+                </Button>
               </div>
             </CardContent>
           </Card>
         </div>
       )}
 
-     
+      {/* ================= DELETE MODAL (REUSABLE) ================= */}
+        <DeleteModal
+      open={deleteModalOpen}
+      setOpen={setDeleteModalOpen}
+      title={
+        deleteType === "lead-source"
+          ? "Are you sure you want to delete this lead source?"
+          : deleteType === "pipeline"
+          ? "Are you sure you want to delete this pipeline?"
+          : "Are you sure you want to delete this stage?"
+      }
+      description={
+        deleteType === "lead-source" && deleteId !== null
+          ? `You want to delete "${leadSources.find(s => s.id === deleteId)?.name}" Lead Source?`
+          : deleteType === "pipeline" && deleteId !== null
+          ? `You want to delete "${pipelines.find(p => p.id === deleteId)?.name}" Pipeline?`
+          : deleteType === "stage" && deleteStageInfo
+          ? `You want to delete "${pipelines.find(p => p.id === deleteStageInfo.pipelineId)?.stages.find(s => s.id === deleteStageInfo.stageId)?.name}" Stage?`
+          : ""
+      }
+      onConfirm={handleConfirmDelete}
+    />
     </div>
   );
 }
