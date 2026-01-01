@@ -17,17 +17,19 @@ interface BaseProps {
   required?: boolean;
   error?: string;
   className?: string;
+  prefix?: React.ReactNode;
+  suffix?: React.ReactNode;
 }
 
 /* ---------------- INPUT PROPS ---------------- */
 type InputProps = BaseProps &
-  React.InputHTMLAttributes<HTMLInputElement> & {
+  Omit<React.InputHTMLAttributes<HTMLInputElement>, 'prefix' | 'suffix'> & {
     type?: Exclude<string, "textarea">;
   };
 
 /* ---------------- TEXTAREA PROPS ---------------- */
 type TextareaProps = BaseProps &
-  React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'prefix' | 'suffix'> & {
     type: "textarea";
   };
 
@@ -45,10 +47,20 @@ export const InputField = React.forwardRef<
     error,
     className,
     type,
+    prefix,
+    suffix,
     ...rest
   } = props;
 
   const isTextarea = type === "textarea";
+
+  // Remove prefix and suffix from rest if they exist (they're not valid input/textarea props)
+  const cleanedRest = (() => {
+    const { prefix: _, suffix: __, ...cleaned } = rest as any;
+    return cleaned;
+  })();
+
+  
 
   return (
     <div className="space-y-1">
@@ -79,18 +91,32 @@ export const InputField = React.forwardRef<
             error && "border-red-500 focus-visible:ring-red-500",
             className
           )}
-          {...(rest as TextareaProps)}
+          {...(cleanedRest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />
       ) : (
-        <Input
-          ref={ref as React.Ref<HTMLInputElement>}
-          type={type}
-          className={cn(
-            error && "border-red-500 focus-visible:ring-red-500",
-            className
+        <div className="relative flex items-center">
+          {prefix && (
+            <span className="absolute left-3 text-sm text-muted-foreground pointer-events-none">
+              {prefix}
+            </span>
           )}
-          {...(rest as InputProps)}
-        />
+          <Input
+            ref={ref as React.Ref<HTMLInputElement>}
+            type={type}
+            className={cn(
+              error && "border-red-500 focus-visible:ring-red-500",
+              prefix && "pl-24",
+              suffix && "pr-16",
+              className
+            )}
+            {...cleanedRest}
+          />
+          {suffix && (
+            <div className="absolute right-3 text-sm text-muted-foreground">
+              {suffix}
+            </div>
+          )}
+        </div>
       )}
 
       {/* ERROR */}

@@ -6,11 +6,8 @@ import { cn } from "@/lib/utils";
 
 import { Play, Pause, Info } from "lucide-react";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { InputField } from "@/components/form/InputField";
+import { StatusToggle } from "@/components/form/Status";
 
 /* -------------------- TABS -------------------- */
 
@@ -39,11 +36,13 @@ const statusClasses: Record<string, string> = {
 
 export default function TransferSettings() {
   const [activeTab, setActiveTab] = useState("Internal Transfers");
-    const [tunes, setTunes] = useState(notificationTunesData);
+  const [tunes, setTunes] = useState(notificationTunesData);
+  const [formStatus, setFormStatus] = useState<"Active" | "Disabled">("Active");
 
-     const toggleStatus = (index: number) => {
+  const toggleStatus = (index: number) => {
     const updated = [...tunes];
-    updated[index].status = updated[index].status === "Active" ? "Disabled" : "Active";
+    updated[index].status =
+      updated[index].status === "Active" ? "Disabled" : "Active";
     setTunes(updated);
   };
   const togglePlay = (index: number) => {
@@ -56,19 +55,49 @@ export default function TransferSettings() {
   const renderInternalTransfers = () => (
     <div className="rounded-xl border border-border bg-card p-6 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <InputField label="Min Amount" defaultValue="5" />
-        <InputField label="Max Amount" defaultValue="100000" />
+        <InputField
+          label="Min Amount"
+          defaultValue="5"
+          tooltip="The minimum value a user can transfer internally"
+          type="number"
+        />
+        <InputField
+          label="Max Amount"
+          defaultValue="100000"
+          tooltip="The maximum value allowed for a single internal transfer"
+          type="number"
+        />
 
-        <InputWithSuffix label="Transfer Charge" defaultValue="1" />
+
+        <InputField
+          label="Transfer Charge"
+          defaultValue="1"
+          type="number"
+          tooltip="Fee applied on each transfer (in % or fixed amount)"
+          suffix={
+            <select name="chargeType" className="outline-none bg-transparent">
+              <option value="percentage">%</option>
+              <option value="fixed">$</option>
+            </select>
+          }
+        />
         <InputField
           label="Internal Transactions Daily Limit"
           defaultValue="50"
+          tooltip="Maximum number of internal transfers allowed per user per day"
+          type="number"
         />
       </div>
 
       <div className="flex items-center gap-3 pt-2">
-        <Switch />
-        <LabelWithInfo label="Enable Transfer" />
+
+        <StatusToggle
+          label="Enable Transfer"
+          status={formStatus}
+          onChange={setFormStatus}
+          tooltip="Toggle to activate or deactivate internal transfer functionality"
+
+        />
       </div>
 
       <Button className="mt-6">Save Changes</Button>
@@ -79,20 +108,60 @@ export default function TransferSettings() {
   const renderExternalTransfers = () => (
     <div className="rounded-xl border border-border bg-card p-6 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <InputField label="Min Amount" defaultValue="1" />
-        <InputField label="Max Amount" defaultValue="90000" />
+        <InputField
+          label="Min Amount"
+          defaultValue="1"
+          tooltip="The minimum value a user can transfer externally"
+          type="number"
+        />
+        <InputField
+          label="Max Amount"
+          defaultValue="90000"
+          tooltip="Maximum amount a user can send via external transfer"
+          type="number"
+        />
 
-        <InputWithSuffix label="Transfer Charge" defaultValue="5" />
+
+        <InputField
+          label="Transfer Charge"
+          defaultValue="1"
+          type="number"
+          tooltip="Fee applied on each transfer (in % or fixed amount)"
+          suffix={
+            <select name="chargeType" className="outline-none bg-transparent">
+              <option value="percentage">%</option>
+              <option value="fixed">$</option>
+            </select>
+          }
+        />
         <InputField
           label="External Transactions Daily Limit"
           defaultValue="15"
+          tooltip="Maximum number of external transfers allowed per user per day"
+          type="number"
         />
       </div>
 
       <div className="flex flex-wrap gap-10 pt-2">
-        <Toggle label="Enable Transfer" />
-        <Toggle label="Automatic Approve" />
-        <Toggle label="Transfer Purpose" />
+        <StatusToggle
+          label="Enable Transfer"
+          status={formStatus}
+          onChange={setFormStatus}
+          tooltip="Toggle to activate or deactivate external transfer functionality"
+        />
+        <StatusToggle
+          label="Automatic Approve"
+          tooltip="If enabled, transfer requests are approved automatically without manual review"
+          status={formStatus}
+          onChange={setFormStatus}
+        />
+
+        <StatusToggle
+          label="Transfer Purpose"
+          tooltip="When enabled, users must provide a reason for the transfer"
+          status={formStatus}
+          onChange={setFormStatus}
+        />
       </div>
 
       <Button className="mt-6">Save Changes</Button>
@@ -145,57 +214,65 @@ export default function TransferSettings() {
 
   /* -------------------- MISC -------------------- */
   const renderMisc = () => (
-  <div className="rounded-xl border border-border bg-card p-6 space-y-8">
+    <div className="rounded-xl border border-border bg-card p-6 space-y-8">
+      {/* GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Wallet Exchange Charge */}
+        <InputField
+          label="Wallet Exchange Charge"
+          defaultValue="1"
+          type="number"
 
-    {/* GRID */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          suffix={
+            <select name="chargeType" className="outline-none bg-transparent">
+              <option value="percentage">%</option>
+              <option value="fixed">$</option>
+            </select>
+          }
+        />
 
-      {/* Pending Withdraw Limit */}
+        {/* Wallet Exchange Daily Limit */}
+        <InputField
+          label="Wallet Exchange Daily Limit:"
+          defaultValue="1"
+          suffix="USD"
+          type="number"
+
+        />
+
+        {/* Send Money Daily Limit */}
+        <InputField
+          label="Send Money Daily Limit:"
+          defaultValue="100"
+          type="number"
+          suffix="USA"
+        />
+
+        {/* Withdraw Daily Limit */}
+        <InputField
+          label="Withdraw Daily Limit:"
+          defaultValue="100000"
+          type="number"
+          suffix="USA"
+        />
+
+        {/* Investment Cancellation Daily Limit */}
+
+        <InputField
+          label="Investment Cancellation Daily Limit:"
+          defaultValue="7"
+          type="number"
+          suffix="USA"
+        />
+
+      </div>
+
+      {/* SAVE BUTTON */}
       <div>
-        <LabelWithInfo label="Pending Withdraw Limit" />
-        <Input type="number" defaultValue={3} />
+        <Button className="px-8">Save Changes</Button>
       </div>
-
-      {/* Min IB Wallet Withdraw Limit */}
-      <div>
-        <LabelWithInfo label="Min IB Wallet Withdraw Limit" />
-        <Input type="number" defaultValue={10} />
-      </div>
-
-      {/* Withdraw OTP Expires */}
-      <div>
-        <LabelWithInfo label="Withdraw OTP Expires (In Minutes)" />
-        <Input type="number" defaultValue={5} />
-      </div>
-
-      {/* Withdraw OTP Toggle */}
-      <div className="flex items-center justify-between mt-6">
-        <LabelWithInfo label="Withdraw OTP" />
-        <Switch />
-      </div>
-
-      {/* User Withdraw Account Creation OTP */}
-      <div className="flex items-center justify-between">
-        <LabelWithInfo label="User Withdraw Account Creation OTP" />
-        <Switch />
-      </div>
-
-      {/* Withdraw Account Manual Approval */}
-      <div className="flex items-center justify-between">
-        <LabelWithInfo label="Withdraw Account Manual Approval" />
-        <Switch />
-      </div>
-
     </div>
-
-    {/* SAVE BUTTON */}
-    <div>
-      <Button className="px-8">Save Changes</Button>
-    </div>
-
-  </div>
-);
-
+  );
 
   /* -------------------- TAB CONTENT -------------------- */
   const renderTabContent = () => {
@@ -217,19 +294,17 @@ export default function TransferSettings() {
 
   return (
     <div className="space-y-6">
-     
-       {/* Dynamic Title */}
-        <h1 className="text-xl font-semibold">
-          {activeTab === "Internal Transfers" && "Transfer's Settings"}
-          {activeTab === "External Transfers" && "Transfer's Settings"}
-          
-          {activeTab === "Notification Tune" && "Notification Tune Settings"}
-          {activeTab === "Misc" && "Misc Settings"}
-        </h1>
-      
+      {/* Dynamic Title */}
+      <h1 className="text-xl font-semibold">
+        {activeTab === "Internal Transfers" && "Transfer's Settings"}
+        {activeTab === "External Transfers" && "Transfer's Settings"}
+
+        {activeTab === "Notification Tune" && "Notification Tune Settings"}
+        {activeTab === "Misc" && "Misc Settings"}
+      </h1>
 
       {/* TABS */}
-      <div className="flex gap-3">
+      <div  className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
         {tabs.map((tab) => (
           <Button
             key={tab}
@@ -251,62 +326,3 @@ export default function TransferSettings() {
   );
 }
 
-/* -------------------- REUSABLE UI -------------------- */
-
-function InputField({
-  label,
-  defaultValue,
-}: {
-  label: string;
-  defaultValue?: string;
-}) {
-  return (
-    <div className="space-y-2">
-      <LabelWithInfo label={label} />
-      <Input defaultValue={defaultValue} />
-    </div>
-  );
-}
-
-function InputWithSuffix({
-  label,
-  defaultValue,
-}: {
-  label: string;
-  defaultValue?: string;
-}) {
-  return (
-    <div className="space-y-2">
-      <LabelWithInfo label={label} />
-      <div className="relative">
-        <Input defaultValue={defaultValue} className="pr-10" />
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-          %
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function Toggle({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <Switch />
-      <LabelWithInfo label={label} />
-    </div>
-  );
-}
-
-function LabelWithInfo({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-1 text-sm font-medium">
-      {label}
-      <Tooltip>
-        <TooltipTrigger>
-          <Info size={14} className="text-muted-foreground cursor-pointer" />
-        </TooltipTrigger>
-        <TooltipContent>{label}</TooltipContent>
-      </Tooltip>
-    </div>
-  );
-}

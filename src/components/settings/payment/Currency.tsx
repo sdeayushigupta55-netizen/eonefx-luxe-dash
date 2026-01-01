@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 interface CurrencyRate {
   id: number;
   country: string;
@@ -47,14 +48,15 @@ export default function Currency() {
       </h1>
 
       {/* TABLE */}
-      <div className="rounded-lg border border-border bg-card overflow-hidden">
+      <Card >
+      <CardContent className="p-0 overflow-x-auto">
         <table className="w-full text-left">
-          <thead className="border-b border-border">
-            <tr className="text-muted-foreground text-sm">
-              <th className="p-4 w-20">ID</th>
+          <thead className="bg-muted/60 text-sm">
+            <tr>
+              <th className="p-4" >ID</th>
               <th className="p-4">COUNTRY</th>
-              <th className="p-4 text-center">CURRENCY CODE</th>
-              <th className="p-4 text-right">RATE</th>
+              <th className="p-4 ">CURRENCY CODE</th>
+              <th className="p-4 ">RATE</th>
             </tr>
           </thead>
 
@@ -77,7 +79,8 @@ export default function Currency() {
           </tbody>
         </table>
 
-      </div>
+      </CardContent>
+      </Card>
 
         {/* PAGINATION */}
         <div className="flex items-center justify-between px-4 py-3 text-sm text-muted-foreground">

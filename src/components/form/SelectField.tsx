@@ -69,7 +69,7 @@ export const SelectField = ({
           {tooltip && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Info className="w-4 h-4 cursor-pointer opacity-70" />
+                <Info className="w-4 h-4 cursor-pointer" />
               </TooltipTrigger>
               <TooltipContent className="whitespace-pre-line break-words max-w-xs">
                 {tooltip}
@@ -116,7 +116,7 @@ export const SelectField = ({
        {tooltip && (
   <Tooltip>
     <TooltipTrigger asChild>
-      <Info className="w-4 h-4 cursor-pointer opacity-70" />
+      <Info className="w-4 h-4 cursor-pointer" />
     </TooltipTrigger>
     <TooltipContent className="whitespace-pre-line break-words max-w-xs">
       {tooltip}

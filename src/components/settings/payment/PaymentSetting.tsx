@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-import DepositMethods from "./DepositMethods";
-import WithdrawMethods from "./WithdrawMethods";
+import DepositMethods from "./DepositMethods/depositmethodsindex"
+import WithdrawMethods from "./WithdrawMethods/WithdrawMethodsindex";
 import Currency from "./Currency";
 import Transfers from "./Transfers";
 import Bonuses from "./Bonuses";
@@ -36,7 +36,6 @@ export default function PaymentSettings({
                 return <DepositMethods />;
 
             case "withdrawmethods":
-
                 return <WithdrawMethods />;
                 case "bonuses":
                 return <Bonuses />;
