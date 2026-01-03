@@ -46,7 +46,16 @@ export default function RichTextEditor({
 }: RichTextEditorProps) {
   return (
     <div>
-     <label className="flex items-center gap-2 ">
+       <style>{`
+        .ql-container.ql-snow {
+          border: none !important;
+        }
+        .ql-toolbar.ql-snow {
+          border: none !important;
+          border-bottom: 1px solid hsl(var(--border)) !important;
+        }
+      `}</style>
+     <label className="flex items-center gap-2 text-sm font-medium mb-2">
           {label}
           {tooltip && (
             <Tooltip>
@@ -59,7 +68,7 @@ export default function RichTextEditor({
             </Tooltip>
           )}
         </label>
-      <div className="border border-border rounded-md overflow-hidden">
+      <div className="border border-border rounded-md overflow-hidden [&_.ql-editor]:min-h-[200px]">
         <ReactQuill
           theme="snow"
           value={value}

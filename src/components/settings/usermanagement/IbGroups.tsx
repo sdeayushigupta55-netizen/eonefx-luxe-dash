@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, ListFilter, FileDown, List, X, Info, AlertTriangle } from "lucide-react";
+import { Pencil, Trash2, ListFilter, FileDown, X, AlertTriangle } from "lucide-react";
 import { InputField } from "@/components/form/InputField";
 import { StatusToggle } from "@/components/form/Status";
 import RichTextEditor from "@/components/form/RichTextEditor"
-
 import { Badge } from "@/components/ui/badge"
-
 import {
   Dialog,
   DialogContent,
@@ -18,21 +16,14 @@ import {
 } from "@/components/ui/dialog"
 import { SelectField } from "@/components/form/SelectField";
 
-type Option = {
-  label: string;
-  value: string;
-};
-
-
 interface IbGroups {
   groupname: string;
   rebaterules: string[];
   accounttypes: string[];
   globalaccounttype: "Active" | "Disabled";
   status: "Active" | "Disabled";
-
-
 }
+
 interface DeleteGroupModalProps {
   open: boolean;
   setOpen: (val: boolean) => void;
@@ -45,9 +36,6 @@ interface IbGroupsProps {
   openAddModal: boolean;
   setOpenAddModal: (v: boolean) => void;
 }
-
-
-
 
 export default function IbGroups({
   openAddModal,
@@ -78,38 +66,32 @@ export default function IbGroups({
     },
   ]);
 
-
   const attachedUsers = [
     { name: "user brokeret", username: "user13526", email: "user@brokeret.com" },
     { name: "sufyan aslam", username: "sufyanaslam8725", email: "sufyanhashmi3021@gmail.com" },
     { name: "test new", username: "testnew3856", email: "richirj43743@gmail.com" },
   ];
 
-
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
   const [ibgroupName, setIBgroupName] = useState("");
-  const [rebaterules, setRebaterules] = useState("");
-  const [accounttypes, setAccounttypes] = useState("");
   const [globalaccounttype, setGlobalaccounttype] = useState(true);
   const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState("");
-  const [openViewModal, setOpenViewModal] = useState(false)
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const [rebateRules, setRebateRules] = useState<Option[]>([]);
+  // ✅ This must be string[] NOT Option[]
+  const [rebateRules, setRebateRules] = useState<string[]>([]);
 
   const [disclaimer, setDisclaimer] = useState(
     "This CRM demo is provided for informational purposes only."
   );
 
-
   useEffect(() => {
     if (openAddModal) {
       setIBgroupName("");
-      setRebateRules([]);
-
+      setRebateRules([]); // Reset to empty string array
       setGlobalaccounttype(true);
       setIsActive(true);
       setError("");
@@ -120,6 +102,7 @@ export default function IbGroups({
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
     Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
   };
+
   /* ------------------ Add Branch ------------------ */
   const handleAddBranch = () => {
     if (!ibgroupName.trim()) {
@@ -129,7 +112,13 @@ export default function IbGroups({
 
     setIbGroups([
       ...ibGroups,
-      { groupname: ibgroupName, rebaterules: [rebaterules], accounttypes: [accounttypes], globalaccounttype: globalaccounttype ? "Active" : "Disabled", status: isActive ? "Active" : "Disabled" },
+      { 
+        groupname: ibgroupName, 
+        rebaterules: [...rebateRules], // Use spread to create new array
+        accounttypes: [], 
+        globalaccounttype: globalaccounttype ? "Active" : "Disabled", 
+        status: isActive ? "Active" : "Disabled" 
+      },
     ]);
 
     setOpenAddModal(false);
@@ -140,8 +129,8 @@ export default function IbGroups({
   const handleOpenUpdateModal = (index: number) => {
     const branch = ibGroups[index];
     setIBgroupName(branch.groupname);
-    setRebaterules(branch.rebaterules.join(", "));
-    setAccounttypes(branch.accounttypes.join(", "));
+    // ✅ Direct assignment - should already be string[]
+    setRebateRules([...branch.rebaterules]); // Use spread to create new array
     setGlobalaccounttype(branch.globalaccounttype === "Active");
     setIsActive(branch.status === "Active");
     setEditIndex(index);
@@ -159,8 +148,8 @@ export default function IbGroups({
       updated[editIndex] = {
         ...updated[editIndex],
         groupname: ibgroupName,
-        rebaterules: [rebaterules],
-        accounttypes: [accounttypes],
+        rebaterules: [...rebateRules], // Use spread to create new array
+        accounttypes: updated[editIndex].accounttypes,
         globalaccounttype: globalaccounttype ? "Active" : "Disabled",
         status: isActive ? "Active" : "Disabled",
       };
@@ -174,31 +163,12 @@ export default function IbGroups({
   /* ------------------ Helpers ------------------ */
   const resetForm = () => {
     setIBgroupName("");
-    setRebaterules("");
-    setAccounttypes("");
+    setRebateRules([]); // Reset to empty string array
     setGlobalaccounttype(true);
     setIsActive(true);
     setError("");
     setEditIndex(null);
   };
-
-  const [fields, setFields] = useState<
-    { label: string; type: string; required: boolean }[]
-  >([]);
-
-  const addField = () => {
-    setFields([
-      ...fields,
-      { label: "", type: "text", required: true },
-    ]);
-  };
-
-  const removeField = (index: number) => {
-    const copy = [...fields];
-    copy.splice(index, 1);
-    setFields(copy);
-  };
-
 
   /* ------------------ UI ------------------ */
   return (
@@ -207,20 +177,17 @@ export default function IbGroups({
       <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
         <Input className="w-full md:w-auto" placeholder="Search Group Name, Rebate..." />
         <select className="bg-background border border-border rounded-md px-3 py-2 w-full ">
-
           <option>All Status</option>
           <option>Active</option>
-          <option>Diasable</option>
+          <option>Disabled</option>
         </select>
         <select className="bg-background border border-border rounded-md px-3 py-2 w-full ">
-
           <option>All Global Account Type</option>
           <option>Active</option>
-          <option>Diasable</option>
+          <option>Disabled</option>
         </select>
 
         <div className="flex flex-col sm:flex-row gap-3 md:ml-auto w-full md:w-auto">
-
           <Button variant="outline">
             <ListFilter size={16} /> Filter
           </Button>
@@ -234,7 +201,6 @@ export default function IbGroups({
       <Card>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left">
-
             <thead className="bg-muted/60 text-sm">
               <tr>
                 <th className="px-3 py-4">GROUP NAME</th>
@@ -252,7 +218,6 @@ export default function IbGroups({
                   <td className="p-3">
                     <div className="inline-flex flex-wrap gap-2">
                       {ibgroup.rebaterules.map((rule, i) => (
-                        
                         <Badge key={i} variant="outline" className="rounded-md px-2 py-0.5 border border-border">
                           {rule}
                         </Badge>
@@ -269,12 +234,14 @@ export default function IbGroups({
                       ))}
                     </div>
                   </td>
-                  <td className="p-3"> <Badge
-                    variant="outline"
-                    className={`${statusClasses[ibgroup.globalaccounttype]} rounded-md px-2 py-0.5`}
-                  >
-                    {ibgroup.globalaccounttype}
-                  </Badge></td>
+                  <td className="p-3"> 
+                    <Badge
+                      variant="outline"
+                      className={`${statusClasses[ibgroup.globalaccounttype]} rounded-md px-2 py-0.5`}
+                    >
+                      {ibgroup.globalaccounttype}
+                    </Badge>
+                  </td>
                   <td className="p-3">
                     <Badge
                       variant="outline"
@@ -284,7 +251,6 @@ export default function IbGroups({
                     </Badge>
                   </td>
                   <td className="p-3 flex flex-wrap gap-2">
-
                     <Button
                       size="icon"
                       variant="outline"
@@ -308,7 +274,10 @@ export default function IbGroups({
       {openAddModal && (
         <Modal
           title="Add New IB Group"
-          onClose={() => setOpenAddModal(false)}
+          onClose={() => {
+            setOpenAddModal(false);
+            resetForm();
+          }}
           onSubmit={handleAddBranch}
           ibgroupName={ibgroupName}
           setIBgroupName={setIBgroupName}
@@ -325,15 +294,16 @@ export default function IbGroups({
       {/* Update Branch Modal */}
       {updateModalOpen && (
         <Modal
-          title="Update New IB Group"
-          onClose={() => setUpdateModalOpen(false)}
+          title="Update IB Group"
+          onClose={() => {
+            setUpdateModalOpen(false);
+            resetForm();
+          }}
           onSubmit={handleUpdateBranch}
           ibgroupName={ibgroupName}
           setIBgroupName={setIBgroupName}
-          rebaterules={rebaterules}
-          setRebaterules={setRebaterules}
-          accounttypes={accounttypes}
-          setAccounttypes={setAccounttypes}
+          rebateRules={rebateRules}
+          setRebateRules={setRebateRules}
           isActive={isActive}
           setIsActive={setIsActive}
           error={error}
@@ -341,8 +311,6 @@ export default function IbGroups({
           setDisclaimer={setDisclaimer}
         />
       )}
-
-
 
       <DeleteGroupModal
         open={openDeleteModal}
@@ -354,7 +322,6 @@ export default function IbGroups({
           setOpenDeleteModal(false);
         }}
       />
-
     </div>
   );
 }
@@ -373,16 +340,28 @@ function Modal({
   error,
   disclaimer,
   setDisclaimer,
-}: any) {
+}: {
+  title: string;
+  onClose: () => void;
+  onSubmit: () => void;
+  ibgroupName: string;
+  setIBgroupName: (val: string) => void;
+  rebateRules: string[];
+  setRebateRules: (val: string[]) => void;
+  isActive: boolean;
+  setIsActive: (val: boolean) => void;
+  error: string;
+  disclaimer: string;
+  setDisclaimer: (val: string) => void;
+}) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-md rounded-xl bg-card border border-border p-6">
+      <div className="w-full max-w-md rounded-xl bg-card border border-border p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">{title}</h2>
           <Button
             size="icon"
             variant="ghost"
-
             onClick={onClose}
           >
             <X size={18} />
@@ -396,30 +375,27 @@ function Modal({
             onChange={(e) => setIBgroupName(e.target.value)}
             tooltip="Enter a name for the IB group"
             error={error}
-
           />
+
           {/* DISCLAIMER (Rich Text) */}
           <div>
-
-
-            <div className="border border-border rounded-md overflow-hidden">
-              {/* DISCLAIMER (Rich Text) */}
-              <RichTextEditor
-                label="Details(Optional)"
-                value={disclaimer}
-                onChange={setDisclaimer}
-                tooltip="Add Description for this group"
-              />
-            </div>
+            <RichTextEditor
+              label="Details(Optional)"
+              value={disclaimer}
+              onChange={setDisclaimer}
+              tooltip="Add Description for this group"
+            />
           </div>
-          {/* Field Type */}
 
-          {/* ✅ MULTISELECT ONLY HERE */}
+          {/* ✅ MULTISELECT - values prop must be string[] */}
           <SelectField
             label="Attach Rebate Rule(s)(Optional)"
             isMulti
             values={rebateRules}
-            onValuesChange={setRebateRules}
+            onValuesChange={(newValues: string[]) => {
+              console.log("New values:", newValues); // Debug log
+              setRebateRules(newValues);
+            }}
             options={[
               { label: "Standard", value: "Standard" },
               { label: "Promo-Rebate", value: "Promo-Rebate" },
@@ -427,6 +403,7 @@ function Modal({
             ]}
             tooltip="Select rebate rules to link with this group"
           />
+          
           <div className="grid grid-cols-2 gap-3">
             <StatusToggle
               label="Status"
@@ -434,9 +411,6 @@ function Modal({
               onChange={(s) => setIsActive(s === "Active")}
               tooltip="Enable or disable this IB Group."
             />
-
-
-
           </div>
 
           <div className="grid-cols-2 gap-3">
@@ -444,13 +418,9 @@ function Modal({
               label="Global Account"
               status={isActive ? "Active" : "Disabled"}
               onChange={(s) => setIsActive(s === "Active")}
-              tooltip="When enabled, this IB Group can show Global 
-      category accounts from linked rebate rules only if 'Show Global Accounts with IB Rebate Rules' is enabled."
+              tooltip="When enabled, this IB Group can show Global category accounts from linked rebate rules only if 'Show Global Accounts with IB Rebate Rules' is enabled."
             />
           </div>
-
-
-
         </div>
 
         <div className="flex justify-end gap-3 py-4 ">
@@ -507,14 +477,12 @@ function DeleteGroupModal({
               Please remove these users first before deleting the group.
             </p>
           )}
-
         </div>
 
         {/* Footer */}
         <DialogFooter className="flex justify-center gap-3 mt-6">
           <Button
             variant="destructive"
-
             onClick={onConfirm}
           >
             Confirm

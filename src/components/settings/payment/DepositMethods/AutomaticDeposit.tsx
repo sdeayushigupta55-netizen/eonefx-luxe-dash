@@ -33,6 +33,7 @@ const statusClasses: Record<string, string> = {
   Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
   Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
 };
+
 type Props = {
   openAddIntent?: boolean;
   onAddIntentConsumed?: () => void;
@@ -53,7 +54,7 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
   useEffect(() => {
     if (openAddIntent) {
       handleAddNew();
-      onAddIntentConsumed?.(); // reset the trigger in parent
+      onAddIntentConsumed?.();
     }
   }, [openAddIntent]);
 
@@ -80,7 +81,6 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
   const handleSelectChange = (name: string, value: string) => {
     setFormData({ ...formData, [name]: value });
     
-    // If gateway is selected, automatically set the logo
     if (name === "gateway" && gatewayLogos[value]) {
       setFormData(prev => ({ ...prev, [name]: value, logo: gatewayLogos[value] }));
       setLogoPreview(gatewayLogos[value]);
@@ -193,16 +193,17 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
   return (
     <TooltipProvider>
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Responsive Grid with custom shadow-card */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4 md:gap-6">
           {methods.map((item, index) => (
-            <Card key={index} className="border border-border bg-card">
-              <CardContent className="p-6 space-y-4">
+            <Card key={index} className="border border-border bg-card shadow-card hover-lift">
+              <CardContent className="p-4 md:p-6 space-y-4">
                 <div className="flex justify-between items-center">
-                  <img className="inline-block h-10 object-contain" src={item.logo} alt={item.title} />
+                  <img className="inline-block h-8 md:h-10 object-contain" src={item.logo} alt={item.title} />
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button size="icon" variant="ghost">
+                      <Button size="icon" variant="ghost" className="h-8 w-8">
                         <MoreVertical size={16} />
                       </Button>
                     </DropdownMenuTrigger>
@@ -222,33 +223,52 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
                   </DropdownMenu>
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <h2 className="font-semibold">{item.title}</h2>
-                  <span className={`px-3 py-1 rounded-md text-xs ${statusClasses[item.status]}`}>{item.status}</span>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                  <h2 className="font-semibold text-sm md:text-base">{item.title}</h2>
+                  <span className={`px-2 md:px-3 py-1 rounded-md text-xs whitespace-nowrap ${statusClasses[item.status]}`}>
+                    {item.status}
+                  </span>
                 </div>
 
-                <div className="text-sm text-muted-foreground space-y-2">
-                  <div className="flex justify-between"><span>Processing Time</span><span>{item.processing}</span></div>
-                  <div className="flex justify-between"><span>Fee</span><span>{item.fee}</span></div>
-                  <div className="flex justify-between"><span>Limits</span><span>{item.limits}</span></div>
-                  <div className="flex justify-between"><span>Branches</span><span>{item.branches}</span></div>
+                <div className="text-xs md:text-sm text-text-muted space-y-2">
+                  <div className="flex justify-between gap-2">
+                    <span className="truncate">Processing Time</span>
+                    <span className="font-medium text-foreground">{item.processing}</span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span>Fee</span>
+                    <span className="font-medium text-foreground">{item.fee}</span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span>Limits</span>
+                    <span className="font-medium text-foreground text-right">{item.limits}</span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span>Branches</span>
+                    <span className="font-medium text-foreground">{item.branches}</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
 
+        {/* Modal - Responsive with shadow-card */}
         {openModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-            <Card className="w-full max-w-5xl bg-card max-h-[90vh] overflow-hidden flex flex-col">
-              <div className="flex justify-between items-center px-6 py-4 border-b border-border flex-shrink-0">
-                <h2 className="text-xl font-semibold">{editIndex !== null ? "Update Deposit Method" : "Add New Deposit Method"}</h2>
-                <Button size="icon" variant="ghost" onClick={closeModal}><X size={20} /></Button>
+          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-2 sm:p-4">
+            <Card className="w-full max-w-[95vw] sm:max-w-4xl lg:max-w-5xl bg-card shadow-card max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-border flex-shrink-0">
+                <h2 className="text-lg sm:text-xl font-semibold truncate pr-4">
+                  {editIndex !== null ? "Update Deposit Method" : "Add New Deposit Method"}
+                </h2>
+                <Button size="icon" variant="ghost" onClick={closeModal} className="flex-shrink-0">
+                  <X size={20} />
+                </Button>
               </div>
 
-              <div className="p-6 overflow-y-auto flex-1">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="col-span-2">
+              <div className="p-4 sm:p-6 overflow-y-auto flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                  <div className="col-span-1 md:col-span-2">
                     <label className="text-sm font-medium mb-2 block">
                       {editIndex !== null ? "Update Method Logo" : "Add Method Logo"}
                     </label>
@@ -261,14 +281,14 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
                     />
                     <label
                       htmlFor="logo-upload"
-                      className="h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center text-muted-foreground cursor-pointer hover:bg-muted/20 transition-colors"
+                      className="h-28 sm:h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center text-text-muted cursor-pointer hover:bg-muted/20 transition-all duration-200"
                     >
                       {logoPreview ? (
-                        <img src={logoPreview} alt="Logo preview" className="h-24 object-contain" />
+                        <img src={logoPreview} alt="Logo preview" className="h-20 sm:h-24 object-contain" />
                       ) : (
                         <>
-                          <Plus size={32} />
-                          <span className="text-sm mt-2">Upload Logo</span>
+                          <Plus size={28} className="sm:size-32" />
+                          <span className="text-xs sm:text-sm mt-2">Upload Logo</span>
                         </>
                       )}
                     </label>
@@ -324,7 +344,7 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
                         name="chargeType"
                         value={formData.chargeType}
                         onChange={(e) => handleSelectChange("chargeType", e.target.value)}
-                        className="outline-none bg-transparent"
+                        className="outline-none bg-transparent text-sm"
                       >
                         <option value="percentage">%</option>
                         <option value="fixed">$</option>
@@ -339,7 +359,7 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
                       onChange={setManualRate}
                       tooltip="Enable to set manually conversion rate"
                     />
-                    <p className="text-xs text-muted-foreground mt-2">
+                    <p className="text-xs text-text-muted mt-2">
                       Manage Auto Exchange Rate main setting{" "}
                       <a href="#" className="text-primary hover:underline">click here</a>
                     </p>
@@ -411,6 +431,7 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
                     tooltip="Select 'All' to make this payment method available in all countries"
                     isMulti
                   />
+
                   <div>
                     <SelectField
                       label="Assign Branches"
@@ -425,7 +446,7 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
                       tooltip="Select branches where this deposit method will be available"
                       isMulti
                     />
-                    <span className="text-xs font-Inter font-normal text-slate-600 block mt-1">
+                    <span className="text-xs font-Inter font-normal text-text-muted block mt-1">
                       Leave empty to make available for all branches.
                     </span>
                   </div>
@@ -435,31 +456,38 @@ export default function AutomaticDeposit({ openAddIntent, onAddIntentConsumed }:
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 px-6 py-4 border-t border-border flex-shrink-0">
-                <Button variant="destructive" onClick={closeModal}>Cancel</Button>
-                <Button onClick={handleSave}>{editIndex !== null ? "Update Method" : "Add Method"}</Button>
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 px-4 sm:px-6 py-3 sm:py-4 border-t border-border flex-shrink-0">
+                <Button variant="destructive" onClick={closeModal} className="w-full sm:w-auto">Cancel</Button>
+                <Button onClick={handleSave} className="w-full sm:w-auto">
+                  {editIndex !== null ? "Update Method" : "Add Method"}
+                </Button>
               </div>
             </Card>
           </div>
         )}
 
+        {/* Delete Modal - Responsive with shadow-card */}
         {openDeleteModal && selectedItem && (
           <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-            <Card className="w-full max-w-md bg-card">
-              <CardContent className="p-8 text-center space-y-6">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-red-900/30 ring-4 ring-red-900/20">
-                  <Trash2 className="text-red-500" size={32} />
+            <Card className="w-full max-w-sm sm:max-w-md bg-card shadow-card">
+              <CardContent className="p-6 sm:p-8 text-center space-y-4 sm:space-y-6">
+                <div className="mx-auto flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-red-900/30 ring-4 ring-red-900/20">
+                  <Trash2 className="text-red-500" size={28} />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-semibold">Delete Method?</h2>
-                  <p className="text-muted-foreground">
+                  <h2 className="text-xl sm:text-2xl font-semibold">Delete Method?</h2>
+                  <p className="text-sm sm:text-base text-text-muted">
                     Are you sure you want to delete <span className="font-semibold text-foreground">"{selectedItem.title}"</span>?
                     This action cannot be undone.
                   </p>
                 </div>
-                <div className="flex justify-center gap-3 pt-2">
-                  <Button variant="outline" onClick={() => { setOpenDeleteModal(false); setSelectedItem(null); }}>Cancel</Button>
-                  <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
+                <div className="flex flex-col-reverse sm:flex-row justify-center gap-3 pt-2">
+                  <Button variant="outline" onClick={() => { setOpenDeleteModal(false); setSelectedItem(null); }} className="w-full sm:w-auto">
+                    Cancel
+                  </Button>
+                  <Button variant="destructive" onClick={confirmDelete} className="w-full sm:w-auto">
+                    Delete
+                  </Button>
                 </div>
               </CardContent>
             </Card>

@@ -5,6 +5,13 @@ import { Button } from "@/components/ui/button";
 import { SettingsCard } from "./SettingsCard";
 import OrganizationSettings from "./organization/OrganizationSettings";
 import UsermanagementSettings from "./usermanagement/UsermanagementSettings";
+import { cn } from "@/lib/utils";
+import PaymentSettings from "./payment/PaymentSetting";
+import PlatformApiSettings from "./plateformapi/PlateformApiSettings"
+import DataManagementSettings from "./datamanagement/DataManagementSettings"
+import SystemSettings from "./system/SystemSettings";
+import IntegrationSettings  from "./integrations/IntegrationsSettings"
+
 import {
   Building2,
   Users,
@@ -17,8 +24,10 @@ import {
   Settings as SettingsIcon,
   Plug,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import PaymentSettings from "./payment/PaymentSetting";
+import WebsiteSettings from "./websitesetting/WebsiteSetting";
+import CustomizationSettings from "./customization/CustomizationSettings";
+import CommunicationsSettings from "./communications/CommunicationsSettings";
+
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -50,7 +59,7 @@ const settingsData = [
       { label: "User Rankings" },
     ],
   },
-   {
+  {
     icon: CreditCard,
     title: "Payment",
     glowColor: "gold" as const,
@@ -109,6 +118,8 @@ const settingsData = [
       { label: "Email Templates", badge: "updated" as const },
       { label: "SMS Templates" },
       { label: "Notification Templates", badge: "updated" as const },
+      {label:"SMTP Monitoring", badge:"new" as const},
+      { label: "Forex Daily Reporting" , badge: "new" as const}
     ],
   },
   {
@@ -151,47 +162,146 @@ const settingsData = [
 export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [activePage, setActivePage] = useState<string | null>(null);
 
- const renderActivePage = () => {
-  switch (activePage.toLowerCase().replace(/ & | /g, "")) {
-    case "company":
-      return <OrganizationSettings defaultTab="company" />;
-    case "branches":
-      return <OrganizationSettings defaultTab="branches" />;
-    case "country": 
-      return <OrganizationSettings defaultTab="country" />;
-    case "doclinks":
-      return <OrganizationSettings defaultTab="doclinks" />;
-    case "sociallogins":
-      return <OrganizationSettings defaultTab="sociallogins" />;
+  const renderActivePage = () => {
+    if (!activePage) return null;
 
-    /* USER MANAGEMENT */
-    case "customer":
-      return <UsermanagementSettings defaultTab="customer" />;
-    case "rolespermissions":
-      return <UsermanagementSettings defaultTab="rolespermissions" />;
-    case "leadsettings":
-      return <UsermanagementSettings defaultTab="leadsettings" />;
-    case "kyccompliance":
-      return <UsermanagementSettings defaultTab="kyccompliance" />;
-    case "userrankings":
-      return <UsermanagementSettings defaultTab="userrankings" />; 
+    const normalizedPage = activePage.toLowerCase().replace(/ & | /g, "");
+    console.log("Active Page:", activePage, "Normalized:", normalizedPage); // Debug line
+
+    switch (normalizedPage) {
+      case "company":
+        return <OrganizationSettings defaultTab="company" />;
+      case "branches":
+        return <OrganizationSettings defaultTab="branches" />;
+      case "country":
+        return <OrganizationSettings defaultTab="country" />;
+      case "doclinks":
+        return <OrganizationSettings defaultTab="doclinks" />;
+      case "sociallogins":
+        return <OrganizationSettings defaultTab="sociallogins" />;
+
+      /* USER MANAGEMENT */
+      case "customer":
+        return <UsermanagementSettings defaultTab="customer" />;
+      case "rolespermissions":
+        return <UsermanagementSettings defaultTab="rolespermissions" />;
+      case "leadsettings":
+        return <UsermanagementSettings defaultTab="leadsettings" />;
+      case "kyccompliance":
+        return <UsermanagementSettings defaultTab="kyccompliance" />;
+      case "userrankings":
+        return <UsermanagementSettings defaultTab="userrankings" />;
 
       // Payment 
       case "depositmethods":
-      return <PaymentSettings defaultTab="depositmethods" />;
+        return <PaymentSettings defaultTab="depositmethods" />;
       case "withdrawmethods":
-      return <PaymentSettings defaultTab="withdrawmethods" />;  
+        return <PaymentSettings defaultTab="withdrawmethods" />;
       case "currency":
-      return <PaymentSettings defaultTab="currency" />;  
+        return <PaymentSettings defaultTab="currency" />;
       case "transfers":
-      return <PaymentSettings defaultTab="transfers" />;  
+        return <PaymentSettings defaultTab="transfers" />;
       case "bonuses":
-      return <PaymentSettings defaultTab="bonuses" />;  
-    default:
-      return null;
-  }
-};
+        return <PaymentSettings defaultTab="bonuses" />;
 
+      //Website
+      case "theme":
+        return <WebsiteSettings defaultTab="theme" />;
+      case "branding":
+        return <WebsiteSettings defaultTab="branding" />;
+      case "sitesettings":
+        return <WebsiteSettings defaultTab="sitesettings" />;
+      case "banner":
+        return <WebsiteSettings defaultTab="banner" />;
+      case "gdprcompliance":
+        return <WebsiteSettings defaultTab="gdprcompliance" />;
+      case "maintenance":
+        return <WebsiteSettings defaultTab="maintenance" />;
+
+      // Customization
+      case "customcolors":
+        return <CustomizationSettings defaultTab="customcolors" />;
+      case "customfonts":
+        return <CustomizationSettings defaultTab="customfonts" />;
+      case "routes":
+        return <CustomizationSettings defaultTab="routes" />;
+      case "dynamiccontent":
+        return <CustomizationSettings defaultTab="dynamiccontent" />;
+
+      // Platform
+      case "platformapi":
+        return <PlatformApiSettings defaultTab="platformapi" />;
+      case "dbsynchronization":
+        return <PlatformApiSettings defaultTab="dbsynchronization" />;
+      case "copytrading":
+        return <PlatformApiSettings defaultTab="copytrading" />;
+      case "platformgroups":
+        return <PlatformApiSettings defaultTab="platformgroups" />;
+      case "riskbook":
+        return <PlatformApiSettings defaultTab="riskbook" />;
+      case "webterminal":
+        return <PlatformApiSettings defaultTab="webterminal" />;
+
+      // Communications
+      case "email":
+        return <CommunicationsSettings defaultTab="email" />;
+      case "collabtools":
+        return <CommunicationsSettings defaultTab="collabtools" />;
+      case "emailtemplates":
+        return <CommunicationsSettings defaultTab="emailtemplates" />;
+      case "smstemplates":
+        return <CommunicationsSettings defaultTab="smstemplates" />;
+      case "notificationtemplates":
+        return <CommunicationsSettings defaultTab="notificationtemplates" />;
+      case "smtpmonitoring":
+        return <CommunicationsSettings defaultTab="smtpmonitoring" />;
+      case "forexdailyreporting":
+        return <CommunicationsSettings defaultTab="forexdailyreporting" />;
+
+      // Data Management
+      case "import":
+        return <DataManagementSettings defaultTab="import" />;
+      case "export":
+        return <DataManagementSettings defaultTab="export" />;
+      case "dataencryption":
+        return <DataManagementSettings defaultTab="dataencryption" />;
+
+      // System
+      case "clearcache":
+        return <SystemSettings defaultTab="clearcache" />;
+      case "applicationdetails":
+        return <SystemSettings defaultTab="applicationdetails" />;
+      case "devmode":
+        return <SystemSettings defaultTab="devmode" />;
+      case "changelog":
+        return <SystemSettings defaultTab="changelog" />;
+      case "reportissue":
+        return <SystemSettings defaultTab="reportissue" />;
+
+      // Integrations
+      case "paymentgateways":
+        return <IntegrationSettings defaultTab="paymentgateways" />;
+      case "plugins":
+        return <IntegrationSettings defaultTab="plugins" />;
+      case "smssettings":
+        return <IntegrationSettings defaultTab="smssettings" />;
+      case "notificationsettings":
+        return <IntegrationSettings defaultTab="notificationsettings" />;
+      case "apiaccess":
+        return <IntegrationSettings defaultTab="apiaccess" />;
+      case "webhooks":
+        return <IntegrationSettings defaultTab="webhooks" />;
+
+
+      default:
+        console.log("No match found for:", normalizedPage); // Debug line
+        return (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Page not found: {activePage}</p>
+          </div>
+        );
+    }
+  };
   return (
     <>
       {/* Backdrop */}

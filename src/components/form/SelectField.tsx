@@ -26,6 +26,7 @@ interface SelectFieldProps {
   options: Option[];
   placeholder?: string;
   tooltip?: string;
+  disabled?: boolean;
 
   /** SINGLE SELECT */
   value?: string;
@@ -42,6 +43,7 @@ export const SelectField = ({
   options,
   placeholder = "Select option",
   tooltip,
+  disabled = false,
 
   value,
   onChange,
@@ -80,7 +82,7 @@ export const SelectField = ({
 
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="w-full justify-between">
+            <Button variant="outline" className="w-full justify-between" disabled={disabled}>
               {values.length ? values.join(", ") : placeholder}
               <ChevronDown className="h-4 w-4 opacity-60" />
             </Button>
@@ -125,8 +127,8 @@ export const SelectField = ({
 )}
       </label>
 
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-full">
+      <Select value={value} onValueChange={onChange} disabled={disabled}>
+        <SelectTrigger className="w-full" disabled={disabled}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>

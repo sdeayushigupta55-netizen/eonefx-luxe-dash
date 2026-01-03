@@ -70,9 +70,8 @@ export default function WithdrawMethods() {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
         {tabs.map((tab) => (
-          <Button
-            key={tab}
-            variant="ghost"
+          <button
+          
             onClick={() => setActiveTab(tab)}
             className={cn(
               "px-4 py-2 border rounded-md",
@@ -80,7 +79,7 @@ export default function WithdrawMethods() {
             )}
           >
             {tab}
-          </Button>
+          </button>
         ))}
         <Button variant="outline" className="ml-auto gap-2">
           more <ChevronDown size={16} />
