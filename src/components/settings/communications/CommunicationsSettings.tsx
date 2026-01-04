@@ -1,21 +1,28 @@
 import { useState, useEffect } from "react";
 import Email from "./Email"
 import CollabTools from "./CollabTools";
-// import EmailTemplates from "./EmailTemplates";
-// import SmsTemplates from "./SmsTemplates";
-// import NotificationTemplates from "./NotificationTemplates";
+import EmailTemplates from "./EmailTemplate/EmailTemplateindex";
+
+import SmsTemplate from "./SmsTemplates/smstempletesindex";
+import NotificationTemplates from "./NotificationTemplates/notificationtemplateindex";
 import ForexDailyReporting from "./ForexDailyReporting";
 import SMTPMonitoring from "./SMTPMonitoring";
 
 interface CommunicationsSettingsProps {
   defaultTab?: string;
+  onNavigateToIntegrationsSms?: () => void;
+  onNavigateToIntegrationsNotification?: () => void;
 }
 
 export default function CommunicationsSettings({
   defaultTab = "email",
+  onNavigateToIntegrationsSms,
+  onNavigateToIntegrationsNotification,
 }: CommunicationsSettingsProps) {
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [searchTerm, setSearchTerm] = useState("");
+
+
 
   useEffect(() => {
     setActiveTab(defaultTab);
@@ -46,17 +53,17 @@ export default function CommunicationsSettings({
       case "collabtools":
         return <CollabTools />;
 
-    //   case "emailtemplates":
-    //     return <EmailTemplates />;
+      case "emailtemplates":
+        return <EmailTemplates onNavigateToEmail={() => setActiveTab("email")} />;
 
-    //   case "smstemplates":
-    //     return <SmsTemplates />;
+      case "smstemplates":
+        return <SmsTemplate onNavigateToSms={onNavigateToIntegrationsSms} />;
 
-    //   case "notificationtemplates":
-    //     return <NotificationTemplates />;
+      case "notificationtemplates":
+        return <NotificationTemplates onNavigateToNotification={onNavigateToIntegrationsNotification} />;
 
         case "smtpmonitoring": 
-        return <SMTPMonitoring />;
+        return <SMTPMonitoring onNavigateToEmail={() => setActiveTab("email")} />;
 
     case "forexdailyreporting":
         return <ForexDailyReporting />;

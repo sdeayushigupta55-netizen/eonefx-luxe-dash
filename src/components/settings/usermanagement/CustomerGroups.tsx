@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, X, Info } from "lucide-react";
+import { Pencil, Trash2, X, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   
@@ -31,6 +31,9 @@ export default function CustomerGroups({ openAddModal, setOpenAddModal }: Custom
     },
   ]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -44,6 +47,21 @@ export default function CustomerGroups({ openAddModal, setOpenAddModal }: Custom
   const statusClasses: Record<string, string> = {
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
     Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+  };
+
+  // Pagination calculations
+  const totalItems = rows.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = currentPage * pageSize;
+  const paginatedData = rows.slice(startIndex, endIndex);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
   };
 
   /* OPEN ADD MODAL */
@@ -129,7 +147,7 @@ export default function CustomerGroups({ openAddModal, setOpenAddModal }: Custom
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row, index) => (
+                {paginatedData.map((row, index) => (
                   <tr key={index} className="border-t border-border">
                     <td className="p-3">{row.groupname}</td>
 
@@ -162,6 +180,38 @@ export default function CustomerGroups({ openAddModal, setOpenAddModal }: Custom
             </table>
           </CardContent>
         </Card>
+
+        {/* FOOTER INFO + PAGINATION */}
+        <div className="flex justify-between items-center mt-4 text-muted-foreground text-sm">
+          <p>
+            Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+            {totalItems} Entries
+          </p>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+
+            <span className="text-foreground">
+              {currentPage} / {totalPages}
+            </span>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNext}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
+        </div>
 
         {/* ADD / EDIT MODAL */}
         {modalOpen && (

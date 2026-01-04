@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 interface CurrencyRate {
   id: number;
   country: string;
@@ -79,27 +80,24 @@ export default function Currency() {
           </tbody>
         </table>
 
-      </CardContent>
-      </Card>
-
         {/* PAGINATION */}
         <div className="flex items-center justify-between px-4 py-3 text-sm text-muted-foreground">
           {/* LEFT TEXT */}
-          <span>
+          <p>
             Showing {startIndex + 1} to{" "}
             {Math.min(endIndex, currencyRates.length)} of{" "}
-            {currencyRates.length} results
-          </span>
+            {currencyRates.length} Entries
+          </p>
 
           {/* RIGHT CONTROLS */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Button
-              size="icon"
-              variant="ghost"
+              variant="outline"
+              size="sm"
               disabled={page === 1}
               onClick={() => setPage((p) => p - 1)}
             >
-              ‹
+              <ChevronLeft size={16} />
             </Button>
 
             <span className="text-foreground">
@@ -107,15 +105,18 @@ export default function Currency() {
             </span>
 
             <Button
-              size="icon"
-              variant="ghost"
+              variant="outline"
+              size="sm"
               disabled={page === totalPages}
               onClick={() => setPage((p) => p + 1)}
             >
-              ›
+              <ChevronRight size={16} />
             </Button>
           </div>
         </div>
+
+      </CardContent>
+      </Card>
     </div>
   );
 }

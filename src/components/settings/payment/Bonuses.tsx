@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MoreVertical, Plus, X } from "lucide-react";
+import { MoreVertical, Plus, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InputField } from "@/components/form/InputField";
 import { SelectField } from "@/components/form/SelectField";
@@ -164,23 +164,23 @@ export default function Bonuses() {
             ))}
           </tbody>
         </table>
-        <div className="flex items-center justify-between px-4 py-3 text-sm">
+        <div className="flex items-center justify-between px-4 py-3 text-sm text-muted-foreground">
           {/* LEFT TEXT */}
-          <span>
+          <p>
             Showing {startIndex + 1} to{" "}
             {Math.min(endIndex, bonusData.length)} of {bonusData.length}{" "}
-            results
-          </span>
+            Entries
+          </p>
 
           {/* RIGHT CONTROLS */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Button
-              size="icon"
-              variant="ghost"
+              variant="outline"
+              size="sm"
               disabled={page === 1}
               onClick={() => setPage((p) => p - 1)}
             >
-              ‹
+              <ChevronLeft size={16} />
             </Button>
 
             <span className="text-foreground">
@@ -188,12 +188,12 @@ export default function Bonuses() {
             </span>
 
             <Button
-              size="icon"
-              variant="ghost"
+              variant="outline"
+              size="sm"
               disabled={page === totalPages}
               onClick={() => setPage((p) => p + 1)}
             >
-              ›
+              <ChevronRight size={16} />
             </Button>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, X, Info, Settings, Copy, AlertTriangle } from "lucide-react";
+import { Pencil, X, Info, Settings, Copy, AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { InputField } from "@/components/form/InputField";
@@ -94,6 +94,24 @@ export default function Success() {
   const [selectedPage, setSelectedPage] = useState<SuccessPage | null>(null);
   const [formData, setFormData] = useState<SuccessPage | null>(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  // Pagination calculations
+  const totalItems = successPages.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = currentPage * pageSize;
+  const paginatedData = successPages.slice(startIndex, endIndex);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
+  };
+
   const handleEdit = (page: SuccessPage) => {
     setSelectedPage(page);
     setFormData({ ...page });
@@ -126,7 +144,7 @@ export default function Success() {
               </tr>
             </thead>
             <tbody>
-              {successPages.map((page) => (
+              {paginatedData.map((page) => (
                 <tr
                   key={page.id}
                   className="border-t border-border hover:bg-muted/30 "
@@ -151,8 +169,41 @@ export default function Success() {
               ))}
             </tbody>
           </table>
+           {/* FOOTER INFO + PAGINATION */}
+      <div className="flex justify-between items-center mt-4 text-muted-foreground text-sm px-4 py-3">
+        <p>
+          Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+          {totalItems} Entries
+        </p>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft size={16} />
+          </Button>
+
+          <span className="text-foreground">
+            {currentPage} / {totalPages}
+          </span>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRight size={16} />
+          </Button>
+        </div>
+      </div>
         </CardContent>
       </Card>
+
+     
 
       {/* Edit Modal */}
       <Dialog open={openModal} onOpenChange={setOpenModal}>

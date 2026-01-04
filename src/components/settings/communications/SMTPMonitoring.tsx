@@ -5,11 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Settings, List, Check } from "lucide-react";
+import { Settings, List, Check, Trash2, CheckCircle } from "lucide-react";
 import Email from "./Email";
 
-export default function SMTPMonitoring() {
+interface EmailTemplateIndexProps {
+    onNavigateToEmail?: () => void;
+}
+
+export default function SMTPMonitoring({ onNavigateToEmail }: EmailTemplateIndexProps) {
     const [openEmailConfig, setOpenEmailConfig] = useState(false);
+    const [openLogsModal, setOpenLogsModal] = useState(false);
 
     return (
         <>
@@ -23,11 +28,11 @@ export default function SMTPMonitoring() {
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => setOpenEmailConfig(true)}>
+                        <Button variant="outline" size="sm" onClick={onNavigateToEmail}>
                             <Settings className="w-4 h-4 mr-2" />
                             Configuration
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => setOpenLogsModal(true)}>
                             <List className="w-4 h-4 mr-2" />
                             View Logs
                         </Button>
@@ -162,6 +167,73 @@ export default function SMTPMonitoring() {
                         </div>
                         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
                             <Email />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* SMTP Failure Logs Modal */}
+            {openLogsModal && (
+                <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-2 sm:p-4">
+                    <div className="w-full max-w-[95vw] h-[95vh] bg-card rounded-lg shadow-card overflow-hidden flex flex-col">
+                        <div className="flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-border flex-shrink-0">
+                            <div>
+                                <h2 className="text-lg sm:text-xl font-semibold">SMTP Failure Logs</h2>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    Monitor and troubleshoot email delivery failures.
+                                </p>
+                            </div>
+                            <div className="flex gap-2 items-center">
+                                <Button variant="outline" size="sm" onClick={() => setOpenLogsModal(false)}>
+                                    <Settings className="w-4 h-4 mr-2" />
+                                    Settings
+                                </Button>
+                                <Button variant="destructive" size="sm">
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    Clear Logs
+                                </Button>
+                                <Button 
+                                    size="icon" 
+                                    variant="ghost" 
+                                    onClick={() => setOpenLogsModal(false)}
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                            {/* Statistics Cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <Card className="p-4 bg-card border border-border">
+                                    <div className="text-sm text-muted-foreground mb-1">Total Failures</div>
+                                    <div className="text-3xl font-bold">0</div>
+                                </Card>
+                                <Card className="p-4 bg-card border border-border">
+                                    <div className="text-sm text-muted-foreground mb-1">Failed</div>
+                                    <div className="text-3xl font-bold text-red-500">0</div>
+                                </Card>
+                                <Card className="p-4 bg-card border border-border">
+                                    <div className="text-sm text-muted-foreground mb-1">Resent</div>
+                                    <div className="text-3xl font-bold text-green-500">0</div>
+                                </Card>
+                                <Card className="p-4 bg-card border border-border">
+                                    <div className="text-sm text-muted-foreground mb-1">Today</div>
+                                    <div className="text-3xl font-bold">0</div>
+                                </Card>
+                            </div>
+
+                            {/* Empty State */}
+                            <div className="flex flex-col items-center justify-center py-16">
+                                <div className="mb-4">
+                                    <CheckCircle className="w-16 h-16 text-green" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-2">No Failures Detected</h3>
+                                <p className="text-muted-foreground text-center max-w-md">
+                                    Your SMTP service is running smoothly!
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

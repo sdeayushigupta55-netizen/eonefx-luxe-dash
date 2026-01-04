@@ -143,7 +143,7 @@ export default function Country() {
       <div className="flex justify-between items-center mt-4 text-gray-400 text-sm">
         <p>
           Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
-          {totalItems} results
+          {totalItems} Entries
         </p>
 
         <div className="flex items-center gap-2">

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, List, X, AlertTriangle } from "lucide-react";
+import { Pencil, Trash2, List, X, AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
 import { InputField } from "@/components/form/InputField";
 import { SelectField } from "@/components/form/SelectField";
 import { ColorInputWithPopover } from "@/components/form/ColorInputWithPopover";
@@ -71,6 +71,9 @@ function DeleteModal({
 export default function LeadSettings() {
   const [activeTab, setActiveTab] = useState("lead-source");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
   const [leadSources, setLeadSources] = useState<LeadSource[]>([
     { id: 1, name: "Email" },
     { id: 2, name: "Google" },
@@ -110,6 +113,21 @@ export default function LeadSettings() {
   ]);
 
   const [expandedPipeline, setExpandedPipeline] = useState<number | null>(null);
+
+  // Pagination calculations
+  const totalItems = leadSources.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = currentPage * pageSize;
+  const paginatedLeadSources = leadSources.slice(startIndex, endIndex);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
+  };
 
   // Modal states
   const [openSourceModal, setOpenSourceModal] = useState(false);
@@ -363,12 +381,12 @@ export default function LeadSettings() {
                 </tr>
               </thead>
               <tbody>
-                {leadSources.map((source, index) => (
+                {paginatedLeadSources.map((source, index) => (
                   <tr
                     key={source.id}
                     className="border-t border-border"
                   >
-                    <td className="px-4 py-3">{index + 1}</td>
+                    <td className="px-4 py-3">{startIndex + index + 1}</td>
                     <td className="px-4 py-3 font-medium">
                       {source.name}
                     </td>
@@ -396,6 +414,40 @@ export default function LeadSettings() {
             </table>
           </CardContent>
         </Card>
+      )}
+
+      {/* PAGINATION FOOTER FOR LEAD SOURCE */}
+      {activeTab === "lead-source" && (
+        <div className="flex justify-between items-center mt-4 text-muted-foreground text-sm">
+          <p>
+            Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+            {totalItems} Entries
+          </p>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+
+            <span className="text-foreground">
+              {currentPage} / {totalPages}
+            </span>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNext}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* ================= ADD / EDIT LEAD SOURCE MODAL ================= */}

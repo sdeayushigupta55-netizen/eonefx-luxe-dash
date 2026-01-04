@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pencil, Trash2, Plus, X } from "lucide-react";
+import { Pencil, Trash2, Plus, X, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -44,6 +44,9 @@ export default function UserRankings() {
   const [selectedRanking, setSelectedRanking] = useState<Ranking | null>(null);
   const [mode, setMode] = useState<"add" | "edit">("add");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
   // Form state
   const [form, setForm] = useState<any>({
     icon: "",
@@ -59,6 +62,21 @@ export default function UserRankings() {
     description: "",
     status: false,
   });
+
+  // Pagination calculations
+  const totalItems = rankings.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = currentPage * pageSize;
+  const paginatedData = rankings.slice(startIndex, endIndex);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
+  };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -210,7 +228,7 @@ export default function UserRankings() {
         <div className="overflow-auto flex-1">
           <table className="w-full text-left">
             <tbody>
-              {rankings.map((r) => (
+              {paginatedData.map((r) => (
                 <tr key={r.id} className="border-t">
                   <td className="px-6 py-4">{r.ranking}</td>
                   <td className="px-6 py-4">
@@ -256,9 +274,36 @@ export default function UserRankings() {
           </table>
         </div>
         
-        {/* Fixed Footer */}
-        <div className="px-6 py-4 text-sm text-muted-foreground border-t flex-shrink-0">
-          Showing 1 to {rankings.length} of {rankings.length} results
+        {/* PAGINATION FOOTER */}
+        <div className="px-6 py-4 border-t flex-shrink-0 flex justify-between items-center text-sm text-muted-foreground">
+          <p>
+            Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+            {totalItems} Entries
+          </p>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+
+            <span className="text-foreground">
+              {currentPage} / {totalPages}
+            </span>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNext}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

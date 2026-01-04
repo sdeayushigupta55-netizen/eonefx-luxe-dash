@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pencil, Trash2, Plus, X } from "lucide-react";
+import { Pencil, Trash2, Plus, X, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -62,6 +62,24 @@ export default function RoleAndPermission() {
   const [permissionGroups, setPermissionGroups] = useState(
     defaultPermissionGroups
   );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  // Pagination calculations
+  const totalItems = roles.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = currentPage * pageSize;
+  const paginatedRoles = roles.slice(startIndex, endIndex);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
+  };
 
   /* ---------- MODAL OPEN ---------- */
 
@@ -150,10 +168,10 @@ export default function RoleAndPermission() {
                 </td>
               </tr>
 
-              {roles.map((role, index) => (
+              {paginatedRoles.map((role, index) => (
                 <tr key={role} className="border-t">
                   <td className="px-6 py-4">
-                    {index + 2}
+                    {startIndex + index + 2}
                   </td>
                   <td className="px-6 py-4 font-medium">
                     {role}
@@ -187,6 +205,38 @@ export default function RoleAndPermission() {
           </table>
         </CardContent>
       </Card>
+
+      {/* FOOTER INFO + PAGINATION */}
+      <div className="flex justify-between items-center mt-4 text-muted-foreground text-sm">
+        <p>
+          Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+          {totalItems} Entries
+        </p>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft size={16} />
+          </Button>
+
+          <span className="text-foreground">
+            {currentPage} / {totalPages}
+          </span>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRight size={16} />
+          </Button>
+        </div>
+      </div>
 
       {/* ================= MODAL ================= */}
 

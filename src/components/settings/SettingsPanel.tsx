@@ -244,19 +244,23 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
       // Communications
       case "email":
-        return <CommunicationsSettings defaultTab="email" />;
+        return <CommunicationsSettings defaultTab="email" onNavigateToIntegrationsSms={() => setActivePage("SMS Settings")} onNavigateToIntegrationsNotification={() => setActivePage("Notification Settings")} />;
       case "collabtools":
-        return <CommunicationsSettings defaultTab="collabtools" />;
+        return <CommunicationsSettings defaultTab="collabtools" onNavigateToIntegrationsSms={() => setActivePage("SMS Settings")} onNavigateToIntegrationsNotification={() => setActivePage("Notification Settings")} />;
       case "emailtemplates":
-        return <CommunicationsSettings defaultTab="emailtemplates" />;
+        return <CommunicationsSettings defaultTab="emailtemplates" onNavigateToIntegrationsSms={() => setActivePage("SMS Settings")} onNavigateToIntegrationsNotification={() => setActivePage("Notification Settings")} />;
       case "smstemplates":
-        return <CommunicationsSettings defaultTab="smstemplates" />;
+        return <CommunicationsSettings 
+          defaultTab="smstemplates" 
+          onNavigateToIntegrationsSms={() => setActivePage("SMS Settings")}
+          onNavigateToIntegrationsNotification={() => setActivePage("Notification Settings")}
+        />;
       case "notificationtemplates":
-        return <CommunicationsSettings defaultTab="notificationtemplates" />;
+        return <CommunicationsSettings defaultTab="notificationtemplates" onNavigateToIntegrationsSms={() => setActivePage("SMS Settings")} onNavigateToIntegrationsNotification={() => setActivePage("Notification Settings")} />;
       case "smtpmonitoring":
-        return <CommunicationsSettings defaultTab="smtpmonitoring" />;
+        return <CommunicationsSettings defaultTab="smtpmonitoring" onNavigateToIntegrationsSms={() => setActivePage("SMS Settings")} onNavigateToIntegrationsNotification={() => setActivePage("Notification Settings")} />;
       case "forexdailyreporting":
-        return <CommunicationsSettings defaultTab="forexdailyreporting" />;
+        return <CommunicationsSettings defaultTab="forexdailyreporting" onNavigateToIntegrationsSms={() => setActivePage("SMS Settings")} onNavigateToIntegrationsNotification={() => setActivePage("Notification Settings")} />;
 
       // Data Management
       case "import":

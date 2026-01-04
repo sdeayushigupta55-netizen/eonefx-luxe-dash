@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, ListFilter, FileDown, X } from "lucide-react";
+import { Pencil, Trash2, ListFilter, FileDown, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { InputField } from "@/components/form/InputField";
 import { SelectField } from "@/components/form/SelectField";
 import { StatusToggle } from "@/components/form/Status";
@@ -55,6 +55,9 @@ export default function Comments() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
   const [title, setTitle] = useState("");
   const [type, setType] = useState("Deposit");
   const [description, setDescription] = useState("");
@@ -71,6 +74,21 @@ export default function Comments() {
     "Withdraw Funds": "bg-gray-500/10 text-white border border-gray-500/20",
     "Withdraw Account": "bg-gray-500/10 text-white border border-gray-500/20",
     KYC: "bg-gray-500/10 text-white border border-gray-500/20",
+  };
+
+  // Pagination calculations
+  const totalItems = comments.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = currentPage * pageSize;
+  const paginatedData = comments.slice(startIndex, endIndex);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
   };
 
   const handleAddComment = () => {
@@ -169,7 +187,7 @@ export default function Comments() {
                 </tr>
               </thead>
               <tbody>
-                {comments.map((comment, index) => (
+                {paginatedData.map((comment, index) => (
                   <tr
                     key={index}
                     className="border-t border-border hover:bg-muted/30 text-muted-foreground"
@@ -196,14 +214,14 @@ export default function Comments() {
                       <Button
                         size="icon"
                         variant="outline"
-                        onClick={() => handleOpenEditModal(index)}
+                        onClick={() => handleOpenEditModal(startIndex + index)}
                       >
                         <Pencil size={14} />
                       </Button>
                       <Button
                         size="icon"
                         variant="destructive"
-                        onClick={() => handleDeleteComment(index)}
+                        onClick={() => handleDeleteComment(startIndex + index)}
                       >
                         <Trash2 size={14} />
                       </Button>
@@ -214,6 +232,38 @@ export default function Comments() {
             </table>
           </CardContent>
         </Card>
+
+        {/* FOOTER INFO + PAGINATION */}
+        <div className="flex justify-between items-center mt-4 text-muted-foreground text-sm">
+          <p>
+            Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+            {totalItems} Entries
+          </p>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+
+            <span className="text-foreground">
+              {currentPage} / {totalPages}
+            </span>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNext}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
+        </div>
 
         {/* Add Comment Modal */}
         {openAddModal && (

@@ -187,25 +187,25 @@ export default function DocPlatformSocialLinks() {
                   {activeTab === "Platform Links" && <td >{row.platform}</td>}
                   <td className="p-3">
                     <Badge
-                        variant="outline"
-                        className={`${statusClasses[row.status ? "Active" : "Disabled"]} rounded-md px-2 py-0.5`}
-                      >
+                      variant="outline"
+                      className={`${statusClasses[row.status ? "Active" : "Disabled"]} rounded-md px-2 py-0.5`}
+                    >
                       {row.status ? "Active" : "Disabled"}
                     </Badge>
                   </td>
                   {activeTab !== "Social Links" && (
                     <td className="p-3 flex flex-wrap gap-2">
                       <Button
-                      size="icon"
-                      variant="outline"
-                      onClick={() => openEditModal(row)}
-                    >
-                      <Pencil size={14} />
-                    </Button>
+                        size="icon"
+                        variant="outline"
+                        onClick={() => openEditModal(row)}
+                      >
+                        <Pencil size={14} />
+                      </Button>
 
-                    <Button size="icon" variant="destructive" onClick={() => { setDeleteItem(row); setDeleteOpen(true); }}>
-                      <Trash2 size={14} />
-                    </Button>
+                      <Button size="icon" variant="destructive" onClick={() => { setDeleteItem(row); setDeleteOpen(true); }}>
+                        <Trash2 size={14} />
+                      </Button>
                     </td>
                   )}
                   {activeTab === "Social Links" && (
@@ -221,7 +221,11 @@ export default function DocPlatformSocialLinks() {
 
         {/* PAGINATION */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 text-sm text-muted-foreground gap-2">
-          <span>Showing {(currentPage - 1) * itemsPerPage + 1} – {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}</span>
+
+
+          <span>Showing <span className="font-semibold text-heading">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-semibold text-heading">{Math.min(currentPage * itemsPerPage, totalItems)}</span> of <span className="font-semibold text-heading">{totalItems}</span> Entries
+          </span>
+
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}><ChevronLeft size={16} /></Button>
             <span>{currentPage}/{totalPages}</span>
@@ -231,68 +235,68 @@ export default function DocPlatformSocialLinks() {
 
         {/* ================= ADD / UPDATE MODAL ================= */}
         {/* ================= ADD / UPDATE MODAL ================= */}
-{formOpen && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2">
-    <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl rounded-xl bg-card border border-border p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">
-          {editItem ? `Update ${activeTab.slice(0, -1)}` : `Add New ${activeTab.slice(0, -1)}`}
-        </h2>
-        <Button size="icon" variant="ghost" onClick={() => setFormOpen(false)}>
-          <X size={18} />
-        </Button>
-      </div>
+        {formOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2">
+            <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl rounded-xl bg-card border border-border p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold">
+                  {editItem ? `Update ${activeTab.slice(0, -1)}` : `Add New ${activeTab.slice(0, -1)}`}
+                </h2>
+                <Button size="icon" variant="ghost" onClick={() => setFormOpen(false)}>
+                  <X size={18} />
+                </Button>
+              </div>
 
-      <div className="space-y-4">
-        <InputField
-          label="Title"
-          tooltip="Enter the document title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Document Title"
-        />
-        {error && <p className="text-red-500 text-xs">{error}</p>}
+              <div className="space-y-4">
+                <InputField
+                  label="Title"
+                  tooltip="Enter the document title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Document Title"
+                />
+                {error && <p className="text-red-500 text-xs">{error}</p>}
 
-        <InputField
-          label="URL"
-          tooltip="Enter the full document URL"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Document Link"
-        />
+                <InputField
+                  label="URL"
+                  tooltip="Enter the full document URL"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="Document Link"
+                />
 
-        {activeTab === "Platform Links" && (
-          <>
-            <InputField
-              label="Operation"
-              tooltip="Enter operation type (Windows/Mac)"
-              value={operation}
-              onChange={(e) => setOperation(e.target.value)}
-            />
-            <InputField
-              label="Platform"
-              tooltip="Enter platform (MT4/MT5)"
-              value={platform}
-              onChange={(e) => setPlatform(e.target.value)}
-            />
-          </>
+                {activeTab === "Platform Links" && (
+                  <>
+                    <InputField
+                      label="Operation"
+                      tooltip="Enter operation type (Windows/Mac)"
+                      value={operation}
+                      onChange={(e) => setOperation(e.target.value)}
+                    />
+                    <InputField
+                      label="Platform"
+                      tooltip="Enter platform (MT4/MT5)"
+                      value={platform}
+                      onChange={(e) => setPlatform(e.target.value)}
+                    />
+                  </>
+                )}
+
+                <StatusToggle
+                  label="Status"
+                  status={status ? "Active" : "Disabled"}
+                  onChange={(s) => setStatus(s === "Active")}
+                  tooltip="Enable or disable this document link"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+                <Button variant="destructive" onClick={() => setFormOpen(false)}>Cancel</Button>
+                <Button onClick={handleSave}>{editItem ? "Update" : "Add"}</Button>
+              </div>
+            </div>
+          </div>
         )}
-
-        <StatusToggle
-          label="Status"
-          status={status ? "Active" : "Disabled"}
-          onChange={(s) => setStatus(s === "Active")}
-          tooltip="Enable or disable this document link"
-        />
-      </div>
-
-      <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-        <Button variant="destructive" onClick={() => setFormOpen(false)}>Cancel</Button>
-        <Button onClick={handleSave}>{editItem ? "Update" : "Add"}</Button>
-      </div>
-    </div>
-  </div>
-)}
 
 
         {/* ================= DELETE MODAL ================= */}

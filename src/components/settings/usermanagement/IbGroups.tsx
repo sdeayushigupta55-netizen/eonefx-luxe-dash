@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, ListFilter, FileDown, X, AlertTriangle } from "lucide-react";
+import { Pencil, Trash2, ListFilter, FileDown, X, AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
 import { InputField } from "@/components/form/InputField";
 import { StatusToggle } from "@/components/form/Status";
 import RichTextEditor from "@/components/form/RichTextEditor"
@@ -66,6 +66,9 @@ export default function IbGroups({
     },
   ]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
   const attachedUsers = [
     { name: "user brokeret", username: "user13526", email: "user@brokeret.com" },
     { name: "sufyan aslam", username: "sufyanaslam8725", email: "sufyanhashmi3021@gmail.com" },
@@ -101,6 +104,21 @@ export default function IbGroups({
   const statusClasses: Record<string, string> = {
     Active: "bg-[#0d2e1e] text-[#4ade80] border border-[#1a5e41]",
     Disabled: "bg-[#2e0f0f] text-[#f87171] border border-[#7f1d1d]",
+  };
+
+  // Pagination calculations
+  const totalItems = ibGroups.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = currentPage * pageSize;
+  const paginatedData = ibGroups.slice(startIndex, endIndex);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
   };
 
   /* ------------------ Add Branch ------------------ */
@@ -212,7 +230,7 @@ export default function IbGroups({
               </tr>
             </thead>
             <tbody>
-              {ibGroups.map((ibgroup, index) => (
+              {paginatedData.map((ibgroup, index) => (
                 <tr key={index} className="border-t border-border">
                   <td className="p-3">{ibgroup.groupname}</td>
                   <td className="p-3">
@@ -269,6 +287,38 @@ export default function IbGroups({
           </table>
         </CardContent>
       </Card>
+
+      {/* FOOTER INFO + PAGINATION */}
+      <div className="flex justify-between items-center mt-4 text-muted-foreground text-sm">
+        <p>
+          Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+          {totalItems} Entries
+        </p>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft size={16} />
+          </Button>
+
+          <span className="text-foreground">
+            {currentPage} / {totalPages}
+          </span>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRight size={16} />
+          </Button>
+        </div>
+      </div>
 
       {/* Add Branch Modal */}
       {openAddModal && (

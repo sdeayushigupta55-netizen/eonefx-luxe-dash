@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { InputField } from "@/components/form/InputField";
 import { SelectField } from "@/components/form/SelectField";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2, X, ChevronLeft, ChevronRight } from "lucide-react";
 import RiskBook from "../Risk Book/RiskBook";
 
 const tabs = ["Meta Trader 5", "Manual"] as const;
@@ -61,6 +61,42 @@ export default function PlatformGroups() {
   const [manualGroups, setManualGroups] = useState<ManualGroup[]>([
     { id: 1, group: "Custom Group 1", currency: "USD", digits: 2, platform: "MT5", status: "Active" },
   ]);
+
+  // Pagination for Meta Trader 5
+  const [currentPageMT5, setCurrentPageMT5] = useState(1);
+  const pageSizeMT5 = 10;
+
+  const totalItemsMT5 = mt5Groups.length;
+  const totalPagesMT5 = Math.ceil(totalItemsMT5 / pageSizeMT5);
+  const startIndexMT5 = (currentPageMT5 - 1) * pageSizeMT5;
+  const endIndexMT5 = currentPageMT5 * pageSizeMT5;
+  const paginatedMT5Data = mt5Groups.slice(startIndexMT5, endIndexMT5);
+
+  const handleNextMT5 = () => {
+    if (currentPageMT5 < totalPagesMT5) setCurrentPageMT5((p) => p + 1);
+  };
+
+  const handlePrevMT5 = () => {
+    if (currentPageMT5 > 1) setCurrentPageMT5((p) => p - 1);
+  };
+
+  // Pagination for Manual
+  const [currentPageManual, setCurrentPageManual] = useState(1);
+  const pageSizeManual = 10;
+
+  const totalItemsManual = manualGroups.length;
+  const totalPagesManual = Math.ceil(totalItemsManual / pageSizeManual);
+  const startIndexManual = (currentPageManual - 1) * pageSizeManual;
+  const endIndexManual = currentPageManual * pageSizeManual;
+  const paginatedManualData = manualGroups.slice(startIndexManual, endIndexManual);
+
+  const handleNextManual = () => {
+    if (currentPageManual < totalPagesManual) setCurrentPageManual((p) => p + 1);
+  };
+
+  const handlePrevManual = () => {
+    if (currentPageManual > 1) setCurrentPageManual((p) => p - 1);
+  };
 
   const toggleEnabled = (id: number) => {
     setMt5Groups(groups =>
@@ -170,7 +206,7 @@ export default function PlatformGroups() {
             </tr>
           </thead>
           <tbody>
-            {mt5Groups.map((group) => (
+            {paginatedMT5Data.map((group) => (
               <tr
                 key={group.id}
                 className="border-b border-border hover:bg-muted/20 transition"
@@ -191,6 +227,18 @@ export default function PlatformGroups() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-between items-center mt-4 px-3 pb-4 text-muted-foreground text-sm">
+          <p>Showing {startIndexMT5 + 1} to {Math.min(endIndexMT5, totalItemsMT5)} of {totalItemsMT5} Entries</p>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handlePrevMT5} disabled={currentPageMT5 === 1}>
+              <ChevronLeft size={16} />
+            </Button>
+            <span className="text-foreground">{currentPageMT5} / {totalPagesMT5}</span>
+            <Button variant="outline" size="sm" onClick={handleNextMT5} disabled={currentPageMT5 === totalPagesMT5}>
+              <ChevronRight size={16} />
+            </Button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
@@ -210,7 +258,7 @@ export default function PlatformGroups() {
             </tr>
           </thead>
           <tbody>
-            {manualGroups.map((group, index) => (
+            {paginatedManualData.map((group, index) => (
               <tr
                 key={group.id}
                 className="border-b border-border hover:bg-muted/20 transition"
@@ -221,13 +269,13 @@ export default function PlatformGroups() {
                 <td className="p-3">{group.platform}</td>
                 <td className="p-3">{group.status}</td>
                 <td className="p-3 flex gap-2">
-                  <Button size="icon" variant="outline" onClick={() => handleEdit(index)}>
+                  <Button size="icon" variant="outline" onClick={() => handleEdit(startIndexManual + index)}>
                     <Pencil size={14} />
                   </Button>
                   <Button
                     size="icon"
                     variant="destructive"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(startIndexManual + index)}
                   >
                     <Trash2 size={14} />
                   </Button>
@@ -236,6 +284,18 @@ export default function PlatformGroups() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-between items-center mt-4 px-3 pb-4 text-muted-foreground text-sm">
+          <p>Showing {startIndexManual + 1} to {Math.min(endIndexManual, totalItemsManual)} of {totalItemsManual} Entries</p>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handlePrevManual} disabled={currentPageManual === 1}>
+              <ChevronLeft size={16} />
+            </Button>
+            <span className="text-foreground">{currentPageManual} / {totalPagesManual}</span>
+            <Button variant="outline" size="sm" onClick={handleNextManual} disabled={currentPageManual === totalPagesManual}>
+              <ChevronRight size={16} />
+            </Button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
