@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { SidebarProvider, useSidebar } from "@/contexts/SidebarContext";
+import { RiskHubPanel } from "@/components/riskhub/RiskHubPanel";
+import { IBGroupsPanel } from "@/components/ib-groups";
 import { cn } from "@/lib/utils";
 
 interface DashboardLayoutProps {
@@ -9,10 +12,15 @@ interface DashboardLayoutProps {
 
 function DashboardContent({ children }: DashboardLayoutProps) {
   const { isCollapsed, isMobile } = useSidebar();
+  const [isRiskHubOpen, setIsRiskHubOpen] = useState(false);
+  const [isIBGroupsOpen, setIsIBGroupsOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
+      <Sidebar 
+        onOpenRiskHub={() => setIsRiskHubOpen(true)} 
+        onOpenIBGroups={() => setIsIBGroupsOpen(true)}
+      />
       <div
         className={cn(
           "transition-all duration-300 ease-in-out",
@@ -20,9 +28,11 @@ function DashboardContent({ children }: DashboardLayoutProps) {
           isMobile ? "ml-0" : isCollapsed ? "ml-[70px]" : "ml-64"
         )}
       >
-        <Header />
+        <Header onOpenRiskHub={() => setIsRiskHubOpen(true)} />
         <main className="p-4 sm:p-6">{children}</main>
       </div>
+      <RiskHubPanel isOpen={isRiskHubOpen} onClose={() => setIsRiskHubOpen(false)} />
+      <IBGroupsPanel isOpen={isIBGroupsOpen} onClose={() => setIsIBGroupsOpen(false)} />
     </div>
   );
 }

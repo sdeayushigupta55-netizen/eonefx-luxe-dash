@@ -1,0 +1,13 @@
+export { IBGroupsPanel } from "./IBGroupsPanel";
+export { IBGroupsSidebar } from "./IBGroupsSidebar";
+export { IBGroupsContent } from "./IBGroupsContent";
+export { CustomerContent } from "./CustomerContent";
+export { RolesPermissionsContent } from "./RolesPermissionsContent";
+export { LeadSettingsContent } from "./LeadSettingsContent";
+export { KYCComplianceContent } from "./KYCComplianceContent";
+export { UserRankingsContent } from "./UserRankingsContent";
+export { AddIBGroupModal } from "./AddIBGroupModal";
+export { EditIBGroupModal } from "./EditIBGroupModal";
+export { DeleteIBGroupModal } from "./DeleteIBGroupModal";
+export * from "./ibGroupsData";
+export * from "./sidebarPagesData";

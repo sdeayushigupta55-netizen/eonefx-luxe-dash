@@ -1,0 +1,273 @@
+export interface ActivityLog {
+  id: string;
+  user: {
+    name: string;
+    email: string;
+    avatar?: string;
+    avatarColor?: string;
+  };
+  actorType?: "Admin" | "User";
+  activity: string;
+  activityType: "success" | "warning" | "info" | "default";
+  location: string;
+  time: string;
+}
+
+export const allActivitiesData: ActivityLog[] = [
+  {
+    id: "1",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    actorType: "Admin",
+    activity: "Admin Login",
+    activityType: "info",
+    location: "Pakistan",
+    time: "Dec 17 2025 09:50",
+  },
+  {
+    id: "2",
+    user: { name: "Test New", email: "richirj43743@gmail.com", avatarColor: "bg-red-500" },
+    actorType: "User",
+    activity: "User Login",
+    activityType: "success",
+    location: "Pakistan",
+    time: "Dec 17 2025 09:51",
+  },
+  {
+    id: "3",
+    user: { name: "Test New", email: "richirj43743@gmail.com", avatarColor: "bg-red-500" },
+    actorType: "User",
+    activity: "Forex Account Create",
+    activityType: "success",
+    location: "Pakistan",
+    time: "Dec 17 2025 09:52",
+  },
+  {
+    id: "4",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    actorType: "Admin",
+    activity: "Admin Login",
+    activityType: "info",
+    location: "Pakistan",
+    time: "Dec 17 2025 10:04",
+  },
+  {
+    id: "5",
+    user: { name: "Test New", email: "richirj43743@gmail.com", avatarColor: "bg-red-500" },
+    actorType: "User",
+    activity: "Deposit",
+    activityType: "success",
+    location: "Pakistan",
+    time: "Dec 17 2025 11:27",
+  },
+  {
+    id: "6",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    actorType: "Admin",
+    activity: "Deposit",
+    activityType: "warning",
+    location: "Pakistan",
+    time: "Dec 17 2025 11:30",
+  },
+  {
+    id: "7",
+    user: { name: "Test New", email: "richirj43743@gmail.com", avatarColor: "bg-red-500" },
+    actorType: "User",
+    activity: "Ticket Create",
+    activityType: "success",
+    location: "Pakistan",
+    time: "Dec 17 2025 11:37",
+  },
+  {
+    id: "8",
+    user: { name: "Test New", email: "richirj43743@gmail.com", avatarColor: "bg-red-500" },
+    actorType: "User",
+    activity: "Ticket Close",
+    activityType: "default",
+    location: "Pakistan",
+    time: "Dec 17 2025 11:38",
+  },
+  {
+    id: "9",
+    user: { name: "Test New", email: "richirj43743@gmail.com", avatarColor: "bg-red-500" },
+    actorType: "User",
+    activity: "Withdraw Account Created",
+    activityType: "success",
+    location: "Pakistan",
+    time: "Dec 17 2025 11:46",
+  },
+  {
+    id: "10",
+    user: { name: "Test New", email: "richirj43743@gmail.com", avatarColor: "bg-red-500" },
+    actorType: "User",
+    activity: "Withdraw Account Created",
+    activityType: "success",
+    location: "Pakistan",
+    time: "Dec 17 2025 11:47",
+  },
+];
+
+export const userActivitiesData: ActivityLog[] = [
+  {
+    id: "1",
+    user: { name: "User Brokeret", email: "user@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 07 2026 03:45",
+  },
+  {
+    id: "2",
+    user: { name: "User Brokeret", email: "user@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 05 2026 05:48",
+  },
+  {
+    id: "3",
+    user: { name: "User Brokeret", email: "user@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 02 2026 03:26",
+  },
+  {
+    id: "4",
+    user: { name: "User Brokeret", email: "user@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Dec 26 2025 08:13",
+  },
+  {
+    id: "5",
+    user: { name: "User Brokeret", email: "user@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Dec 24 2025 06:46",
+  },
+  {
+    id: "6",
+    user: { name: "User Brokeret", email: "user@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Dec 23 2025 11:14",
+  },
+  {
+    id: "7",
+    user: { name: "User Brokeret", email: "user@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Dec 23 2025 07:00",
+  },
+  {
+    id: "8",
+    user: { name: "Racheal R", email: "rachealjameel@gmail.com", avatarColor: "bg-amber-500" },
+    activity: "Theme Update",
+    activityType: "warning",
+    location: "Pakistan",
+    time: "Dec 22 2025 07:46",
+  },
+  {
+    id: "9",
+    user: { name: "User Brokeret", email: "user@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Dec 22 2025 07:35",
+  },
+  {
+    id: "10",
+    user: { name: "Test New", email: "richirj43743@gmail.com", avatarColor: "bg-red-500" },
+    activity: "User Logout",
+    activityType: "success",
+    location: "Pakistan",
+    time: "Dec 19 2025 07:47",
+  },
+];
+
+export const staffActivitiesData: ActivityLog[] = [
+  {
+    id: "1",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "Pakistan",
+    time: "Jan 06 2026 12:41",
+  },
+  {
+    id: "2",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 04 2026 02:24",
+  },
+  {
+    id: "3",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 04 2026 07:55",
+  },
+  {
+    id: "4",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 03 2026 05:11",
+  },
+  {
+    id: "5",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 02 2026 06:10",
+  },
+  {
+    id: "6",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 01 2026 02:30",
+  },
+  {
+    id: "7",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Jan 01 2026 06:59",
+  },
+  {
+    id: "8",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Dec 31 2025 11:29",
+  },
+  {
+    id: "9",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Dec 31 2025 07:25",
+  },
+  {
+    id: "10",
+    user: { name: "Super Admin", email: "admin@brokeret.com", avatarColor: "bg-amber-500" },
+    activity: "Admin Login",
+    activityType: "info",
+    location: "India",
+    time: "Dec 30 2025 05:00",
+  },
+];

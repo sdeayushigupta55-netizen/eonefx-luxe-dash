@@ -4,12 +4,20 @@ import { Button } from "@/components/ui/button";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
 import { QuickActionsDropdown } from "@/components/header/QuickActionsDropdown";
+import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
+import { ProfileDropdown } from "@/components/header/ProfileDropdown";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { cn } from "@/lib/utils";
+import adminAvatar from "@/assets/admin-avatar.png";
 
-export function Header() {
+interface HeaderProps {
+  onOpenRiskHub?: () => void;
+}
+
+export function Header({ onOpenRiskHub }: HeaderProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { isCollapsed, isMobile, toggleSidebar } = useSidebar();
 
   return (
@@ -83,16 +91,23 @@ export function Header() {
             )}
           </Button>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-          >
-            <Bell className="h-5 w-5" />
-            <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-destructive text-[9px] sm:text-[10px] font-bold text-destructive-foreground">
-              34
-            </span>
-          </Button>
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+              className="relative h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+            >
+              <Bell className="h-5 w-5" />
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-destructive text-[9px] sm:text-[10px] font-bold text-destructive-foreground">
+                34
+              </span>
+            </Button>
+            <NotificationsDropdown 
+              isOpen={isNotificationsOpen} 
+              onClose={() => setIsNotificationsOpen(false)} 
+            />
+          </div>
 
           <Button
             variant="ghost"
@@ -103,14 +118,17 @@ export function Header() {
             <Settings className="h-5 w-5" />
           </Button>
 
-          {/* Avatar */}
-          <div className="ml-1 sm:ml-2 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary">
-            <span className="text-xs sm:text-sm font-bold text-primary-foreground">JD</span>
-          </div>
+          {/* Avatar with Profile Dropdown */}
+          <ProfileDropdown>
+            <button className="ml-1 sm:ml-2 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full overflow-hidden cursor-pointer hover:opacity-90 transition-opacity ring-2 ring-primary/20">
+              <img src={adminAvatar} alt="Admin" className="h-full w-full object-cover" />
+            </button>
+          </ProfileDropdown>
 
           <Button
             variant="ghost"
             size="icon"
+            onClick={onOpenRiskHub}
             className="h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted hidden sm:flex"
           >
             <Grid3X3 className="h-5 w-5" />
