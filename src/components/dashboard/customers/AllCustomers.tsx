@@ -23,7 +23,7 @@ export default function AllCustomers() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold text-foreground">{getTabTitle(activeTab)}</h1>
-          <Button onClick={() => navigate("/customers/add")} className="bg-card hover:bg-muted text-foreground border border-border">
+          <Button onClick={() => navigate("/customers/add")} >
             <Plus className="h-4 w-4 mr-2" />Add Customer
           </Button>
         </div>

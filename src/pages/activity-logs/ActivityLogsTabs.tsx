@@ -30,7 +30,7 @@ export function ActivityLogsTabs() {
                 "rounded-md",
                 location.pathname === tab.href
                   ? "bg-primary text-primary-foreground"
-                  : "bg-card border-border text-muted-foreground hover:text-foreground"
+                  : "bg-card border-border hover:text-foreground"
               )}
             >
               {tab.label}

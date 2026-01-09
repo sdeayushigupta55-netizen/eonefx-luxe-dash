@@ -67,34 +67,34 @@ export default function CompanyForms() {
         <h1 className="text-2xl font-semibold text-foreground mb-6">{getStatusTitle(activeTab)}</h1>
 
         {/* Filter Section */}
-        <div className="bg-card rounded-lg border border-border p-4 mb-6">
-          <div className="flex flex-col md:flex-row gap-4 items-end">
-            <div className="flex-1">
-              <Input
-                placeholder="Search by Name, Username or Email"
-                className="bg-background border-border"
-              />
-            </div>
-            <div className="flex-1">
-              <div className="relative">
-                <Input
-                  placeholder="Select Date Range"
-                  className="bg-background border-border pr-10"
-                />
-                <X className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground cursor-pointer" />
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">Select start and end dates for range</p>
-            </div>
-            <Button variant="outline" className="gap-2">
-              <Filter className="h-4 w-4" />
-              Apply Filter
-            </Button>
-            <Button variant="outline" className="gap-2">
-              <Download className="h-4 w-4" />
-              Export
-            </Button>
+             <div className="bg-card rounded-lg border border-border p-4 mb-6">
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex-1">
+            <Input
+              placeholder="Search by Name, Username or Email"
+              className="bg-background border-border"
+            />
           </div>
+          <div className="flex-1">
+            <div className="relative">
+              <Input
+                placeholder="Select Date Range"
+                className="bg-background border-border pr-10 mt-4"
+              />
+              <X className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground cursor-pointer" />
+            </div>
+            <p className="text-xs text-muted-foreground mt-1 md:mt-0">Select start and end dates for range</p>
+          </div>
+          <Button variant="outline" className="gap-2 min-w-[120px]">
+            <Filter className="h-4 w-4" />
+            Apply Filter
+          </Button>
+          <Button variant="outline" className="gap-2 min-w-[100px]">
+            <Download className="h-4 w-4" />
+            Export
+          </Button>
         </div>
+      </div>
 
         {/* Tabs */}
         <div className="flex gap-6 mb-6">

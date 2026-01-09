@@ -151,8 +151,8 @@ const WithdrawAccountsApproved = () => {
         {/* Header Row with Title and Add Button */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold text-foreground">{getPageTitle()}</h1>
-          <Button className="bg-card hover:bg-muted text-foreground border border-border">
-            <Plus className="h-4 w-4 mr-2" />Add Withdraw Account
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />Add Withdraw Account
           </Button>
         </div>
 

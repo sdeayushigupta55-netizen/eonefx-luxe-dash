@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Plus, RefreshCw, Mail, Settings, User, Monitor, Users, DollarSign, Check, X } from "lucide-react";
+import { Plus, RefreshCw, Mail, Settings, User, Monitor, Users, DollarSign, Check, X, Info, UserPlus, Wallet, CreditCard, UserMinus, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockCustomers } from "@/components/dashboard/customers/customersData";
 import {
@@ -21,16 +21,16 @@ import {
 } from "@/components/ui/dialog";
 import { OverviewTab } from "./OverviewTab"
 import AccountsTab from "./AccountTab"
-import KYCTab  from "./KYCTab";
-import  PartnerTab  from "./PartnerTab";
+import KYCTab from "./KYCTab";
+import PartnerTab from "./PartnerTab";
 import TransactionsTab from "./TransactionsTab";
-import IBBonusTab  from "./IBBonusTab";
+import IBBonusTab from "./IBBonusTab";
 import DirectReferralsTab from "./DirectReferralsTab "
-import  NetworkTab  from "./NetworkTab";
-import  TicketTab  from "./TicketTab";
-import  AddNoteTab from "./AddNoteTab";
-import  SecurityTab  from "./SecurityTab";
-import  ActivitiesTab from "./ActivitiesTab";
+import NetworkTab from "./NetworkTab";
+import TicketTab from "./TicketTab";
+import AddNoteTab from "./AddNoteTab";
+import SecurityTab from "./SecurityTab";
+import ActivitiesTab from "./ActivitiesTab";
 const tabs = [
   "Overview", "Accounts", "KYC", "Partner", "Transactions", "IB Bonus",
   "Direct Referrals", "Network", "Ticket", "Add Note", "Security", "Activities"
@@ -41,6 +41,19 @@ export function CustomerDetail() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Overview");
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+  const [isMailModalOpen, setIsMailModalOpen] = useState(false);
+  const [mailSubject, setMailSubject] = useState("");
+  const [mailBody, setMailBody] = useState("");
+  const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false);
+  const [isBonusModalOpen, setIsBonusModalOpen] = useState(false);
+  const [balanceType, setBalanceType] = useState<"add" | "subtract">("add");
+  const [selectedAccount, setSelectedAccount] = useState("");
+
+
+  const [amount, setAmount] = useState("");
+  const [comment, setComment] = useState("");
+ const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [adminKey, setAdminKey] = useState("");
 
   // Find customer from mock data
   const customer = mockCustomers.all.find(c => c.id === Number(customerId)) || {
@@ -59,6 +72,8 @@ export function CustomerDetail() {
   };
 
   const [firstName, lastName] = customer.name.split(" ");
+
+ 
 
   return (
     <DashboardLayout>
@@ -106,23 +121,329 @@ export function CustomerDetail() {
 
                 {/* Quick Actions */}
                 <div className="flex justify-center gap-2 mb-6">
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsMailModalOpen(true)}>
                     <Mail className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <Settings className="h-4 w-4" />
+                    <UserPlus className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <User className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsBalanceModalOpen(true)}>
+                    <Wallet className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <Monitor className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsBonusModalOpen(true)}>
+                    <CreditCard className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <Users className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8"  onClick={() => setIsDeleteModalOpen(true)}>
+                    <UserMinus className="h-4 w-4" />
                   </Button>
                 </div>
+                {/* Send Mail Modal */}
+                <Dialog open={isMailModalOpen} onOpenChange={setIsMailModalOpen}>
+                  <DialogContent className="bg-card border-border max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle className="text-foreground text-xl">
+                        Send Mail To {customer.name}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <form
+                      onSubmit={e => {
+                        e.preventDefault();
+                        // handle send mail logic here
+                        setIsMailModalOpen(false);
+                        setMailSubject("");
+                        setMailBody("");
+                      }}
+                      className="space-y-6"
+                    >
+                      <div>
+                        <label className="block text-base font-medium text-foreground mb-1">
+                          Subject <span><Info className="inline h-4 w-4" /></span>
+                        </label>
+                        <Input
+                          value={mailSubject}
+                          onChange={e => setMailSubject(e.target.value)}
+                          className="w-full"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-base font-medium text-foreground mb-1">
+                          Email Details <span><Info className="inline h-4 w-4" /></span>
+                        </label>
+                        <Textarea
+                          value={mailBody}
+                          onChange={e => setMailBody(e.target.value)}
+                          className="w-full min-h-[120px]"
+                          required
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          type="submit"
 
+                        >
+                          Send Email
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          type="button"
+                          onClick={() => setIsMailModalOpen(false)}
+                        >
+                          <X className="h-4 w-4 mr-2" />
+                          Close
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+                {/* Balance Add/Subtract balance Modal */}
+                <Dialog open={isBalanceModalOpen} onOpenChange={setIsBalanceModalOpen}>
+                  <DialogContent className="bg-card border-border max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle className="text-foreground text-xl">
+                        Balance Add Or Subtract
+                      </DialogTitle>
+                      <div className="text-muted-foreground text-base mt-1">
+                        Add or subtract balance from the user
+                      </div>
+                    </DialogHeader>
+                    <div className="flex mb-6">
+                      <Button
+                        className={`flex-1 rounded-none rounded-l-lg ${balanceType === "add"
+                          ? "bg-green text-white hover:bg-green hover:text-white"
+                          : "bg-muted/20 text-foreground hover:bg-muted/20 hover:text-foreground"
+                          }`}
+                        onClick={() => setBalanceType("add")}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        className={`flex-1 rounded-none rounded-r-lg ${balanceType === "subtract"
+                          ? "bg-red-500 text-foreground hover:bg-red-500 hover:text-foreground"
+                          : "bg-muted/20 text-foreground hover:bg-muted/20 hover:text-foreground"
+                          }`}
+                        onClick={() => setBalanceType("subtract")}
+                      >
+                        Subtract
+                      </Button>
+                    </div>
+                    <form
+                      onSubmit={e => {
+                        e.preventDefault();
+                        // handle balance logic here
+                        setIsBalanceModalOpen(false);
+                        setSelectedAccount("");
+                        setAmount("");
+                        setComment("");
+                        setBalanceType("add");
+                      }}
+                      className="space-y-6"
+                    >
+                      <div>
+                        <label className="block text-base font-medium text-foreground mb-1">
+                          Select Account <span><Info className="inline h-4 w-4" /></span>
+                        </label>
+                        <Select value={selectedAccount} onValueChange={setSelectedAccount}>
+                          <SelectTrigger className="w-full bg-background border-border">
+                            <SelectValue placeholder="Select Account" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="account1">Account 1</SelectItem>
+                            <SelectItem value="account2">Account 2</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-base font-medium text-foreground mb-1">
+                          Amount <span><Info className="inline h-4 w-4" /></span>
+                        </label>
+                        <div className="relative">
+                          <Input
+                            value={amount}
+                            onChange={e => setAmount(e.target.value)}
+                            className="w-full pr-14" // add right padding for the USD
+                            required
+                          />
+                          <span className="absolute inset-y-0 right-3 flex items-center text-muted-foreground font-medium pointer-events-none">
+                            USD
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-base font-medium text-foreground mb-1">
+                          Comment Message <span><Info className="inline h-4 w-4" /></span>
+                        </label>
+                        <Textarea
+                          value={comment}
+                          onChange={e => setComment(e.target.value)}
+                          className="w-full min-h-[80px]"
+                          placeholder="Comment Message"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <Button type="submit">
+                          ✓ Apply Now
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          type="button"
+                          onClick={() => setIsBalanceModalOpen(false)}
+                        >
+                          <X className="h-4 w-4 mr-2" />
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+                {/* Balance Add/Subtract Modal bonus */}
+                <Dialog open={isBonusModalOpen} onOpenChange={setIsBonusModalOpen}>
+                  <DialogContent className="bg-card border-border max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle className="text-foreground text-xl">
+                        Balance Add Or Subtract
+                      </DialogTitle>
+                      <div className="text-muted-foreground text-base mt-1">
+                        Add or subtract bonus from the user
+                      </div>
+                    </DialogHeader>
+                    <div className="flex mb-6">
+                      <Button
+                        className={`flex-1 rounded-none rounded-l-lg ${balanceType === "add"
+                          ? "bg-green text-white hover:bg-green hover:text-white"
+                          : "bg-muted/20 text-foreground hover:bg-muted/20 hover:text-foreground"
+                          }`}
+                        onClick={() => setBalanceType("add")}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        className={`flex-1 rounded-none rounded-r-lg ${balanceType === "subtract"
+                          ? "bg-red-500 text-foreground hover:bg-red-500 hover:text-foreground"
+                          : "bg-muted/20 text-foreground hover:bg-muted/20 hover:text-foreground"
+                          }`}
+                        onClick={() => setBalanceType("subtract")}
+                      >
+                        Subtract
+                      </Button>
+                    </div>
+                    <form
+                      onSubmit={e => {
+                        e.preventDefault();
+                        // handle balance logic here
+                        setIsBalanceModalOpen(false);
+                        setSelectedAccount("");
+                        setAmount("");
+                        setComment("");
+                        setBalanceType("add");
+                      }}
+                      className="space-y-6"
+                    >
+                      <div>
+                        <label className="block text-base font-medium text-foreground mb-1">
+                          Select Account <span><Info className="inline h-4 w-4" /></span>
+                        </label>
+                        <Select value={selectedAccount} onValueChange={setSelectedAccount}>
+                          <SelectTrigger className="w-full bg-background border-border">
+                            <SelectValue placeholder="Select Account" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="account1">Account 1</SelectItem>
+                            <SelectItem value="account2">Account 2</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-base font-medium text-foreground mb-1">
+                          Amount <span><Info className="inline h-4 w-4" /></span>
+                        </label>
+                        <div className="relative">
+                          <Input
+                            value={amount}
+                            onChange={e => setAmount(e.target.value)}
+                            className="w-full pr-14" // add right padding for the USD
+                            required
+                          />
+                          <span className="absolute inset-y-0 right-3 flex items-center text-muted-foreground font-medium pointer-events-none">
+                            USD
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-base font-medium text-foreground mb-1">
+                          Comment Message <span><Info className="inline h-4 w-4" /></span>
+                        </label>
+                        <Textarea
+                          value={comment}
+                          onChange={e => setComment(e.target.value)}
+                          className="w-full min-h-[80px]"
+                          placeholder="Comment Message"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <Button type="submit">
+                          ✓ Apply Now
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          type="button"
+                          onClick={() => setIsBalanceModalOpen(false)}
+                        >
+                          <X className="h-4 w-4 mr-2" />
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+                 {/* Delete User Modal */}
+        <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+          <DialogContent className="bg-card border-border max-w-md">
+            <div className="flex flex-col items-center gap-2">
+              <span className="rounded-full bg-red-100 p-4 mb-2">
+                <AlertTriangle className="h-10 w-10 text-red-500" />
+              </span>
+              <DialogHeader>
+                <DialogTitle className="text-2xl text-center text-foreground font-bold">
+                  Are You Sure?
+                </DialogTitle>
+              </DialogHeader>
+              <div className="text-center text-lg text-muted-foreground mb-2">
+                Are you sure you want to delete this user?
+              </div>
+              <Input
+                value={adminKey}
+                onChange={e => setAdminKey(e.target.value)}
+                placeholder="Enter Super-Admin Key"
+                className="w-full text-center"
+                required
+              />
+              <div className="text-xs text-muted-foreground mb-2"> This key is required for security purposes.
+              </div>
+              <div className="flex justify-center gap-2 w-full mt-2">
+                <Button
+                  
+                  onClick={() => {
+                    // handle delete logic here
+                    setIsDeleteModalOpen(false);
+                    setAdminKey("");
+                  }}
+                  disabled={!adminKey}
+                >
+                  ✓ Delete
+                </Button>
+                <Button
+                  variant="destructive"
+                 
+                  onClick={() => setIsDeleteModalOpen(false)}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
                 {/* Status Info */}
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-center">
@@ -269,7 +590,7 @@ export function CustomerDetail() {
 
             {/* Tabs */}
             <div className="flex flex-wrap gap-2 flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
-               {tabs.map((tab) => (
+              {tabs.map((tab) => (
                 <NavLink
                   key={tab}
                   to={tab === "Overview" ? "." : tab.toLowerCase().replace(/ /g, "-")}
@@ -294,16 +615,16 @@ export function CustomerDetail() {
 
 
               <Route path="accounts" element={<AccountsTab />} />
-          <Route path="kyc" element={<KYCTab />} />
-          <Route path="partner" element={<PartnerTab />} />
-          <Route path="transactions" element={<TransactionsTab />} />
-          <Route path="ib-bonus" element={<IBBonusTab />} />
-          <Route path="direct-referrals" element={<DirectReferralsTab />} />
-          <Route path="network" element={<NetworkTab />} />
-          <Route path="ticket" element={<TicketTab />} />
-          <Route path="add-note" element={<AddNoteTab />} />
-          <Route path="security" element={<SecurityTab />} />
-          <Route path="activities" element={<ActivitiesTab />} />
+              <Route path="kyc" element={<KYCTab />} />
+              <Route path="partner" element={<PartnerTab />} />
+              <Route path="transactions" element={<TransactionsTab />} />
+              <Route path="ib-bonus" element={<IBBonusTab />} />
+              <Route path="direct-referrals" element={<DirectReferralsTab />} />
+              <Route path="network" element={<NetworkTab />} />
+              <Route path="ticket" element={<TicketTab />} />
+              <Route path="add-note" element={<AddNoteTab />} />
+              <Route path="security" element={<SecurityTab />} />
+              <Route path="activities" element={<ActivitiesTab />} />
 
             </Routes>
 

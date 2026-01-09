@@ -36,8 +36,8 @@ export default function PendingWithdraws() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold text-foreground">{getTabTitle(activeTab)}</h1>
-          <Button variant="outline" className="border-border text-foreground hover:bg-muted">
-            <Plus className="h-4 w-4 mr-2" />Add Withdraw
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />Add Withdraw
           </Button>
         </div>
 

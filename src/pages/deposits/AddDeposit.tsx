@@ -45,8 +45,8 @@ export default function AddDeposit() {
         {/* Page Title */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold text-foreground">Add Deposit</h1>
-          <Button variant="outline" className="bg-card hover:bg-muted text-foreground border border-border">
-            <Plus className="h-4 w-4 mr-2" />Add Deposit
+          <Button className="gap-2">
+            <Plus className="h-4 w-4 " />Add Deposit
           </Button>
         </div>
 
