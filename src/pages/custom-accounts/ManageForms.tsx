@@ -42,7 +42,7 @@ export function ManageForms() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-primary">Custom Payment Account Forms</h1>
+        <h1 className="text-2xl font-semibold ">Custom Payment Account Forms</h1>
         
         <CustomAccountsTabs />
         

@@ -13,7 +13,7 @@ export function ReferralNetworkStats() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-primary">Referral Network Report</h1>
+        <h1 className="text-2xl font-semibold ">Referral Network Report</h1>
         
         <ReportsTabs />
         

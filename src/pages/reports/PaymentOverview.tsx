@@ -57,7 +57,7 @@ export function PaymentOverview() {
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-primary">Transactions Report</h1>
+          <h1 className="text-2xl font-semibold">Transactions Report</h1>
           <Button variant="outline" className="border-border bg-background text-foreground hover:bg-muted">
             <Download className="h-4 w-4 mr-2" />
             Detailed Report

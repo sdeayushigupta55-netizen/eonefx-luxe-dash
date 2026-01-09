@@ -19,7 +19,7 @@ export function PendingIB() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-primary">Pending IB Members</h1>
+        <h1 className="text-2xl font-semibold ">Pending IB Members</h1>
         
         <IBTabs />
         

@@ -26,7 +26,7 @@ export function AccountTypeTabs() {
   };
 
   return (
-    <div cclassName="flex flex-wrap gap-2 flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
+    <div className="flex flex-wrap gap-2 flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border mb-2">
       <div className="flex items-center gap-2">
         {tabs.map((tab) => (
           <NavLink
@@ -36,7 +36,7 @@ export function AccountTypeTabs() {
               "px-4 py-2 text-sm font-medium rounded-lg transition-all border",
               isActive(tab.path)
                 ? "bg-primary text-primary-foreground border-primary"
-                : "bg-transparent text-muted-foreground border-border hover:bg-muted/50 hover:text-foreground"
+                : "bg-transparent border-border hover:bg-muted/50 hover:text-foreground"
             )}
           >
             {tab.label}

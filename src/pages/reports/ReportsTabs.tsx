@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function ReportsTabs() {
   const navigate = useNavigate();
@@ -17,18 +18,18 @@ export function ReportsTabs() {
       {tabs.map((tab) => {
         const isActive = location.pathname === tab.path;
         return (
-          <Button
+          <button
             key={tab.path}
-            variant={isActive ? "default" : "outline"}
-            size="sm"
+            
             onClick={() => navigate(tab.path)}
-            className={isActive 
-              ? "bg-primary text-primary-foreground" 
-              : "border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent"
-            }
+            
+            className={cn(
+              "px-4 py-2 border rounded-md transition-colors text-sm font-medium",
+              isActive && "bg-primary text-primary-foreground"
+            )}
           >
             {tab.label}
-          </Button>
+          </button>
         );
       })}
     </div>

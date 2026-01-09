@@ -111,12 +111,10 @@ const WithdrawAccountsRejected = () => {
               <button
                 key={tab.id}
                 onClick={() => navigate(tab.path)}
-                className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                  activeTab === tab.id
-                    ? "bg-muted text-foreground border border-border"
-                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground border border-transparent"
-                )}
+               className={cn(
+              "px-4 py-2 border rounded-md transition-colors text-sm font-medium",
+              activeTab === tab.id && "bg-primary text-primary-foreground"
+            )}
               >
                 {tab.label}
               </button>

@@ -20,13 +20,13 @@ const ManageLevels = () => {
         </div>
 
         {/* Platform Tabs */}
-        <div className="flex gap-2">
+        <div className="bg-card rounded-xl border border-border p-4 mb-6 flex gap-4">
           <button
             onClick={() => setActiveTab("metatrader")}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === "metatrader"
                 ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                : "bg-muted  hover:bg-muted/80"
             }`}
           >
             Metatrader
@@ -36,7 +36,7 @@ const ManageLevels = () => {
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === "x9trader"
                 ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                : "bg-muted  hover:bg-muted/80"
             }`}
           >
             X9 Trader

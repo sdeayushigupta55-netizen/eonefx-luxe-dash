@@ -65,7 +65,7 @@ export function Transactions() {
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-primary">All Transactions</h1>
+          <h1 className="text-2xl font-semibold ">All Transactions</h1>
           <Button 
             onClick={handleDetailedReport}
             className="bg-background border border-border text-foreground hover:bg-muted transition-colors"

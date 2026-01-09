@@ -17,7 +17,7 @@ export function IBResources() {
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-primary">All Advertisements</h1>
+          <h1 className="text-2xl font-semibold">All Advertisements</h1>
           <Button className="bg-primary text-primary-foreground">
             <Plus className="h-4 w-4 mr-2" />
             Add New

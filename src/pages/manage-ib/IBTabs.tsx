@@ -25,7 +25,7 @@ export function IBTabs() {
               "px-4 py-2 rounded-md text-sm font-medium transition-colors",
               isActive
                 ? "bg-primary text-primary-foreground"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground border border-border"
+                : "bg-muted/50  hover:bg-muted hover:text-foreground border border-border"
             )}
           >
             {tab.label}

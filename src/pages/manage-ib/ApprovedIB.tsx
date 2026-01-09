@@ -10,7 +10,7 @@ export function ApprovedIB() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-primary">Approved IB Members</h1>
+        <h1 className="text-2xl font-semibold">Approved IB Members</h1>
         
         <IBTabs />
         
