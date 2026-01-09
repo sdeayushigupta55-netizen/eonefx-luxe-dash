@@ -26,7 +26,7 @@ export function AccountTypeTabs() {
   };
 
   return (
-    <div className="flex items-center justify-between mb-6">
+    <div cclassName="flex flex-wrap gap-2 flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
       <div className="flex items-center gap-2">
         {tabs.map((tab) => (
           <NavLink

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Routes, Route, Navigate, NavLink } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,9 +19,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
+import { OverviewTab } from "./OverviewTab"
+import AccountsTab from "./AccountTab"
+import KYCTab  from "./KYCTab";
+import  PartnerTab  from "./PartnerTab";
+import TransactionsTab from "./TransactionsTab";
+import IBBonusTab  from "./IBBonusTab";
+import DirectReferralsTab from "./DirectReferralsTab "
+import  NetworkTab  from "./NetworkTab";
+import  TicketTab  from "./TicketTab";
+import  AddNoteTab from "./AddNoteTab";
+import  SecurityTab  from "./SecurityTab";
+import  ActivitiesTab from "./ActivitiesTab";
 const tabs = [
-  "Overview", "Accounts", "KYC", "Partner", "Transactions", "IB Bonus", 
+  "Overview", "Accounts", "KYC", "Partner", "Transactions", "IB Bonus",
   "Direct Referrals", "Network", "Ticket", "Add Note", "Security", "Activities"
 ];
 
@@ -257,168 +268,45 @@ export function CustomerDetail() {
             </div>
 
             {/* Tabs */}
-            <div className="flex flex-wrap gap-2">
-              {tabs.map((tab) => (
-                <Button
+            <div className="flex flex-wrap gap-2 flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
+               {tabs.map((tab) => (
+                <NavLink
                   key={tab}
-                  variant={activeTab === tab ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setActiveTab(tab)}
-                  className={cn(
-                    activeTab === tab 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-card border-border text-foreground hover:bg-muted"
-                  )}
+                  to={tab === "Overview" ? "." : tab.toLowerCase().replace(/ /g, "-")}
+                  end={tab === "Overview"}
+                  className={({ isActive }) =>
+                    cn(
+                      "px-4 py-2 rounded-lg text-sm font-medium",
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-card border border-border text-foreground hover:bg-muted"
+                    )
+                  }
                 >
                   {tab}
-                </Button>
+                </NavLink>
               ))}
             </div>
+            <Routes>
+              <Route index element={<OverviewTab customer={customer} firstName={firstName} lastName={lastName} />} />
+              <Route path="overview" element={<OverviewTab customer={customer} firstName={firstName} lastName={lastName} />} />
+              {/* Add other tab routes here */}
 
-            {/* Form */}
-            <Card className="bg-card border-border">
-              <CardContent className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">First Name</Label>
-                    <Input defaultValue={firstName} className="bg-background border-border" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Last Name</Label>
-                    <Input defaultValue={lastName || ""} className="bg-background border-border" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Country</Label>
-                    <Select defaultValue={customer.country.toLowerCase()}>
-                      <SelectTrigger className="bg-background border-border">
-                        <SelectValue placeholder="Select country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pakistan">Pakistan</SelectItem>
-                        <SelectItem value="india">India</SelectItem>
-                        <SelectItem value="usa">USA</SelectItem>
-                        <SelectItem value="uk">UK</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Phone</Label>
-                    <Input placeholder="+92 Phone Number" className="bg-background border-border" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Username</Label>
-                    <Input defaultValue={firstName + lastName?.charAt(0) || ""} className="bg-background border-border" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Email</Label>
-                    <Input defaultValue={customer.email} className="bg-background border-border text-primary" />
-                  </div>
-                </div>
+              <Route path="accounts" element={<AccountsTab />} />
+          <Route path="kyc" element={<KYCTab />} />
+          <Route path="partner" element={<PartnerTab />} />
+          <Route path="transactions" element={<TransactionsTab />} />
+          <Route path="ib-bonus" element={<IBBonusTab />} />
+          <Route path="direct-referrals" element={<DirectReferralsTab />} />
+          <Route path="network" element={<NetworkTab />} />
+          <Route path="ticket" element={<TicketTab />} />
+          <Route path="add-note" element={<AddNoteTab />} />
+          <Route path="security" element={<SecurityTab />} />
+          <Route path="activities" element={<ActivitiesTab />} />
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Gender</Label>
-                    <Select defaultValue="male">
-                      <SelectTrigger className="bg-background border-border">
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Date Of Birth</Label>
-                    <Input type="date" className="bg-background border-border" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">City</Label>
-                    <Input placeholder="Enter city" className="bg-background border-border" />
-                  </div>
-                </div>
+            </Routes>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Zip Code</Label>
-                    <Input placeholder="Enter zip code" className="bg-background border-border" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Address</Label>
-                    <Input placeholder="Enter address" className="bg-background border-border" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Joining Date</Label>
-                    <Input defaultValue={customer.joined} className="bg-background border-border" readOnly />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Assign Branch</Label>
-                    <Select>
-                      <SelectTrigger className="bg-background border-border">
-                        <SelectValue placeholder="Select Branch" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="uae">UAE Branch</SelectItem>
-                        <SelectItem value="main">Main Branch</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Assign Group</Label>
-                    <Select>
-                      <SelectTrigger className="bg-background border-border">
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="vip">VIP</SelectItem>
-                        <SelectItem value="standard">Standard</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Risk Profile Tags</Label>
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-primary text-primary-foreground">
-                        Under Investigation
-                        <button className="ml-1">
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Lead Campaign</Label>
-                    <Input placeholder="Enter campaign" className="bg-background border-border" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-foreground">Lead Source</Label>
-                    <Input placeholder="Enter source" className="bg-background border-border" />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-sm text-foreground">Comment</Label>
-                  <Textarea placeholder="Enter comment" defaultValue="Under Investigation" className="bg-background border-border" />
-                </div>
-
-                <div className="flex justify-end">
-                  <Button className="bg-foreground text-background hover:bg-foreground/90">
-                    <Check className="h-4 w-4 mr-2" />
-                    Save Changes
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 

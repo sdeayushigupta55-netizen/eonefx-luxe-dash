@@ -13,7 +13,7 @@ export function CustomAccountsTabs() {
   ];
   
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex flex-wrap gap-2 flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
       {tabs.map((tab) => {
         const isActive = location.pathname === tab.path;
         return (

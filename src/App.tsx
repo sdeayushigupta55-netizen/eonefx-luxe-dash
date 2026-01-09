@@ -132,7 +132,7 @@ const App = () => (
             <Route path="/customers/send-email" element={<SendEmailCustomers />} />
             <Route path="/customers/send-email-all" element={<SendEmailToAll />} />
             <Route path="/customers/add" element={<AddCustomer />} />
-            <Route path="/customers/:customerId/edit" element={<CustomerDetail />} />
+            <Route path="/customers/:customerId/edit/*" element={<CustomerDetail />} />
             <Route path="/customers/:customerId/payment-stats" element={<CustomerPaymentStats />} />
             <Route path="/customers/:customerId/network-stats" element={<CustomerNetworkStats />} />
 
