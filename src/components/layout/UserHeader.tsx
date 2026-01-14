@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Plus, Maximize2, Minimize2, Bell, Settings, Grid3X3, PanelLeftClose, PanelLeft, Menu, Cross, CrossIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
@@ -22,6 +22,7 @@ export function UserHeader({ onOpenRiskHub, customerName: propCustomerName }: Us
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { isCollapsed, isMobile, toggleSidebar } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
   // Prefer prop, fallback to navigation state, fallback to empty string
   const customerName = propCustomerName ?? location.state?.customerName ?? "";
 
@@ -58,9 +59,11 @@ export function UserHeader({ onOpenRiskHub, customerName: propCustomerName }: Us
            
         {/* Right - Actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-             <Button className="bg-red-500 text-white hover:bg-red-600"
->
-          Return to Login
+          <Button
+            className="bg-red-500 text-white hover:bg-red-600"
+            onClick={() => navigate("/")}
+          >
+            Return to Login
           </Button>
           {/* Theme switcher for tablet */}
         

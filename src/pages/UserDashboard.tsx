@@ -41,7 +41,7 @@ const statsRow3 = [
   { icon: Upload,  value: "Withdraw", variant: "teal" as const, navigation: "/user/withdraw" },
   { icon: ArrowLeftRight,  value: "Transfer", variant: "neutral" as const, navigation: "/user/transfer" },
   { icon: LineChart, value: "Account", variant: "neutral" as const, navigation: "/user/accounts" },
-  { icon: UserCheck, value: "Verification", variant: "neutral" as const, navigation: "/user/verification" },
+  { icon: UserCheck, value: "Verification", variant: "neutral" as const, navigation: "/user/userkyc" },
   { icon: LifeBuoy, value: "Support", variant: "neutral" as const, navigation: "/user/tickets" },
 ];
 

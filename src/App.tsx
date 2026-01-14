@@ -117,7 +117,8 @@ import SetUpWires from "./pages/setupwires/SetUpWires";
 import UserDeposit from "./pages/userdeposit/UserDeposit";
 import UserTransfer from "./pages/usertransfer/UserTransfer";
 import UserWithdraw from "./pages/userwithdraw/UserWithdraw";
-
+import UserSettingProfile from "./pages/userwithdraw/UserSettingProfile";
+import UserKYC from "./pages/userwithdraw/UserKYC";
 
 const queryClient = new QueryClient();
 
@@ -274,9 +275,11 @@ const App = () => (
               <Route path="/user/deposit" element={<UserDeposit />} />
               <Route path="/user/transfer" element={<UserTransfer />} />
               <Route path="/user/withdraw" element={<UserWithdraw />} />
+              <Route path="/usersettingprofile" element={<UserSettingProfile />} />
               <Route path="/user/request-master-ib" element={<RequestMasterIB />} />
               <Route path="/user/tickets" element={<UserTickets />} />
               <Route path="/user/history" element={<UserHistory />} />
+              <Route path="/user/userkyc" element={<UserSettingProfile><UserKYC /></UserSettingProfile>} />
 
               {/* Catch-all */}
               <Route path="*" element={<NotFound />} />

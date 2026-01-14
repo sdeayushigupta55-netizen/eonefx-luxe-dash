@@ -6,7 +6,11 @@ import { VerifyBanner } from '@/components/userdashboard/VerifyBanner';
 import React from 'react';
 import { SelectField } from '@/components/form/SelectField';
 import { Mail , MessageCircleMore,Phone} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 const UserWithdraw = () => {
+    const navigate = useNavigate();
+
     return (
         <UserDashboardLayout>
             <div className="min-h-screen">
@@ -57,7 +61,12 @@ const UserWithdraw = () => {
                         <div className="mb-4">
                             <div className="flex items-center justify-between mb-2">
                                 <label className="block text-sm font-medium ">Withdraw Account:</label>
-                                <p className="ml-2 text-sm">+ Add New Withdrawal Account</p>
+                                <p
+                                    className="ml-2 text-sm cursor-pointer text-blue-500 hover:underline"
+                                    onClick={() => navigate("/usersettingprofile")}
+                                >
+                                    + Add New Withdrawal Account
+                                </p>
                             </div>
 
                             <div className="flex items-center">
