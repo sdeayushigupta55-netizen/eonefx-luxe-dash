@@ -59,12 +59,12 @@ export function UserHeader({ onOpenRiskHub, customerName: propCustomerName }: Us
            
         {/* Right - Actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-          <Button
-            className="bg-red-500 text-white hover:bg-red-600"
-            onClick={() => navigate("/")}
-          >
-            Return to Login
-          </Button>
+                 <Button
+          className="bg-red-500 text-white hover:bg-red-600 px-3 rounded-md h-7 text-xs"
+          onClick={() => navigate("/")}
+        >
+          Return to Login
+        </Button>
           {/* Theme switcher for tablet */}
         
           <div className="hidden md:block lg:hidden">
