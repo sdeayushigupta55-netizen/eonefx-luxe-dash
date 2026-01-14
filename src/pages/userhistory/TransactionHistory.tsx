@@ -3,6 +3,8 @@ import { UserDashboardLayout } from "@/components/layout/UserDashboardLayout";
 import { VerifyBanner } from "@/components/userdashboard/VerifyBanner";
 import { ArrowDownToLine } from "lucide-react";
 import { SelectField } from "@/components/form/SelectField";
+import { Button } from "@/components/ui/button";
+
 
 const TransactionHistory = () => {
   return (
@@ -32,7 +34,7 @@ const TransactionHistory = () => {
             options={[{ label: "All accounts", value: "all-accounts" }]}
             placeholder="All accounts"
           />
-          <button className="border rounded-md px-3 py-2 text-sm bg-primary text-primary-foreground">Export</button>
+          <Button>Export</Button>
         </div>
       </div>
 
@@ -74,6 +76,7 @@ const TransactionHistory = () => {
             </tr>
           </tbody>
         </table>
+   
       </div>
     </div>
  
