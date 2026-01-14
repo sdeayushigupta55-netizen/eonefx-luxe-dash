@@ -2,6 +2,7 @@ import React from 'react';
 import { UserDashboardLayout } from '@/components/layout/UserDashboardLayout';
 import { VerifyBanner } from '@/components/userdashboard/VerifyBanner';
 import { Button } from '@/components/ui/button';
+import { ChevronDown, ChevronRight, Ticket } from 'lucide-react';
 
 const UserTickets = () => {
   return (
@@ -13,14 +14,18 @@ const UserTickets = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         {['Total Tickets', 'Closed Tickets', 'Open Tickets', 'Resolved Tickets'].map((title, index) => (
           <div key={index} className="p-4 rounded-lg shadow-md flex items-center justify-between border border-border hover:shadow-lg transition-shadow cursor-pointer">
-            <div className="flex items-center">
-              <div className="text-2xl mr-2">🎟️</div>
-              <div>
-                <h3 className="text-lg font-semibold ">{title}</h3>
-                <p className="text-sm ">0</p>
-              </div>
+                     
+          <div className="flex items-center">
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+              <Ticket className="text-black" />
             </div>
-            <div className="text-blue-500">&gt;</div>
+            <div>
+              <h3 className="text-lg font-semibold ">{title}</h3>
+              <p className="text-sm ">0</p>
+            </div>
+          </div>
+       
+            <div><ChevronRight/></div>
           </div>
         ))}
       </div>

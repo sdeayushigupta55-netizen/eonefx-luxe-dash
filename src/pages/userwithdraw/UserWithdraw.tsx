@@ -80,10 +80,10 @@ const UserWithdraw = () => {
                             <InputField
                                 label="Amount:"
                                 type="text"
-                                required
+                                
                                 placeholder="Enter Amount"
                             />
-                            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 mt-2">USD</span>
+                            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 mt-2 text-sm">USD</span>
                         </div>
                     </div>
 
@@ -92,7 +92,7 @@ const UserWithdraw = () => {
                         <h2 className="text-lg font-semibold mb-4">Withdraw Details</h2>
                         <div className="mb-4 flex justify-between">
                             <label className="block text-sm font-medium">Withdraw Amount</label>
-                            <p className="text-gray-700">USD</p>
+                            <p className="text-sm">USD</p>
                         </div>
                         <Button className="w-full  rounded-md">Withdraw Money</Button>
                     </div>

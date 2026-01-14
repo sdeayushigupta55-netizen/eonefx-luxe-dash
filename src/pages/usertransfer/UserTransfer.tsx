@@ -15,9 +15,9 @@ const UserTransfer = () => {
                 <h2 className="text-xl font-semibold mb-2">Internal Transfer</h2>
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-foreground mb-1">Unlimited</h3>
-                    <span className="text-xs bg-primary px-2 py-1 rounded">
+                    <button className="text-xs bg-primary px-2 py-1 rounded text-white">
                         Instant
-                    </span>
+                    </button>
                 </div>
 
                 <p className="text-sm text-green-600 mb-4">Free of Cost</p>

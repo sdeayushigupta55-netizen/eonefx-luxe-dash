@@ -3,12 +3,19 @@ import { UserDashboardLayout } from "@/components/layout/UserDashboardLayout";
 import WithdrawalAccounts from "./WithdrawalAccounts";
 import UserKYC from "./UserKYC";
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import UserTool from "./UserTool";
+import UserAgreements from "./UserAgreements";
+import UserPrefrence from "./UserPrefrence";
+import UserSecurity from "./UserSecurity";
+import UserProfile from "./UserProfile";
+
+
 
 const UserSettingProfile = () => {
   const [activeTab, setActiveTab] = useState("Withdrawal Accounts");
   const location = useLocation();
-
+  const navigate = useNavigate();
   const tabs = [
     "Profile",
     "Withdrawal Accounts",
@@ -16,7 +23,6 @@ const UserSettingProfile = () => {
     "KYC",
     "Preferences",
     "Agreements",
-    "Notifications",
     "Tools",
   ];
 
@@ -25,11 +31,18 @@ const UserSettingProfile = () => {
       setActiveTab("KYC");
     }
   }, [location.pathname]);
-
+ // Handler for verification click
+  const handleBeginVerification = () => {
+    setActiveTab("KYC");
+    if (location.pathname !== "/usersettingprofile") {
+      navigate("/usersettingprofile");
+    }
+  };
   return (
     <UserDashboardLayout>
       <div className="space-y-6">
-        <VerifyBanner />
+        {/* Show VerifyBanner on all tabs except KYC */}
+         {activeTab !== "KYC" && <VerifyBanner onBeginVerification={handleBeginVerification} />}
 
         {/* Tabs */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center bg-muted/30 p-4 rounded-xl border">
@@ -51,14 +64,12 @@ const UserSettingProfile = () => {
         {/* Tab Content */}
         <div className="mt-6">
           {activeTab === "Withdrawal Accounts" && <WithdrawalAccounts />}
-          {activeTab === "Profile" && <div>Profile Content</div>}
-          {activeTab === "Security" && <div>Security Content</div>}
+          {activeTab === "Profile" && <UserProfile />}
+          {activeTab === "Security" && <UserSecurity />}
           {activeTab === "KYC" && <UserKYC />}
-          {activeTab === "Preferences" && <div>Preferences Content</div>}
-          {activeTab === "Agreements" && <div>Agreements Content</div>}
-          {activeTab === "Notifications" && <div>Notifications Content</div>}
-          {activeTab === "Tools" && <div>Tools Content</div>}
-          {/* Add other tab content here */}
+          {activeTab === "Preferences" && <UserPrefrence />}
+          {activeTab === "Agreements" && <UserAgreements />}
+          {activeTab === "Tools" && <UserTool />}
         </div>
       </div>
     </UserDashboardLayout>
@@ -66,3 +77,5 @@ const UserSettingProfile = () => {
 };
 
 export default UserSettingProfile;
+
+

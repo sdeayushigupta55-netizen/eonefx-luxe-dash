@@ -1,4 +1,5 @@
 import { ArrowRight, ArrowDownToLine } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 
 interface User {
@@ -82,12 +83,21 @@ function getAvatarColor(name: string): string {
 }
 
 export function RecentTransactions() {
+  const navigate = useNavigate();
+
   return (
     <div className="dashboard-card p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-foreground">Recent Transactions</h3>
-        <a href="#" className="text-sm font-medium text-foreground hover:underline flex items-center gap-1">
+        <a
+          href="#"
+          className="text-sm font-medium text-foreground hover:underline flex items-center gap-1"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/user/history");
+          }}
+        >
           See All <ArrowRight className="h-4 w-4" />
         </a>
       </div>
