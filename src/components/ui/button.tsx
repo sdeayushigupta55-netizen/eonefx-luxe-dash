@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import { useNavigate } from "react-router-dom";
 
 import { cn } from "@/lib/utils";
 
@@ -11,7 +12,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        outline: "border border-input bg-background hover:bg-primary hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
@@ -34,12 +35,32 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  navigation?: string; // Added navigation prop
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, navigation, ...props }, ref) => {
+    const navigate = useNavigate();
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (navigation) {
+        event.preventDefault();
+        navigate(navigation);
+      }
+      if (props.onClick) {
+        props.onClick(event);
+      }
+    };
+
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        onClick={handleClick}
+        {...props}
+      />
+    );
   },
 );
 Button.displayName = "Button";

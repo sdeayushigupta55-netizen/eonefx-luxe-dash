@@ -124,9 +124,9 @@ export function CustomerDetail() {
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsMailModalOpen(true)}>
                     <Mail className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <UserPlus className="h-4 w-4" />
-                  </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate('/user/userdashboard', { state: { customerName: customer.name } })}>
+                      <UserPlus className="h-4 w-4" />
+                    </Button>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsBalanceModalOpen(true)}>
                     <Wallet className="h-4 w-4" />
                   </Button>
